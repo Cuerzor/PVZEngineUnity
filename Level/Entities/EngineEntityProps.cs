@@ -306,5 +306,17 @@ namespace PVZEngine.Entities
             return entity.GetProperty<int>(COLLISION_INTERVAL);
         }
         #endregion
+
+        #region 碰撞检测样本长度
+        public static readonly PropertyMeta<Vector3> MODEL_POSITION_OFFSET = Get<Vector3>("model_position_offset");
+        public static Vector3 GetModelPositionOffset(this Entity entity)
+        {
+            return entity.GetProperty<Vector3>(MODEL_POSITION_OFFSET);
+        }
+        public static void SetModelPositionOffset(this Entity entity, Vector3 value)
+        {
+            entity.SetProperty(MODEL_POSITION_OFFSET, value);
+        }
+        #endregion
     }
 }
