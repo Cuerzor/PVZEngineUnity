@@ -17,7 +17,7 @@ namespace PVZEngine.Entities
         public int GetLane()
         {
             var gridPivotOffset = Cache.GridPivotOffset;
-            return Level.GetLane(Position.z + gridPivotOffset.y);
+            return Level.GetNearestEntityLane(Position.z + gridPivotOffset.y);
         }
         public int GetGridIndex()
         {
