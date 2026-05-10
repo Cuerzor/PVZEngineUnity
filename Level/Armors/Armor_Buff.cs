@@ -24,7 +24,7 @@ namespace PVZEngine.Armors
         }
         private void InitBuffsFromSerializable(SerializableArmor seri)
         {
-            buffs.InitFromSerializable(seri.buffs, Owner.Level, Owner);
+            buffs.InitFromSerializable(seri.buffs, Level, this);
         }
         private void LoadBuffsFromSerializable(SerializableArmor seri)
         {
