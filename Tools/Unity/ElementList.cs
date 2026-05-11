@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MVZ2.UI
+namespace Tools
 {
     public class ElementList : MonoBehaviour
     {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace MVZ2.UI
+namespace Tools
 {
     public class ElementListUI : MonoBehaviour
     {
