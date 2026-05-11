@@ -10,11 +10,15 @@ namespace PVZEngine.Base
     {
         public NamespaceID Get()
         {
-            if (cache == null || cache.SpaceName != spacename || cache.Path != path)
+            if (cache == null || !Compare(cache))
             {
                 cache = new NamespaceID(spacename, path);
             }
             return cache;
+        }
+        public bool Compare(NamespaceID id)
+        {
+            return id.SpaceName == spacename && id.Path == path;
         }
         [SerializeField]
         private string spacename = null!;
