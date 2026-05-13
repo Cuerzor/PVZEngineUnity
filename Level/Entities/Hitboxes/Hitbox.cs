@@ -4,6 +4,7 @@ using PVZEngine.Entities;
 using Tools;
 using Tools.Geometrical;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace PVZEngine.Collisions
 {
@@ -15,21 +16,13 @@ namespace PVZEngine.Collisions
         }
         public void ReevaluateBounds()
         {
-            var scale = Entity.GetFinalScale();
-
-            Vector3 size = GetSize();
             Vector3 offset = GetOffset();
             Vector3 pivot = GetPivot();
-
-            var scaledSize = Vector3.Scale(size, scale);
-            var scaledOffset = Vector3.Scale(offset, scale);
-            var scaledPivot = Vector3.Scale(pivot, scale);
-
-            cacheOffset = scaledOffset;
-
-            var boundsCenter = cacheOffset + Vector3.Scale(Vector3.one * 0.5f - pivot, scaledSize);
-            var boundsSize = scaledSize.Abs();
-            cache = new Bounds(boundsCenter, boundsSize);
+            Vector3 rotation = GetRotation();
+            Vector3 size = GetSize();
+            Vector3 scale = Entity.GetFinalScale();
+            cacheOffset = Vector3.Scale(offset, scale);
+            cache = Geometry.EvaluateBounds(offset, pivot, GetRotation(), size, scale);
         }
         public bool IsInBox(Vector3 center, Vector3 size)
         {
@@ -98,6 +91,7 @@ namespace PVZEngine.Collisions
             return false;
         }
         public abstract Vector3 GetSize();
+        public abstract Vector3 GetRotation();
         public abstract Vector3 GetPivot();
         public abstract Vector3 GetOffset();
         public Entity Entity { get; }

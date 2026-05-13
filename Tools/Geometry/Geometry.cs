@@ -2,6 +2,7 @@
 
 using System;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace Tools.Geometrical
 {
@@ -655,6 +656,40 @@ namespace Tools.Geometrical
             //the first time of overlap occurred
             //before the last time of overlap
             return firstTime <= lastTime;
+        }
+
+        public static Bounds EvaluateBounds(Vector3 offset, Vector3 pivot, Vector3 euler, Vector3 size, Vector3 scale)
+        {
+            // 2. 计算局部空间中的盒中心（未缩放）
+            Vector3 pivotToCenterNormalized = Vector3.one * 0.5f - pivot;
+            Vector3 pivotToCenter = Vector3.Scale(pivotToCenterNormalized, size);
+
+            // 3. 计算局部半轴向量（未缩放，带方向）
+            Vector3 halfExtentsLocal = size * 0.5f;
+
+            // --- 应用 Scale：所有局部量一起缩放 ---
+            Vector3 scaledPivotToCenter = Vector3.Scale(pivotToCenter, scale);
+            Vector3 scaledHalf = Vector3.Scale(halfExtentsLocal, scale); // 带符号，正负取决于scale
+
+            // --- 应用 Rotation：旋转缩放后的几何体 ---
+            Quaternion rotation = Quaternion.Euler(euler);
+            Vector3 localCenter = rotation * scaledPivotToCenter;
+
+            // 三个半轴向量（缩放后，再旋转）
+            Vector3 axisX = rotation * new Vector3(scaledHalf.x, 0, 0);
+            Vector3 axisY = rotation * new Vector3(0, scaledHalf.y, 0);
+            Vector3 axisZ = rotation * new Vector3(0, 0, scaledHalf.z);
+
+            // 计算世界空间 AABB 的半包围尺寸（半轴投影绝对值之和）
+            Vector3 worldHalfExtents = new Vector3(
+                Mathf.Abs(axisX.x) + Mathf.Abs(axisY.x) + Mathf.Abs(axisZ.x),
+                Mathf.Abs(axisX.y) + Mathf.Abs(axisY.y) + Mathf.Abs(axisZ.y),
+                Mathf.Abs(axisX.z) + Mathf.Abs(axisY.z) + Mathf.Abs(axisZ.z)
+            );
+
+            // 最终 AABB（最大包围盒）
+            var scaledOffset = Vector3.Scale(offset, scale);
+            return new Bounds(scaledOffset + localCenter, worldHalfExtents * 2f);
         }
         #endregion
     }

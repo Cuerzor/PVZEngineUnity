@@ -12,13 +12,16 @@ namespace PVZEngine.Collisions
         }
         public void SetSize(Vector3 value) => size = value;
         public void SetPivot(Vector3 value) => pivot = value;
+        public void SetRotation(Vector3 value) => rotation = value;
         public void SetOffset(Vector3 value) => offset = value;
         public override Vector3 GetSize() => size;
         public override Vector3 GetPivot() => pivot;
+        public override Vector3 GetRotation() => rotation;
         public override Vector3 GetOffset() => offset;
 
         private Vector3 size;
         private Vector3 pivot;
+        private Vector3 rotation;
         private Vector3 offset;
     }
 }

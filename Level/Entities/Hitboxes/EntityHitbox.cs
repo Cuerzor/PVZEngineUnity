@@ -12,6 +12,7 @@ namespace PVZEngine.Collisions
         }
         public override Vector3 GetSize() => Entity.Cache.Size;
         public override Vector3 GetPivot() => Entity.Cache.BoundsPivot;
+        public override Vector3 GetRotation() => Entity.Cache.BoundsRotation;
         public override Vector3 GetOffset() => Entity.Cache.BoundsOffset;
     }
 }

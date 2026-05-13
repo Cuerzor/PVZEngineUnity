@@ -26,6 +26,7 @@ namespace PVZEngine.Entities
         public void UpdateCollisionSize()
         {
             Level.UpdateEntityCollisionSize(this);
+            ReevaluateBounds();
         }
         public IEntityCollider? CreateCollider(ColliderConstructor info)
         {

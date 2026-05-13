@@ -94,6 +94,18 @@ namespace PVZEngine.Entities
         }
         #endregion
 
+        #region 碰撞旋转
+        public static readonly PropertyMeta<Vector3> BOUNDS_ROTATION = Get<Vector3>("bounds_rotation");
+        public static Vector3 GetBoundsRotation(this Entity entity)
+        {
+            return entity.GetProperty<Vector3>(BOUNDS_ROTATION);
+        }
+        public static void SetBoundsRotation(this Entity entity, Vector3 value)
+        {
+            entity.SetProperty(BOUNDS_ROTATION, value);
+        }
+        #endregion
+
         #region 显示缩放
         public static readonly PropertyMeta<Vector3> DISPLAY_SCALE = Get<Vector3>("displayScale");
         public static Vector3 GetFinalDisplayScale(this Entity entity)
