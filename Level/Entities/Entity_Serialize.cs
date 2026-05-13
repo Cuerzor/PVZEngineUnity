@@ -32,8 +32,6 @@ namespace PVZEngine.Entities
             seri.previousPosition = PreviousPosition;
             seri.position = Position;
             seri.velocity = Velocity;
-            seri.collisionMaskHostile = CollisionMaskHostile;
-            seri.collisionMaskFriendly = CollisionMaskFriendly;
             seri.renderRotation = RenderRotation;
             seri.takenConveyorSeeds = takenConveyorSeeds.ToDictionary(p => p.Key.ToString(), p => p.Value);
             seri.timeout = Timeout;
@@ -100,8 +98,6 @@ namespace PVZEngine.Entities
             LoadModelFromSerializable(seri);
             // 物理
             LoadPhysicsFromSerializable(seri);
-            // 碰撞
-            LoadCollisionFromSerializable(seri);
             // 护甲
             InitArmorsFromSerializable(seri);
             // 属性

@@ -330,5 +330,34 @@ namespace PVZEngine.Entities
             entity.SetProperty(MODEL_POSITION_OFFSET, value);
         }
         #endregion
+
+        #region 碰撞Mask
+        public static readonly PropertyMeta<int> COLLISION_MASK_HOSTILE = Get<int>("collision_mask_hostile");
+        public static int GetCollisionMaskHostile(this Entity entity)
+        {
+            return entity.GetProperty<int>(COLLISION_MASK_HOSTILE);
+        }
+        public static void SetCollisionMaskHostile(this Entity entity, int value)
+        {
+            entity.SetProperty(COLLISION_MASK_HOSTILE, value);
+        }
+        public static void AddCollisionMaskHostile(this Entity entity, int value)
+        {
+            entity.SetCollisionMaskHostile(entity.GetCollisionMaskHostile() | value);
+        }
+        public static readonly PropertyMeta<int> COLLISION_MASK_FRIENDLY = Get<int>("collision_mask_friendly");
+        public static int GetCollisionMaskFriendly(this Entity entity)
+        {
+            return entity.GetProperty<int>(COLLISION_MASK_FRIENDLY);
+        }
+        public static void SetCollisionMaskFriendly(this Entity entity, int value)
+        {
+            entity.SetProperty(COLLISION_MASK_FRIENDLY, value);
+        }
+        public static void AddCollisionMaskFriendly(this Entity entity, int value)
+        {
+            entity.SetCollisionMaskFriendly(entity.GetCollisionMaskFriendly() | value);
+        }
+        #endregion
     }
 }

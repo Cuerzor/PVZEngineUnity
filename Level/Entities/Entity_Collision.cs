@@ -70,17 +70,7 @@ namespace PVZEngine.Entities
         }
         #endregion
 
-        #region 序列化
-        private void LoadCollisionFromSerializable(SerializableEntity seri)
-        {
-            CollisionMaskHostile = seri.collisionMaskHostile;
-            CollisionMaskFriendly = seri.collisionMaskFriendly;
-        }
-        #endregion
-
         #region 属性字段
-        public int CollisionMaskHostile { get; set; }
-        public int CollisionMaskFriendly { get; set; }
         internal int TypeCollisionFlag { get; }
         #endregion
     }
