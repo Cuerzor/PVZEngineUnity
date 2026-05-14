@@ -2,6 +2,7 @@
 
 using System;
 using PVZEngine.Entities;
+using UnityEngine;
 
 namespace PVZEngine.Level
 {
@@ -17,6 +18,7 @@ namespace PVZEngine.Level
             {
                 entity.SetParent(EntityParent);
             }
+            entity.Velocity = EntityVelocity;
             foreach (var property in properties.GetPropertyNames())
             {
                 entity.SetPropertyObject(property, properties.GetPropertyObject(property));
@@ -25,6 +27,7 @@ namespace PVZEngine.Level
         }
         public event Action<Entity>? OnApply;
         public Entity? EntityParent { get; set; }
+        public Vector3 EntityVelocity { get; set; }
         private PropertyDictionary properties = new PropertyDictionary();
     }
 }
