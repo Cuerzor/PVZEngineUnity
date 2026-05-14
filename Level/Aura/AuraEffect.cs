@@ -139,6 +139,6 @@ namespace PVZEngine.Auras
         private FrameTimer updateTimer;
         private Dictionary<IBuffTarget, Buff> buffCaches = new Dictionary<IBuffTarget, Buff>();
         private List<IBuffTarget> targetsBuffer = new List<IBuffTarget>();
-        private ArrayBuffer<IBuffTarget> removeBuffBuffer = new ArrayBuffer<IBuffTarget>(1024);
+        private List<IBuffTarget> removeBuffBuffer = new List<IBuffTarget>(1024);
     }
 }

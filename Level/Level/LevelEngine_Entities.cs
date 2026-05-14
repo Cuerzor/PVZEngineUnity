@@ -26,7 +26,7 @@ namespace PVZEngine.Level
         private void UpdateEntities()
         {
             entityUpdateBuffer.Clear();
-            entityUpdateBuffer.CopyFrom(entities.OrderBy(e => e.Key).Select(e => e.Value));
+            entityUpdateBuffer.AddRange(entities.OrderBy(e => e.Key).Select(e => e.Value));
             for (int i = 0; i < entityUpdateBuffer.Count; i++)
             {
                 var entity = entityUpdateBuffer[i];
@@ -381,6 +381,6 @@ namespace PVZEngine.Level
         private long currentEntityID = 1;
         private SortedDictionary<long, Entity> entities = new SortedDictionary<long, Entity>();
         private Dictionary<long, Entity> entityTrash = new Dictionary<long, Entity>();
-        private ArrayBuffer<Entity> entityUpdateBuffer = new ArrayBuffer<Entity>(2048);
+        private List<Entity> entityUpdateBuffer = new List<Entity>(2048);
     }
 }
