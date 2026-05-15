@@ -154,6 +154,10 @@ namespace PVZEngine
             }
             return true;
         }
+        public NamespaceID AppendSuffix(string suffix)
+        {
+            return new NamespaceID(SpaceName, Path + suffix);
+        }
         public static bool IsValid([NotNullWhen(true)] NamespaceID? id)
         {
             if (id is null)
