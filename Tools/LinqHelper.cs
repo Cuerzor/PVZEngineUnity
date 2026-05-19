@@ -56,6 +56,40 @@ namespace PVZEngine.Tools
             var index = rng.WeightedRandom(list.Select(weightGetter));
             return list.ElementAt(index);
         }
+        public static T WeightedRandom<T>(this IEnumerable<T> list, Func<T, int> weightGetter, int value)
+        {
+            var count = list.Count();
+            if (count <= 0)
+                throw new ArgumentException("The list to get weighted random element is empty.");
+            for (int i = 0; i < count; i++)
+            {
+                var element = list.ElementAt(i);
+                var weight = weightGetter(element);
+                value -= weight;
+                if (value <= 0)
+                {
+                    return list.ElementAt(i);
+                }
+            }
+            throw new ArgumentException("The list to get weighted random element ran out.");
+        }
+        public static T WeightedRandom<T>(this IEnumerable<T> list, Func<T, float> weightGetter, float value)
+        {
+            var count = list.Count();
+            if (count <= 0)
+                throw new ArgumentException("The list to get weighted random element is empty.");
+            for (int i = 0; i < count; i++)
+            {
+                var element = list.ElementAt(i);
+                var weight = weightGetter(element);
+                value -= weight;
+                if (value <= 0)
+                {
+                    return list.ElementAt(i);
+                }
+            }
+            throw new ArgumentException("The list to get weighted random element ran out.");
+        }
         public static IEnumerable<T> WeightedRandomTake<T>(this IEnumerable<T> list, IList<int> weights, int count, RandomGenerator rng)
         {
             List<T> results = new List<T>();
