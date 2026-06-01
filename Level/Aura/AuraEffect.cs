@@ -20,22 +20,32 @@ namespace PVZEngine.Auras
         }
         public void UpdateAuraInterval()
         {
-            updateTimer.Run();
-            if (updateTimer.Expired)
+            if (ShouldAutoUpdateAura())
             {
-                updateTimer.Reset();
-                UpdateAura();
+                updateTimer.Run();
+                if (updateTimer.Expired)
+                {
+                    updateTimer.Reset();
+                    UpdateAura();
+                }
             }
         }
         public void PostAdd()
         {
-            UpdateAura();
+            if (ShouldAutoUpdateAura())
+            {
+                UpdateAura();
+            }
             Definition.PostAdd(this);
         }
         public void PostRemove()
         {
             ClearBuffs();
             Definition.PostRemove(this);
+        }
+        public bool ShouldAutoUpdateAura()
+        {
+            return updateTimer.MaxFrame > 0;
         }
         public IBuffTarget? GetFirstTarget()
         {
