@@ -37,7 +37,7 @@ namespace PVZEngine
         {
             if (TryGetPropertyObject(name, out var prop))
                 return prop;
-            return null;
+            return name.DefaultValue;
         }
         public bool TryGetPropertyObject(IPropertyKey name, out object? value)
         {
