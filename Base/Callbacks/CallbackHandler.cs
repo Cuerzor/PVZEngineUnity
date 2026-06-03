@@ -76,7 +76,7 @@ namespace PVZEngine.Callbacks
                     break;
             }
         }
-        public void ExecuteFiltered(TArgs args, object filter, CallbackResult result)
+        public void ExecuteFiltered(TArgs args, object? filter, CallbackResult result)
         {
             var currentTriggers = GetTriggersSnapshot();
             foreach (var trigger in currentTriggers)
@@ -89,7 +89,7 @@ namespace PVZEngine.Callbacks
                     break;
             }
         }
-        private bool IsFilterMatched(object? triggerFilter, object callbackFilter)
+        private bool IsFilterMatched(object? triggerFilter, object? callbackFilter)
         {
             if (triggerFilter == null || callbackFilter == null)
                 return true;

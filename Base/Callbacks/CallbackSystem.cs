@@ -18,11 +18,11 @@ namespace PVZEngine.Callbacks
                 callbackHandler.Execute(args, result);
             }
         }
-        public void RunCallbackFiltered<TArgs>(CallbackType<TArgs> callbackType, TArgs args, object filter)
+        public void RunCallbackFiltered<TArgs>(CallbackType<TArgs> callbackType, TArgs args, object? filter)
         {
             RunCallbackWithResultFiltered(callbackType, args, new CallbackResult(), filter);
         }
-        public void RunCallbackWithResultFiltered<TArgs>(CallbackType<TArgs> callbackType, TArgs args, CallbackResult result, object filter)
+        public void RunCallbackWithResultFiltered<TArgs>(CallbackType<TArgs> callbackType, TArgs args, CallbackResult result, object? filter)
         {
             if (handlers.TryGetValue(callbackType, out var handler))
             {

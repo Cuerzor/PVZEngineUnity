@@ -50,7 +50,7 @@ namespace PVZEngine.Entities
         {
             return entity.Level.Spawn(id, position, entity, seed, param);
         }
-        public static Entity? Spawn(this Entity entity, EntityDefinition definition, Vector3 position, SpawnParams param)
+        public static Entity? Spawn(this Entity entity, EntityDefinition definition, Vector3 position, SpawnParams? param = null)
         {
             return entity.Level.Spawn(definition, position, entity, param);
         }
