@@ -89,7 +89,7 @@ namespace PVZEngine.Entities
         {
             return entity != null && entity.Exists() && !entity.IsDead;
         }
-        public static bool IsEntitySpawnedByEntity(this ILevelSourceReference reference, LevelEngine level, Func<ILevelSourceReference, EntityDefinition, bool> predicate, bool trackableOnly = true)
+        public static bool IsEntitySpawnedByEntity(this ILevelSourceReference reference, LevelEngine level, Func<EntitySourceReference, EntityDefinition, bool> predicate, bool trackableOnly = true)
         {
             if (reference == null)
                 return false;
@@ -106,7 +106,7 @@ namespace PVZEngine.Entities
                 var definition = level.Content.GetEntityDefinition(entitySource.DefinitionID);
                 if (definition == null)
                     break;
-                if (predicate(source, definition))
+                if (predicate(entitySource, definition))
                 {
                     return true;
                 }
@@ -114,7 +114,7 @@ namespace PVZEngine.Entities
                 {
                     break;
                 }
-                source = source.Parent;
+                source = source.GetParent();
             }
             return false;
         }

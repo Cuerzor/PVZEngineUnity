@@ -26,7 +26,7 @@ namespace PVZEngine.Damages
                 throw new NullReferenceException($"Cannot find the entity with id {seri.entityID} while loading SerializableDamageResult.");
             }
             Entity = ent;
-            Source = seri.source?.ToDeserialized(level);
+            Source = seri.source;
             Effects = new DamageEffectList(seri.effects);
             values = seri.values;
             Fatal = seri.fatal;
@@ -69,7 +69,7 @@ namespace PVZEngine.Damages
     [Serializable]
     public abstract class SerializableDamageResult
     {
-        public ISerializableSourceReference? source;
+        public ILevelSourceReference? source;
         public NamespaceID[] effects;
         public NamespaceID? shellID;
         public long entityID;
@@ -78,7 +78,7 @@ namespace PVZEngine.Damages
 
         protected SerializableDamageResult(DamageResult result)
         {
-            source = result.Source?.ToSerializable();
+            source = result.Source;
             effects = result.Effects.GetEffects();
             fatal = result.Fatal;
             shellID = result.ShellDefinition?.GetID();

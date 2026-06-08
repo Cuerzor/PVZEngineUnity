@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace PVZEngine.Buffs
 {
-    public partial class Buff : IAuraSource, IModifierSource
+    public partial class Buff : IAuraSource, IModifierSource, ILevelSourceTarget
     {
         #region 构造器
         public Buff(LevelEngine level, BuffDefinition definition, long id)
@@ -87,6 +87,12 @@ namespace PVZEngine.Buffs
         public SeedPack? GetSeedPack()
         {
             return Target as SeedPack;
+        }
+        public BuffReference? ToReference()
+        {
+            if (Target == null)
+                return null;
+            return Target.GetBuffReference(this);
         }
         #endregion
 

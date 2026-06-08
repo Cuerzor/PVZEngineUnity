@@ -29,7 +29,7 @@ namespace PVZEngine.Damages
             }
             Entity = ent;
             Effects = new DamageEffectList(seri.effects);
-            Source = seri.source?.ToDeserialized(level);
+            Source = seri.source;
             Damage = seri.damage;
         }
         public bool HasEffect(NamespaceID effect)
@@ -44,14 +44,14 @@ namespace PVZEngine.Damages
     {
         public NamespaceID[] effects;
         public long entityID;
-        public ISerializableSourceReference? source;
+        public ILevelSourceReference? source;
         public DamageResultValues? damage;
 
         public SerializableDeathInfo(DeathInfo deathInfo)
         {
             effects = deathInfo.Effects.GetEffects();
             damage = deathInfo.Damage;
-            source = deathInfo.Source?.ToSerializable();
+            source = deathInfo.Source;
             entityID = deathInfo.Entity.ID;
         }
     }
