@@ -76,7 +76,7 @@ namespace PVZEngine.Modifiers
                 }
 
                 var usingName = modifier.UsingContainerPropertyName;
-                if (modifierCachesUsingProperty.TryGetValue(modifyName, out var usingList))
+                if (modifierCachesUsingProperty.TryGetValue(usingName, out var usingList))
                 {
                     usingList.Remove(item);
                 }
