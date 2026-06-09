@@ -10,7 +10,7 @@ namespace PVZEngine.Modifiers
         public ModifierLibrary()
         {
         }
-        #region ÊôÐÔ
+        #region å±žæ€§
         public IEnumerable<IPropertyKey> GetModifyPropertyKeys()
         {
             return modifierCachesForProperty.Keys;
@@ -39,7 +39,7 @@ namespace PVZEngine.Modifiers
         }
         #endregion
 
-        #region ÐÞ¸ÄÆ÷»º´æ
+        #region ä¿®æ”¹å™¨ç¼“å­˜
         public void AddModifierCaches(IEnumerable<ModifierSourceItem> modifiers)
         {
             foreach (var item in modifiers)
@@ -129,7 +129,7 @@ namespace PVZEngine.Modifiers
         }
         public event Action<IPropertyKey>? OnModifiedPropertyNeedsUpdate;
 
-        #region ÊôÐÔ×Ö¶Î
+        #region å±žæ€§å­—æ®µ
         private Dictionary<IPropertyKey, List<ModifierSourceItem>> modifierCachesForProperty = new Dictionary<IPropertyKey, List<ModifierSourceItem>>(new PropertyKeyComparer());
         private Dictionary<IPropertyKey, List<ModifierSourceItem>> modifierCachesUsingProperty = new Dictionary<IPropertyKey, List<ModifierSourceItem>>(new PropertyKeyComparer());
         private HashSet<PropertyModifier> noStackModifierBuffer = new HashSet<PropertyModifier>();
