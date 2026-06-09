@@ -2,10 +2,13 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-public static class UnityHelper
+namespace Tools.Unity
 {
-    public static bool Exists([NotNullWhen(true)] this UnityEngine.Object? it)
+    public static class UnityHelper
     {
-        return it;
+        public static bool Exists([NotNullWhen(true)] this UnityEngine.Object? it)
+        {
+            return it;
+        }
     }
 }

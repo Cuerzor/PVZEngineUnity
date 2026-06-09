@@ -2,15 +2,18 @@
 
 using System;
 
-public static class ScopeFunctions
+namespace Tools
 {
-    public static T Let<T>(this T it, Action<T> action)
+    public static class ScopeFunctions
     {
-        action(it);
-        return it;
-    }
-    public static TReturn Run<T, TReturn>(this T it, Func<T, TReturn> action)
-    {
-        return action(it);
+        public static T Let<T>(this T it, Action<T> action)
+        {
+            action(it);
+            return it;
+        }
+        public static TReturn Run<T, TReturn>(this T it, Func<T, TReturn> action)
+        {
+            return action(it);
+        }
     }
 }
