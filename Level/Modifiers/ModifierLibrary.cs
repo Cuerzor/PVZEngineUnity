@@ -132,7 +132,7 @@ namespace PVZEngine.Modifiers
         #region ÊôÐÔ×Ö¶Î
         private Dictionary<IPropertyKey, List<ModifierSourceItem>> modifierCachesForProperty = new Dictionary<IPropertyKey, List<ModifierSourceItem>>(new PropertyKeyComparer());
         private Dictionary<IPropertyKey, List<ModifierSourceItem>> modifierCachesUsingProperty = new Dictionary<IPropertyKey, List<ModifierSourceItem>>(new PropertyKeyComparer());
-        private static HashSet<PropertyModifier> noStackModifierBuffer = new HashSet<PropertyModifier>();
+        private HashSet<PropertyModifier> noStackModifierBuffer = new HashSet<PropertyModifier>();
         #endregion
     }
 }
