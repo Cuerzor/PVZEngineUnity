@@ -47,10 +47,6 @@ namespace PVZEngine.Auras
         {
             return updateTimer.MaxFrame > 0;
         }
-        public IBuffTarget? GetFirstTarget()
-        {
-            return buffCaches.FirstOrDefault().Key;
-        }
         public int GetTargetCount()
         {
             return buffCaches.Count;
