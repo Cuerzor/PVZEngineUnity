@@ -28,7 +28,6 @@ namespace PVZEngine.Level
         public NamespaceID? stageDefinitionID;
         public NamespaceID? areaDefinitionID;
         public NamespaceID? difficulty;
-        public SerializableLevelOption? Option;
         public SerializableRNG? levelRandom;
         public SerializableRNG? entityRandom;
         public SerializableRNG? effectRandom;

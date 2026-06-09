@@ -9,6 +9,9 @@ namespace PVZEngine.Level
         public static float GetStartEnergy(this LevelEngine level) => level.GetProperty<float>(START_ENERGY);
         public static void SetStartEnergy(this LevelEngine level, float value) => level.SetProperty(START_ENERGY, value);
         public static void SetStartEnergy(this StageDefinition stage, float value) => stage.SetProperty(START_ENERGY, value);
+        public static readonly PropertyMeta<float> MAX_ENERGY = new PropertyMeta<float>("max_energy", 9990);
+        public static float GetMaxEnergy(this LevelEngine level) => level.GetProperty<float>(MAX_ENERGY);
+        public static void SetMaxEnergy(this LevelEngine level, float value) => level.SetProperty(MAX_ENERGY, value);
 
         public static readonly PropertyMeta<float> RECHARGE_SPEED = new PropertyMeta<float>("rechargeSpeed");
         public static float GetRechargeSpeed(this LevelEngine level) => level.GetProperty<float>(RECHARGE_SPEED);

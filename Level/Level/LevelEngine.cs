@@ -53,9 +53,8 @@ namespace PVZEngine.Level
         #endregion
 
         #region 生命周期
-        public void Init(NamespaceID areaId, NamespaceID stageId, LevelOption option, int seed = 0)
+        public void Init(NamespaceID areaId, NamespaceID stageId, int seed = 0)
         {
-            Option = option;
             InitRandom(seed);
 
             ChangeArea(areaId);
@@ -156,13 +155,6 @@ namespace PVZEngine.Level
         }
         #endregion
 
-        #region 时间
-        public int GetSecondTicks(float second)
-        {
-            return Mathf.CeilToInt(second * TPS);
-        }
-        #endregion
-
         #region 引用计数
         public void IncreaseLevelObjectReference(ILevelObject obj, bool loadLevel = false)
         {
@@ -253,8 +245,6 @@ namespace PVZEngine.Level
         public AreaDefinition AreaDefinition { get; private set; } = null!;
         public NamespaceID Difficulty { get; set; } = null!;
         public bool IsRerun { get; set; }
-        public int TPS => Option.TPS;
-        public LevelOption Option { get; private set; } = null!;
 
         private List<ILevelComponent> levelComponents = new List<ILevelComponent>();
         private Dictionary<ILevelObject, int> levelObjectReferences = new Dictionary<ILevelObject, int>();

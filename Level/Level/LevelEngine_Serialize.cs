@@ -16,7 +16,6 @@ namespace PVZEngine.Level
                 stageDefinitionID = StageDefinition.GetID(),
                 areaDefinitionID = AreaDefinition.GetID(),
                 difficulty = Difficulty,
-                Option = Option.Serialize(),
 
                 components = levelComponents.ToDictionary(c => c.GetID().ToString(), c => c.ToSerializable())
             };
@@ -40,13 +39,11 @@ namespace PVZEngine.Level
                 throw MissingSerializeDataException.Property<SerializableLevel>(nameof(seri.areaDefinitionID));
             if (!NamespaceID.IsValid(seri.difficulty))
                 throw MissingSerializeDataException.Property<SerializableLevel>(nameof(seri.difficulty));
-            if (seri.Option == null) throw MissingSerializeDataException.Property<SerializableLevel>(nameof(seri.Option));
 
             var level = new LevelEngine(provider, triggers, collisionSystem);
             level.ChangeStage(seri.stageDefinitionID);
             level.ChangeArea(seri.areaDefinitionID);
             level.Difficulty = seri.difficulty;
-            level.Option = LevelOption.Deserialize(seri.Option);
             level.InitFromSerializable(seri);
             return level;
         }

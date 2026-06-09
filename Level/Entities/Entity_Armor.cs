@@ -25,7 +25,10 @@ namespace PVZEngine.Entities
         }
         public Armor EquipArmorTo<T>(NamespaceID slot) where T : ArmorDefinition
         {
-            return EquipArmorTo(slot, Level.Content.GetArmorDefinition<T>());
+            var definition = Level.Content.GetArmorDefinition<T>();
+            if (definition == null)
+                throw new MissingDefinitionException($"Trying to create an armor with missing definition {typeof(T).Name}");
+            return EquipArmorTo(slot, definition);
         }
         public Armor EquipArmorTo(NamespaceID slot, NamespaceID id)
         {

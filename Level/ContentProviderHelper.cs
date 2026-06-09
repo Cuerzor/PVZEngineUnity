@@ -18,15 +18,15 @@ namespace PVZEngine
 {
     public static class ContentProviderHelper
     {
-        public static T GetDefinitionByType<T>(this IGameContent provider, string type) where T : Definition
+        public static T? GetDefinitionByType<T>(this IGameContent provider, string type) where T : Definition
         {
             return provider.GetDefinitions<T>(type).FirstOrDefault();
         }
-        public static T GetBuffDefinition<T>(this IGameContent provider) where T : BuffDefinition
+        public static T? GetBuffDefinition<T>(this IGameContent provider) where T : BuffDefinition
         {
             return provider.GetDefinitionByType<T>(EngineDefinitionTypes.BUFF);
         }
-        public static T GetArmorDefinition<T>(this IGameContent provider) where T : ArmorDefinition
+        public static T? GetArmorDefinition<T>(this IGameContent provider) where T : ArmorDefinition
         {
             return provider.GetDefinitionByType<T>(EngineDefinitionTypes.ARMOR);
         }

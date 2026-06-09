@@ -11,7 +11,7 @@ namespace PVZEngine.Level
     {
         public void SetEnergy(float value)
         {
-            Energy = Mathf.Clamp(value, 0, Option.MaxEnergy);
+            Energy = Mathf.Clamp(value, 0, this.GetMaxEnergy());
         }
         public void AddEnergy(float value)
         {

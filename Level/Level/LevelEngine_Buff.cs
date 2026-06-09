@@ -12,6 +12,8 @@ namespace PVZEngine.Level
         public Buff CreateBuff<T>(long buffID) where T : BuffDefinition
         {
             var buffDefinition = Content.GetBuffDefinition<T>();
+            if (buffDefinition == null)
+                throw new MissingDefinitionException($"Trying to create a buff with missing definition {typeof(T).Name}");
             return CreateBuff(buffDefinition, buffID);
         }
         public Buff CreateBuff(NamespaceID id, long buffID)
