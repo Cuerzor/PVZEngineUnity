@@ -26,7 +26,10 @@ namespace PVZEngine.Level
         private void UpdateEntities()
         {
             entityUpdateBuffer.Clear();
-            entityUpdateBuffer.AddRange(entities.OrderBy(e => e.Key).Select(e => e.Value));
+            foreach (var pair in entities)
+            {
+                entityUpdateBuffer.Add(pair.Value);
+            }
             for (int i = 0; i < entityUpdateBuffer.Count; i++)
             {
                 var entity = entityUpdateBuffer[i];
