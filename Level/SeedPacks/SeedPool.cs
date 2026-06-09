@@ -43,7 +43,7 @@ namespace PVZEngine.SeedPacks
         {
             if (!Contains(id))
             {
-                throw new ArgumentException($"Attempting to remove a non-exitsing card {id} from the Card Pool.");
+                throw new ArgumentException($"Attempting to remove a non-existing card {id} from the Card Pool.");
             }
             cardMaxCounts.Remove(id);
             cardCounts.Remove(id);
