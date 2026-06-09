@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace PVZEngine.Entities
 {
-    public partial class Entity
+    public sealed partial class Entity
     {
         #region 物理
 
