@@ -32,16 +32,16 @@ namespace PVZEngine.Level
         }
 
         #region 组件
-        public void AddComponent(ILevelComponent component)
+        public void AddLevelComponent(ILevelComponent component)
         {
             component.PostAttach(this);
             levelComponents.Add(component);
         }
-        public ILevelComponent[] GetComponents()
+        public ILevelComponent[] GetLevelComponents()
         {
             return levelComponents.ToArray();
         }
-        public T? GetComponent<T>() where T : ILevelComponent
+        public T? GetLevelComponent<T>() where T : ILevelComponent
         {
             foreach (var comp in levelComponents)
             {
