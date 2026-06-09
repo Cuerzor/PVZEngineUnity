@@ -112,7 +112,7 @@ namespace PVZEngine.Level
             var definition = Content.GetAreaDefinition(areaId);
             if (definition != null)
             {
-                var oldDefinition = StageDefinition;
+                var oldDefinition = AreaDefinition;
                 if (oldDefinition != null)
                 {
                     modifierLibrary.RemoveModifierCaches(oldDefinition.GetModifiers().Select(m => new ModifierSourceItem(this, m)));
