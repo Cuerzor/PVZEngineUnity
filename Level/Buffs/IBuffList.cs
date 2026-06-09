@@ -40,6 +40,6 @@ namespace PVZEngine.Buffs
 
         void GetAllBuffs(List<Buff> results);
 
-        ModelInsertion[] GetModelInsertions();
+        void GetModelInsertions(List<ModelInsertion> results);
     }
 }

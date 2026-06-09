@@ -68,6 +68,10 @@ namespace PVZEngine.Buffs
         {
             return Definition.GetModelInsertions();
         }
+        public void GetModelInsertionsNonAlloc(List<ModelInsertion> results)
+        {
+            Definition.GetModelInsertionsNonAlloc(results);
+        }
         public IModelInterface? GetInsertedModel(NamespaceID key)
         {
             if (Target is IModeledBuffTarget modeled)

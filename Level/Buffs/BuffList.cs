@@ -262,7 +262,8 @@ namespace PVZEngine.Buffs
             if (buff == null)
                 return false;
 
-            var lastInsertions = GetModelInsertions();
+            List<ModelInsertion> lastInsertions = new List<ModelInsertion>();
+            GetModelInsertions(lastInsertions);
 
             buffs.Add(buff);
             AddModifierCaches(buff);
@@ -291,9 +292,11 @@ namespace PVZEngine.Buffs
                 OnBuffRemoved?.Invoke(buff);
                 buff.OnPropertyChanged -= OnBuffPropertyChangedCallback;
 
-                var insertions = buff.GetModelInsertions();
-                var currentInsertions = GetModelInsertions();
-                foreach (var insertion in insertions)
+                List<ModelInsertion> buffInsertions = new List<ModelInsertion>();
+                List<ModelInsertion> currentInsertions = new List<ModelInsertion>();
+                buff.GetModelInsertionsNonAlloc(buffInsertions);
+                GetModelInsertions(currentInsertions);
+                foreach (var insertion in buffInsertions)
                 {
                     var key = insertion.key;
                     var currentInsertion = currentInsertions.FirstOrDefault(i => i.key == key);
@@ -335,9 +338,12 @@ namespace PVZEngine.Buffs
         #endregion
 
         #region 插入模型
-        public ModelInsertion[] GetModelInsertions()
+        public void GetModelInsertions(List<ModelInsertion> results)
         {
-            return buffs.SelectMany(b => b.GetModelInsertions()).ToArray();
+            foreach (var buff in buffs)
+            {
+                buff.GetModelInsertionsNonAlloc(results);
+            }
         }
         #endregion
 

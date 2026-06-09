@@ -26,6 +26,10 @@ namespace PVZEngine.Buffs
         {
             return modelInsertions.ToArray();
         }
+        public void GetModelInsertionsNonAlloc(List<ModelInsertion> results)
+        {
+            results.AddRange(modelInsertions);
+        }
         public AuraEffectDefinition[] GetAuras()
         {
             return auraDefinitions.ToArray();

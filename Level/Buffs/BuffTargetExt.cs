@@ -62,6 +62,6 @@ namespace PVZEngine.Buffs
         public static void GetBuffs<T>(this IBuffTarget target, List<Buff> results) where T : BuffDefinition => target.Buffs.GetBuffsNonAlloc<T>(results);
         public static Buff? GetBuff(this IBuffTarget target, long id) => target.Buffs.GetBuff(id);
         public static void GetAllBuffs(this IBuffTarget target, List<Buff> results) => target.Buffs.GetAllBuffs(results);
-        public static ModelInsertion[] GetModelInsertions(this IBuffTarget target) => target.Buffs.GetModelInsertions();
+        public static void GetModelInsertions(this IBuffTarget target, List<ModelInsertion> results) => target.Buffs.GetModelInsertions(results);
     }
 }
