@@ -6,11 +6,14 @@ using PVZEngine.Auras;
 namespace PVZEngine.Buffs
 {
     [Serializable]
-    public class SerializableBuff
+    public class SerializableBuff : IHasSerializableAuras
     {
         public long id;
         public NamespaceID? definitionID;
         public SerializablePropertyDictionary? propertyDict;
         public SerializableAuraEffect?[]? auras;
+
+        public SerializableAuraEffect?[]? GetSerializableAuras() => auras;
+        public void SetSerializableAuras(SerializableAuraEffect?[]? auras) => this.auras = auras;
     }
 }

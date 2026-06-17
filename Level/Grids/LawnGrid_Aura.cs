@@ -2,51 +2,45 @@
 
 using System.Linq;
 using PVZEngine.Auras;
+using PVZEngine.Buffs;
 
 namespace PVZEngine.Grids
 {
     public partial class LawnGrid
     {
-        private void CreateAuraEffects()
+        private void InitAuras()
         {
-            var count = Definition.GetAuraCount();
-            for (int i = 0; i < count; i++)
-            {
-                var auraDef = Definition.GetAuraAt(i);
-                auras.Add(Level, new AuraEffect(auraDef, i, this));
-            }
+            auraComponent.Init(this, Definition.GetAuras());
         }
         private void UpdateAuras()
         {
-            auras.Update();
+            auraComponent.Update();
         }
 
         #region 获取
         public AuraEffect GetAuraEffect<T>() where T : AuraEffectDefinition
         {
-            return auras.Get<T>();
+            return auraComponent.List.Get<T>();
         }
         public AuraEffect[] GetAuraEffects()
         {
-            return auras.GetAll();
+            return auraComponent.List.GetAll();
         }
         #endregion
 
         #region 序列化
         private void WriteAurasToSerializable(SerializableGrid seri)
         {
-            seri.auras = auras.GetAll().Select(a => a.ToSerializable()).ToArray();
+            auraComponent.WriteToSerializable(seri);
         }
         private void LoadAurasFromSerializable(SerializableGrid seri)
         {
-            if (seri.auras == null)
-                return;
-            auras.LoadFromSerializable(Level, seri.auras);
+            auraComponent.LoadFromSerializable(seri, Level);
         }
         #endregion
 
         #region 属性字段
-        private AuraEffectList auras = new AuraEffectList();
+        private AuraComponent auraComponent;
         #endregion
     }
 }

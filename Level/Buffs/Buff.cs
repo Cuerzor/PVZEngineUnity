@@ -19,7 +19,7 @@ namespace PVZEngine.Buffs
             ID = id;
             Level = level;
             Definition = definition;
-            CreateAuraEffects();
+            InitAuras();
             Definition.OnCreate(this);
         }
         #endregion
@@ -136,18 +136,11 @@ namespace PVZEngine.Buffs
         #region ILevelObject接口实现
         LevelEngine ILevelObject.GetLevel() { return Level; }
         bool ILevelObject.Exists() => Target != null && Target.Exists();
-        void ILevelObject.OnAddToLevel(LevelEngine level)
-        {
-            auras.PostAdd();
-        }
-        void ILevelObject.OnRemoveFromLevel(LevelEngine level)
-        {
-            auras.PostRemove();
-        }
         IEnumerable<ILevelObject> ILevelObject.GetChildrenObjects()
         {
             yield break;
         }
+        AuraEffectList IAuraSource.AuraEffects => auraComponent.List;
         #endregion
 
         #region 属性字段

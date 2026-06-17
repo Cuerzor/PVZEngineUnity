@@ -33,7 +33,7 @@ namespace PVZEngine.Armors
             Definition = definition;
             Health = this.GetMaxHealth();
 
-            CreateAuraEffects();
+            InitAuras();
         }
         #endregion
 
@@ -99,7 +99,7 @@ namespace PVZEngine.Armors
             armor.Definition = definition;
             armor.Slot = seri.slot;
             armor.Health = seri.health;
-            armor.CreateAuraEffects();
+            armor.InitAuras();
             armor.InitFromSerializable(seri);
             return armor;
         }
@@ -132,14 +132,6 @@ namespace PVZEngine.Armors
         LevelEngine ILevelObject.GetLevel() => Level;
         Entity? ILevelObject.GetEntity() => Owner;
         bool ILevelObject.Exists() => Owner != null && Owner.Exists() && Owner.IsEquippingArmor(this);
-        void ILevelObject.OnAddToLevel(LevelEngine level)
-        {
-            auras.PostAdd();
-        }
-        void ILevelObject.OnRemoveFromLevel(LevelEngine level)
-        {
-            auras.PostRemove();
-        }
         IEnumerable<ILevelObject> ILevelObject.GetChildrenObjects()
         {
             foreach (var buff in buffs)
@@ -147,6 +139,7 @@ namespace PVZEngine.Armors
                 yield return buff;
             }
         }
+        AuraEffectList IAuraSource.AuraEffects => auraComponent.List;
         #endregion
 
         #region 属性字段

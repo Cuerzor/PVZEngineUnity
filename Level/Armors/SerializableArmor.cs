@@ -9,7 +9,7 @@ using PVZEngine.Properties;
 namespace PVZEngine.Armors
 {
     [Serializable]
-    public class SerializableArmor
+    public class SerializableArmor : IHasSerializableAuras
     {
         public NamespaceID? definitionID;
         public float health;
@@ -18,6 +18,9 @@ namespace PVZEngine.Armors
         public long currentBuffID;
         public SerializableBuffList? buffs;
         public SerializableModifiableProperties? properties;
-        public SerializableAuraEffect[]? auras;
+        public SerializableAuraEffect?[]? auras;
+
+        public SerializableAuraEffect?[]? GetSerializableAuras() => auras;
+        public void SetSerializableAuras(SerializableAuraEffect?[]? auras) => this.auras = auras;
     }
 }

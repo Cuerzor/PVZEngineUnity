@@ -23,7 +23,7 @@ namespace PVZEngine.SeedPacks
 
             properties = new ModifiableProperties(this, buffs);
             InitBuffs();
-            CreateAuraEffects();
+            InitAuras();
         }
         #endregion
 
@@ -96,7 +96,7 @@ namespace PVZEngine.SeedPacks
             seri.seedID = Definition.GetID();
             SavePropertiesToSerializable(seri);
             SaveBuffsToSerializable(seri);
-            SaveAurasToSerializable(seri);
+            WriteAurasToSerializable(seri);
         }
         protected void InitFromSerializable(SerializableSeedPack seri)
         {
@@ -120,19 +120,12 @@ namespace PVZEngine.SeedPacks
             {
                 yield return buff;
             }
-        }
-        void ILevelObject.OnAddToLevel(LevelEngine level)
-        {
-            auras.PostAdd();
-        }
-        void ILevelObject.OnRemoveFromLevel(LevelEngine level)
-        {
-            auras.PostRemove();
-        }
-        #endregion
+		}
+		AuraEffectList IAuraSource.AuraEffects => auraComponent.List;
+		#endregion
 
-        #region 事件
-        public event Action<SeedDefinition>? OnDefinitionChanged;
+		#region 事件
+		public event Action<SeedDefinition>? OnDefinitionChanged;
         #endregion
 
         #region 属性字段

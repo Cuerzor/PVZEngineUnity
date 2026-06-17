@@ -16,13 +16,9 @@ namespace PVZEngine.Grids
         {
             return null;
         }
-        public int GetAuraCount()
+        public AuraEffectDefinition[] GetAuras()
         {
-            return auraDefinitions.Count;
-        }
-        public AuraEffectDefinition GetAuraAt(int index)
-        {
-            return auraDefinitions[index];
+            return auraDefinitions.ToArray();
         }
         protected void AddAura(AuraEffectDefinition aura)
         {

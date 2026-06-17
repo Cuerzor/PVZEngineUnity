@@ -8,7 +8,7 @@ using PVZEngine.Properties;
 
 namespace PVZEngine.SeedPacks
 {
-    public abstract class SerializableSeedPack
+    public abstract class SerializableSeedPack : IHasSerializableAuras
     {
         public long id;
         public NamespaceID? seedID;
@@ -16,6 +16,8 @@ namespace PVZEngine.SeedPacks
         public SerializableBuffList? buffs;
         public SerializableModifiableProperties? properties;
         public SerializableAuraEffect?[]? auras;
+        public SerializableAuraEffect?[]? GetSerializableAuras() => auras;
+        public void SetSerializableAuras(SerializableAuraEffect?[]? auras) => this.auras = auras;
     }
     [Serializable]
     public class SerializableClassicSeedPack : SerializableSeedPack

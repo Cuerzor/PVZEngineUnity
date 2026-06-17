@@ -11,7 +11,7 @@ namespace PVZEngine.Level
         LevelEngine GetLevel();
         bool Exists();
         IEnumerable<ILevelObject> GetChildrenObjects();
-        void OnAddToLevel(LevelEngine level);
-        void OnRemoveFromLevel(LevelEngine level);
+        void OnAddToLevel(LevelEngine level) { }
+        void OnRemoveFromLevel(LevelEngine level) { }
     }
 }

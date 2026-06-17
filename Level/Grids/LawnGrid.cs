@@ -23,7 +23,7 @@ namespace PVZEngine.Grids
             Definition = definition;
             properties = new ModifiableProperties(this, buffs);
             InitBuffList();
-            CreateAuraEffects();
+            InitAuras();
         }
         #endregion
 
@@ -73,23 +73,18 @@ namespace PVZEngine.Grids
         LevelEngine ILevelObject.GetLevel() => Level;
         Entity? ILevelObject.GetEntity() => null;
         bool ILevelObject.Exists() => true;
-        void ILevelObject.OnAddToLevel(LevelEngine level)
-        {
-        }
-        void ILevelObject.OnRemoveFromLevel(LevelEngine level)
-        {
-        }
         IEnumerable<ILevelObject> ILevelObject.GetChildrenObjects()
         {
             foreach (var buff in buffs)
             {
                 yield return buff;
             }
-        }
-        #endregion
+		}
+		AuraEffectList IAuraSource.AuraEffects => auraComponent.List;
+		#endregion
 
-        #region 杂项
-        public override string ToString()
+		#region 杂项
+		public override string ToString()
         {
             return $"LawnGrid_{Lane}x{Column}";
         }

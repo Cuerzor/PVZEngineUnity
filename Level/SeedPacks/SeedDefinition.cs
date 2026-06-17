@@ -14,13 +14,9 @@ namespace PVZEngine.SeedPacks
         }
         public virtual void Update(SeedPack seedPack, float rechargeSpeed) { }
         public sealed override string GetDefinitionType() => EngineDefinitionTypes.SEED;
-        public int GetAuraCount()
+        public AuraEffectDefinition[] GetAuras()
         {
-            return auraDefinitions.Count;
-        }
-        public AuraEffectDefinition GetAuraAt(int index)
-        {
-            return auraDefinitions[index];
+            return auraDefinitions.ToArray();
         }
         protected void AddAura(AuraEffectDefinition aura)
         {

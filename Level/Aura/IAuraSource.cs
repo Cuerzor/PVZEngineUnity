@@ -6,5 +6,10 @@ namespace PVZEngine.Auras
 {
     public interface IAuraSource : ILevelObject
     {
+        void ILevelObject.OnAddToLevel(LevelEngine level) => AuraEffects?.PostAdd();
+        void ILevelObject.OnRemoveFromLevel(LevelEngine level) => AuraEffects?.PostRemove();
+
+        // IAuraSource 必须暴露光环列表给接口默认实现使用
+        protected internal AuraEffectList AuraEffects { get; }
     }
 }

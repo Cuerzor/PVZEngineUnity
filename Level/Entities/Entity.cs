@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using PVZEngine.Auras;
 using PVZEngine.Callbacks;
 using PVZEngine.Damages;
 using PVZEngine.Level;
@@ -42,7 +43,7 @@ namespace PVZEngine.Entities
             Type = definition.Type;
             TypeCollisionFlag = EntityCollisionHelper.GetTypeMask(Type);
             // 光环
-            CreateAuraEffects();
+            InitAuras();
 
             RNG = null!;
             DropRNG = null!;
@@ -311,14 +312,7 @@ namespace PVZEngine.Entities
                 yield return buff;
             }
         }
-        void ILevelObject.OnAddToLevel(LevelEngine level)
-        {
-            auras.PostAdd();
-        }
-        void ILevelObject.OnRemoveFromLevel(LevelEngine level)
-        {
-            auras.PostRemove();
-        }
+        AuraEffectList IAuraSource.AuraEffects => auraComponent.List;
         #endregion
 
         #region 事件

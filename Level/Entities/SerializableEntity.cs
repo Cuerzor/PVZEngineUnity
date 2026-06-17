@@ -14,7 +14,7 @@ using UnityEngine;
 namespace PVZEngine.Entities
 {
     [Serializable]
-    public class SerializableEntity
+    public class SerializableEntity : IHasSerializableAuras
     {
         public long id;
         public long time;
@@ -74,6 +74,16 @@ namespace PVZEngine.Entities
         {
             public int grid;
             public NamespaceID[]? layers;
+        }
+
+        public SerializableAuraEffect?[]? GetSerializableAuras()
+        {
+            return auras;
+        }
+
+        public void SetSerializableAuras(SerializableAuraEffect?[]? auras)
+        {
+            this.auras = auras;
         }
     }
 }

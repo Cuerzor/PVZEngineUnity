@@ -10,7 +10,7 @@ using PVZEngine.Properties;
 namespace PVZEngine.Grids
 {
     [Serializable]
-    public class SerializableGrid
+    public class SerializableGrid : IHasSerializableAuras
     {
         public int lane;
         public int column;
@@ -21,5 +21,7 @@ namespace PVZEngine.Grids
         public SerializableModifiableProperties? properties;
         public SerializableBuffList? buffs;
         public SerializableAuraEffect?[]? auras;
+        public SerializableAuraEffect?[]? GetSerializableAuras() => auras;
+        public void SetSerializableAuras(SerializableAuraEffect?[]? auras) => this.auras = auras;
     }
 }
