@@ -289,6 +289,10 @@ namespace PVZEngine.Entities
         {
             return entity.GetProperty<NamespaceID>(PLACEMENT);
         }
+        public static NamespaceID? GetPlacementID(this Entity entity)
+        {
+            return entity.GetProperty<NamespaceID>(PLACEMENT);
+        }
         #endregion
 
         #region 模型ID
