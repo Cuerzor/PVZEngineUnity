@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace Tools.Geometrical
+namespace PVZEngine.Tools.Geometry
 {
     // 立方体（轴对齐）
     public struct AABBCube : IConvexShape

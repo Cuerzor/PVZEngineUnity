@@ -2,7 +2,7 @@
 
 using System;
 using PVZEngine.Buffs;
-using Tools;
+using PVZEngine.Tools.Timing;
 
 namespace PVZEngine.Auras
 {

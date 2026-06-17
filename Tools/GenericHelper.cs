@@ -2,7 +2,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Tools
+namespace PVZEngine.Tools
 {
     public static class GenericHelper
     {

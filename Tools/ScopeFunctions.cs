@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Tools
+namespace PVZEngine.Tools
 {
     public static class ScopeFunctions
     {

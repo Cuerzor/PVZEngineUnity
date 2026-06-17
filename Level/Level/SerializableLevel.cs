@@ -7,7 +7,7 @@ using PVZEngine.Collisions.Level;
 using PVZEngine.Entities;
 using PVZEngine.Grids;
 using PVZEngine.SeedPacks;
-using Tools;
+using PVZEngine.Tools.Random;
 
 namespace PVZEngine.Level
 {

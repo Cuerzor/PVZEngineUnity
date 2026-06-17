@@ -6,7 +6,7 @@ using PVZEngine.Armors;
 using PVZEngine.Base;
 using PVZEngine.Damages;
 using PVZEngine.Level;
-using Tools;
+using PVZEngine.Tools.Random;
 using UnityEngine;
 
 namespace PVZEngine.Entities

@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Tools.Geometrical
+namespace PVZEngine.Tools.Geometry
 {
     // GJK算法实现
     public static class GJK

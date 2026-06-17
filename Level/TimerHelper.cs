@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using PVZEngine.Entities;
-using Tools;
+using PVZEngine.Tools.Timing;
 using UnityEngine;
 
 namespace PVZEngine

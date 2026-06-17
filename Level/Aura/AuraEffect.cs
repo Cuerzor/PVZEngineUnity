@@ -5,7 +5,7 @@ using System.Linq;
 using PVZEngine.Base;
 using PVZEngine.Buffs;
 using PVZEngine.Level;
-using Tools;
+using PVZEngine.Tools.Timing;
 
 namespace PVZEngine.Auras
 {

@@ -4,7 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PVZEngine.SeedPacks;
-using Tools;
+using PVZEngine.Tools;
+using PVZEngine.Tools.Random;
 using UnityEngine;
 
 namespace PVZEngine.Level

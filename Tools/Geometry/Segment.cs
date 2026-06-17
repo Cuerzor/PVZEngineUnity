@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace Tools.Geometrical
+namespace PVZEngine.Tools.Geometry
 {
     // 线段
     public struct Segment : IConvexShape

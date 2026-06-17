@@ -7,7 +7,7 @@ using PVZEngine.Auras;
 using PVZEngine.Buffs;
 using PVZEngine.Damages;
 using PVZEngine.Level;
-using Tools;
+using PVZEngine.Tools.Random;
 using UnityEngine;
 
 namespace PVZEngine.Entities
