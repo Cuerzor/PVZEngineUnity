@@ -2,10 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using PVZEngine.Level;
 using PVZEngine.Modifiers;
 using PVZEngine.Tools;
 
-namespace PVZEngine.Level
+namespace PVZEngine.Properties
 {
     public class ModifiableProperties
     {
@@ -22,10 +23,10 @@ namespace PVZEngine.Level
         #region 设置属性
         public void SetProperty<T>(PropertyKey<T> name, T? value)
         {
-            var beforeValue = GetProperty<T>(name);
+            var beforeValue = GetProperty(name);
             if (properties.SetProperty(name, value))
             {
-                UpdateModifiedProperty<T>(name, beforeValue);
+                UpdateModifiedProperty(name, beforeValue);
             }
         }
         public void SetPropertyObject(IPropertyKey name, object? value)
@@ -83,7 +84,7 @@ namespace PVZEngine.Level
         {
             if (TryGetPropertyObject(name, out var obj, ignoreBuffs))
             {
-                if (obj.TryToGeneric<T>(out result))
+                if (obj.TryToGeneric(out result))
                 {
                     return true;
                 }
@@ -93,7 +94,7 @@ namespace PVZEngine.Level
         }
         public T? GetProperty<T>(PropertyKey<T> name, bool ignoreBuffs = false)
         {
-            if (TryGetProperty<T>(name, out var result, ignoreBuffs))
+            if (TryGetProperty(name, out var result, ignoreBuffs))
             {
                 return result;
             }
@@ -164,7 +165,7 @@ namespace PVZEngine.Level
         }
         public void UpdateModifiedProperty<T>(PropertyKey<T> name, T? beforeValue, bool triggersEvaluation = true)
         {
-            var baseValue = GetProperty<T>(name, ignoreBuffs: true);
+            var baseValue = GetProperty(name, ignoreBuffs: true);
 
             modifierContainerBuffer.Clear();
             foreach (var provider in Providers)
@@ -175,7 +176,7 @@ namespace PVZEngine.Level
             var value = baseValue;
             if (modifierContainerBuffer.Count > 0)
             {
-                value = modifierContainerBuffer.CalculateProperty<T>(baseValue);
+                value = modifierContainerBuffer.CalculateProperty(baseValue);
                 modifiedProperties.SetProperty(name, value);
             }
             else

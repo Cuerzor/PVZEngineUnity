@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
+using PVZEngine.Properties;
 using PVZEngine.Tools.Serialization.Bson;
 
-namespace PVZEngine.Level.BsonSerializers
+namespace PVZEngine.Level.Serialization.Bson
 {
     public class PropertyBlockSerializer : WrappedSerializerBase<SerializablePropertyBlock>
     {

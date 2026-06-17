@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace PVZEngine
+namespace PVZEngine.Timing
 {
     public static class Ticks
     {

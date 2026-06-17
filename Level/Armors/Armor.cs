@@ -3,12 +3,13 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using PVZEngine.Auras;
-using PVZEngine.Buffs;
 using PVZEngine.Collisions;
 using PVZEngine.Damages;
 using PVZEngine.Entities;
 using PVZEngine.Level;
 using PVZEngine.Models;
+using PVZEngine.Modifiers;
+using PVZEngine.Properties;
 using UnityEngine;
 
 namespace PVZEngine.Armors

@@ -1,8 +1,8 @@
 #nullable enable
 
-using PVZEngine.Models;
+using PVZEngine.Buffs;
 
-namespace PVZEngine.Buffs
+namespace PVZEngine.Models
 {
     public interface IModeledBuffTarget : IHasModel, IBuffTarget
     {

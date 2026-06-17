@@ -6,7 +6,7 @@ using PVZEngine.Entities;
 using PVZEngine.Tools.Timing;
 using UnityEngine;
 
-namespace PVZEngine
+namespace PVZEngine.Timing
 {
     public static class TimerHelper
     {
@@ -30,7 +30,7 @@ namespace PVZEngine
         {
             var frames = seconds * Ticks.GetTPS();
             timer.Frame = Mathf.FloorToInt(frames);
-            timer.FrameFraction = Mathf.FloorToInt((frames % 1) * timer.Precision);
+            timer.FrameFraction = Mathf.FloorToInt(frames % 1 * timer.Precision);
         }
         public static void ResetSeconds(this FrameTimer timer, float seconds)
         {

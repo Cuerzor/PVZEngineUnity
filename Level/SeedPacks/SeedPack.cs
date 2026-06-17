@@ -3,9 +3,11 @@
 using System;
 using System.Collections.Generic;
 using PVZEngine.Auras;
-using PVZEngine.Buffs;
 using PVZEngine.Entities;
 using PVZEngine.Level;
+using PVZEngine.Models;
+using PVZEngine.Modifiers;
+using PVZEngine.Properties;
 using UnityEngine;
 
 namespace PVZEngine.SeedPacks

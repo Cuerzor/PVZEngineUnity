@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using PVZEngine.Armors;
 using PVZEngine.Auras;
 using PVZEngine.Callbacks;
+using PVZEngine.Collisions;
 using PVZEngine.Damages;
 using PVZEngine.Definitions;
 using PVZEngine.Modifiers;

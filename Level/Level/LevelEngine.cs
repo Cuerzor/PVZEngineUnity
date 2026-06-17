@@ -8,6 +8,7 @@ using PVZEngine.Callbacks;
 using PVZEngine.Collisions.Level;
 using PVZEngine.Entities;
 using PVZEngine.Modifiers;
+using PVZEngine.Properties;
 using UnityEngine;
 
 namespace PVZEngine.Level

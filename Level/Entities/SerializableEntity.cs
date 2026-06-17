@@ -7,6 +7,7 @@ using PVZEngine.Auras;
 using PVZEngine.Buffs;
 using PVZEngine.Damages;
 using PVZEngine.Level;
+using PVZEngine.Properties;
 using PVZEngine.Tools.Random;
 using UnityEngine;
 

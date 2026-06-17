@@ -6,6 +6,7 @@ using PVZEngine.Callbacks;
 using PVZEngine.Damages;
 using PVZEngine.Level;
 using PVZEngine.Modifiers;
+using PVZEngine.Properties;
 using PVZEngine.Tools.Random;
 using UnityEngine;
 

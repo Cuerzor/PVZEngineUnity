@@ -7,6 +7,7 @@ using PVZEngine.Armors;
 using PVZEngine.Callbacks;
 using PVZEngine.Collisions;
 using PVZEngine.Damages;
+using PVZEngine.Level;
 
 namespace PVZEngine.Entities
 {

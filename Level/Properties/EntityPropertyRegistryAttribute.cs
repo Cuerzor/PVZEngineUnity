@@ -2,7 +2,7 @@
 
 using System;
 
-namespace PVZEngine
+namespace PVZEngine.Properties
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class EntityPropertyRegistryAttribute : PropertyRegistryAttribute

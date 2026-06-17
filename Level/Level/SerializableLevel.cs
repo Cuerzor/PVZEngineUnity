@@ -6,6 +6,7 @@ using PVZEngine.Buffs;
 using PVZEngine.Collisions.Level;
 using PVZEngine.Entities;
 using PVZEngine.Grids;
+using PVZEngine.Properties;
 using PVZEngine.SeedPacks;
 using PVZEngine.Tools.Random;
 

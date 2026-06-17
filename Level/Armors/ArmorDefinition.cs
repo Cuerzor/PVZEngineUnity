@@ -6,6 +6,8 @@ using PVZEngine.Auras;
 using PVZEngine.Collisions;
 using PVZEngine.Definitions;
 using PVZEngine.Entities;
+using PVZEngine.Level;
+using PVZEngine.Models;
 
 namespace PVZEngine.Armors
 {

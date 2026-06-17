@@ -4,6 +4,7 @@ using System;
 using PVZEngine.Auras;
 using PVZEngine.Buffs;
 using PVZEngine.Level;
+using PVZEngine.Properties;
 
 namespace PVZEngine.Armors
 {

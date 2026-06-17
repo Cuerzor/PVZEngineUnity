@@ -7,13 +7,12 @@ using PVZEngine.Definitions;
 using PVZEngine.Difficulties;
 using PVZEngine.Entities;
 using PVZEngine.Grids;
-using PVZEngine.Level;
 using PVZEngine.Placements;
 using PVZEngine.SeedPacks;
 using PVZEngine.Shells;
 using PVZEngine.Spawns;
 
-namespace PVZEngine
+namespace PVZEngine.Level
 {
     public static class ContentProviderHelper
     {
