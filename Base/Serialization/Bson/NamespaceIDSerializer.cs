@@ -4,7 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using PVZEngine.Tools.Serialization.Bson;
 
-namespace PVZEngine.Serialization.Bson
+namespace PVZEngine.Base.Serialization.Bson
 {
     public class NamespaceIDSerializer : WrappedSerializerBase<NamespaceID>
     {
