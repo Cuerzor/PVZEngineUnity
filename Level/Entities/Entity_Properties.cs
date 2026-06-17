@@ -85,7 +85,7 @@ namespace PVZEngine.Entities
         #endregion
 
         #region ÊôÐÔ×Ö¶Î
-        private PropertyBlock properties;
+        private ModifiableProperties properties;
         #endregion
     }
 }

@@ -9,15 +9,15 @@ using PVZEngine.Tools.Serialization.Bson;
 
 namespace PVZEngine.Level.Serialization.Bson
 {
-    public class PropertyBlockSerializer : WrappedSerializerBase<SerializablePropertyBlock>
+    public class PropertyBlockSerializer : WrappedSerializerBase<SerializableModifiableProperties>
     {
-        protected override void SerializeValue(BsonSerializationContext context, BsonSerializationArgs args, SerializablePropertyBlock value)
+        protected override void SerializeValue(BsonSerializationContext context, BsonSerializationArgs args, SerializableModifiableProperties value)
         {
             var writer = context.Writer;
             writer.WriteStartDocument();
-            if (value.modifiable?.properties != null)
+            if (value.properties != null)
             {
-                foreach (var pair in value.modifiable.properties.properties)
+                foreach (var pair in value.properties.properties)
                 {
                     var key = pair.Key;
                     writer.WriteName(key);
@@ -26,7 +26,7 @@ namespace PVZEngine.Level.Serialization.Bson
             }
             writer.WriteEndDocument();
         }
-        protected override SerializablePropertyBlock DeserializeClassValue(BsonDeserializationContext context, BsonDeserializationArgs args)
+        protected override SerializableModifiableProperties DeserializeClassValue(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
             var properties = new Dictionary<string, object?>();
 
@@ -44,13 +44,9 @@ namespace PVZEngine.Level.Serialization.Bson
                         properties.Add(key, value);
                     }
                     reader.ReadEndDocument();
-                    var modifiable = new SerializableModifiableProperties()
+                    return new SerializableModifiableProperties()
                     {
                         properties = new SerializablePropertyDictionary(properties)
-                    };
-                    return new SerializablePropertyBlock()
-                    {
-                        modifiable = modifiable
                     };
 
                 default:

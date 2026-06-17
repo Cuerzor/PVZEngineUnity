@@ -23,7 +23,7 @@ namespace PVZEngine.Armors
             Slot = null!;
             Definition = null!;
 
-            properties = new PropertyBlock(this, buffs);
+            properties = new ModifiableProperties(this, buffs);
             InitBuffEvents();
         }
         public Armor(Entity owner, NamespaceID slot, ArmorDefinition definition) : this()

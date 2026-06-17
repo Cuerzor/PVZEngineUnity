@@ -21,7 +21,7 @@ namespace PVZEngine.Level
             Content = contentProvider;
             Triggers = triggers;
             InitBuffList();
-            properties = new PropertyBlock(this, this, buffs);
+            properties = new ModifiableProperties(this, this, buffs);
             modifierLibrary = new ModifierLibrary();
             modifierLibrary.OnModifiedPropertyNeedsUpdate += OnModifiedPropertyNeedsUpdateCallback;
             this.collisionSystem = collisionSystem;

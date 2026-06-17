@@ -61,7 +61,7 @@ namespace PVZEngine.Armors
         }
 
         #region 属性字段
-        private PropertyBlock properties;
+        private ModifiableProperties properties;
         #endregion
     }
 }

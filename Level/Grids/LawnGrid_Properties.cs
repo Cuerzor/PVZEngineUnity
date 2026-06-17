@@ -50,7 +50,7 @@ namespace PVZEngine.Grids
         #endregion
 
         #region 属性
-        private PropertyBlock properties;
+        private ModifiableProperties properties;
         #endregion 属性
     }
 }

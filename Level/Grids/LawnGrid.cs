@@ -21,7 +21,7 @@ namespace PVZEngine.Grids
             Lane = lane;
             Column = column;
             Definition = definition;
-            properties = new PropertyBlock(this, buffs);
+            properties = new ModifiableProperties(this, buffs);
             InitBuffList();
             CreateAuraEffects();
         }

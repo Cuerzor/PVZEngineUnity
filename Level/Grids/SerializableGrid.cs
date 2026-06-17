@@ -18,7 +18,7 @@ namespace PVZEngine.Grids
         [Obsolete]
         public Dictionary<string, long>? layerEntities;
         public Dictionary<string, long[]>? layerEntityLists;
-        public SerializablePropertyBlock? properties;
+        public SerializableModifiableProperties? properties;
         public SerializableBuffList? buffs;
         public SerializableAuraEffect?[]? auras;
     }

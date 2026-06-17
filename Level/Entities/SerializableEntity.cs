@@ -59,7 +59,7 @@ namespace PVZEngine.Entities
         public bool isOnGround;
         [Obsolete]
         public long currentBuffID;
-        public SerializablePropertyBlock? properties;
+        public SerializableModifiableProperties? properties;
         public SerializableBuffList? buffs;
         public List<long>? children;
         [Obsolete]

@@ -38,7 +38,7 @@ namespace PVZEngine.Level
         public SerializableRNG? debugRandom;
         public SerializableRNG? miscRandom;
 
-        public SerializablePropertyBlock? properties;
+        public SerializableModifiableProperties? properties;
 
         public SerializableGrid[]? grids;
         public SerializableClassicSeedPack?[]? seedPacks;

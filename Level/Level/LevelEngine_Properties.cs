@@ -65,7 +65,7 @@ namespace PVZEngine.Level
         #endregion
 
         #region 属性字段
-        private PropertyBlock properties;
+        private ModifiableProperties properties;
         #endregion 保存属性
     }
 }

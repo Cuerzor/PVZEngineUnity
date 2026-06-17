@@ -21,7 +21,7 @@ namespace PVZEngine.SeedPacks
             Level = level;
             Definition = definition;
 
-            properties = new PropertyBlock(this, buffs);
+            properties = new ModifiableProperties(this, buffs);
             InitBuffs();
             CreateAuraEffects();
         }

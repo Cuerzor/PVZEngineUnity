@@ -17,7 +17,7 @@ namespace PVZEngine.Armors
         [Obsolete]
         public long currentBuffID;
         public SerializableBuffList? buffs;
-        public SerializablePropertyBlock? properties;
+        public SerializableModifiableProperties? properties;
         public SerializableAuraEffect[]? auras;
     }
 }

@@ -27,7 +27,7 @@ namespace PVZEngine.Entities
         private Entity(LevelEngine level, long id, EntityDefinition definition, ILevelSourceReference? spawnerSource)
         {
             Cache = new EntityCache();
-            properties = new PropertyBlock(this, this, buffs);
+            properties = new ModifiableProperties(this, this, buffs);
             modifierLibrary = new ModifierLibrary();
             modifierLibrary.OnModifiedPropertyNeedsUpdate += OnModifiedPropertyNeedsUpdateCallback;
             InitBuffEvents();
