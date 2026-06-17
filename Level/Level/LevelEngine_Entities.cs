@@ -29,6 +29,7 @@ namespace PVZEngine.Level
             {
                 entityUpdateBuffer.Add(pair.Value);
             }
+            entityUpdateBuffer.Sort(entityComparer);
             for (int i = 0; i < entityUpdateBuffer.Count; i++)
             {
                 var entity = entityUpdateBuffer[i];
@@ -173,27 +174,45 @@ namespace PVZEngine.Level
         #endregion
 
         #region 查询实体列表
-        public IEnumerable<Entity> EnumerateEntities()
+        public Entity[] FindEntities(Func<Entity, bool> predicate)
+        {
+            var list = new List<Entity>();
+            foreach (var pair in entities)
+            {
+                var entity = pair.Value;
+                if (predicate(entity))
+                {
+                    list.Add(entity);
+                }
+            }
+            list.Sort(entityComparer);
+            return list.ToArray();
+        }
+        public void FindEntitiesNonAlloc(Func<Entity, bool> predicate, List<Entity> results)
         {
             foreach (var pair in entities)
             {
-                yield return pair.Value;
+                if (predicate(pair.Value))
+                {
+                    results.Add(pair.Value);
+                }
             }
+            results.Sort(entityComparer);
         }
         public Entity[] GetEntities(params int[] filterTypes)
         {
             if (filterTypes == null || filterTypes.Length <= 0)
-                return entities.Values.ToArray();
+            {
+                var array = entities.Values.ToArray();
+                Array.Sort(array, entityComparer);
+                return array;
+            }
             return FindEntities(predicate);
 
             bool predicate(Entity e)
             {
                 return filterTypes.Contains(e.Type);
             }
-        }
-        public Entity[] FindEntities(Func<Entity, bool> predicate)
-        {
-            return entities.Values.Where(predicate).ToArray();
         }
         public Entity[] FindEntities(EntityDefinition def)
         {
@@ -215,16 +234,6 @@ namespace PVZEngine.Level
             bool predicate(Entity e)
             {
                 return e.IsEntityOf(id);
-            }
-        }
-        public void FindEntitiesNonAlloc(Func<Entity, bool> predicate, List<Entity> results)
-        {
-            foreach (var pair in entities)
-            {
-                if (predicate(pair.Value))
-                {
-                    results.Add(pair.Value);
-                }
             }
         }
         #endregion
@@ -293,13 +302,22 @@ namespace PVZEngine.Level
         }
         public Entity? FindFirstEntity(Func<Entity, bool> predicate)
         {
+            Entity? leastIDOne = null;
+            long leastID = -1;
             foreach (var pair in entities)
             {
+                var id = pair.Key;
                 var entity = pair.Value;
                 if (predicate(entity))
-                    return entity;
+                {
+                    if (leastIDOne == null || id < leastID)
+                    {
+                        leastIDOne = entity;
+                        leastID = id;
+                    }
+                }
             }
-            return null;
+            return leastIDOne;
         }
         public Entity? FindFirstEntityWithTheLeast<TKey>(Func<Entity, bool> predicate, Func<Entity, TKey> keySelector)
         {
@@ -346,12 +364,7 @@ namespace PVZEngine.Level
         }
         public bool EntityExists(long id)
         {
-            return EntityExists(predicate);
-
-            bool predicate(Entity e)
-            {
-                return e.ID == id;
-            }
+            return entities.ContainsKey(id);
         }
         public bool EntityExists(EntityDefinition def)
         {
@@ -381,8 +394,16 @@ namespace PVZEngine.Level
         #endregion
 
         private long currentEntityID = 1;
-        private SortedDictionary<long, Entity> entities = new SortedDictionary<long, Entity>();
+        private Dictionary<long, Entity> entities = new Dictionary<long, Entity>();
         private Dictionary<long, Entity> entityTrash = new Dictionary<long, Entity>();
         private List<Entity> entityUpdateBuffer = new List<Entity>(2048);
+        private EntityComparer entityComparer = new EntityComparer();
+    }
+    public class EntityComparer : IComparer<Entity>
+    {
+        public int Compare(Entity x, Entity y)
+        {
+            return x.ID.CompareTo(y.ID);
+        }
     }
 }
