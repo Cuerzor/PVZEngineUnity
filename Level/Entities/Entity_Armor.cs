@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PVZEngine.Armors;
-using PVZEngine.Base;
 using PVZEngine.Callbacks;
 using PVZEngine.Collisions;
 using PVZEngine.Damages;

@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using PVZEngine.Base;
 
 namespace PVZEngine
 {

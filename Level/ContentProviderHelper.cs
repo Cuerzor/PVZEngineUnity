@@ -2,7 +2,6 @@
 
 using System.Linq;
 using PVZEngine.Armors;
-using PVZEngine.Base;
 using PVZEngine.Buffs;
 using PVZEngine.Definitions;
 using PVZEngine.Difficulties;

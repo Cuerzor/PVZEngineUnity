@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PVZEngine.Base;
 using PVZEngine.Definitions;
 using PVZEngine.Entities;
 using PVZEngine.Modifiers;

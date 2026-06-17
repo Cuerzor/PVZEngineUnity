@@ -3,7 +3,7 @@
 using System;
 using UnityEngine;
 
-namespace PVZEngine.Base
+namespace PVZEngine
 {
     [Serializable]
     public class NamespaceIDReference

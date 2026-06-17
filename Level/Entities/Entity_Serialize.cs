@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using PVZEngine.Armors;
-using PVZEngine.Base;
 using PVZEngine.Damages;
 using PVZEngine.Level;
 using PVZEngine.Tools.Random;

@@ -3,7 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PVZEngine.Base
+namespace PVZEngine.DataStructures
 {
     public class UpdateList<TKey> : IEnumerable<TKey>
     {

@@ -2,7 +2,7 @@
 
 using System;
 
-namespace PVZEngine.Base
+namespace PVZEngine
 {
     public class MissingSerializeDataException : Exception
     {

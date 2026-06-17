@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PVZEngine.Base
+namespace PVZEngine.DataStructures
 {
     public class ListUpdater<T>
     {
