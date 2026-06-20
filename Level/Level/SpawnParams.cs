@@ -18,6 +18,10 @@ namespace PVZEngine.Level
             {
                 entity.SetParent(EntityParent);
             }
+            if (EntityTarget != null)
+            {
+                entity.Target = EntityTarget;
+            }
             entity.Velocity = EntityVelocity;
             foreach (var property in properties.GetPropertyNames())
             {
@@ -27,6 +31,7 @@ namespace PVZEngine.Level
         }
         public event Action<Entity>? OnApply;
         public Entity? EntityParent { get; set; }
+        public Entity? EntityTarget { get; set; }
         public Vector3 EntityVelocity { get; set; }
         private PropertyDictionary properties = new PropertyDictionary();
     }
