@@ -35,45 +35,46 @@ namespace PVZEngine.Collisions.Level
             foreach (var collider1 in colliderBuffer)
             {
                 var ent1 = collider1.Entity;
-                if (ent1.IsCollisionCheckDisabled())
-                    continue;
                 if (ent1.Cache.CollisionInterval > 1 && !ent1.IsTimeInterval(ent1.Cache.CollisionInterval))
                     continue;
-                int maskHostile = ent1.GetCollisionMaskHostile();
-                int maskFriendly = ent1.GetCollisionMaskFriendly();
-                var maskTotal = maskHostile | maskFriendly;
-                int ent1Faction = ent1.Cache.Faction;
 
-
-                bool ColliderFilter(BuiltinCollisionCollider collider2)
+                if (!ent1.IsCollisionCheckDisabled())
                 {
-                    if (collider1 == collider2)
-                        return false;
-                    var ent2 = collider2.Entity;
-                    if (ent1 == ent2)
-                        return false;
-                    if (ent2.IsCollisionCheckDisabled())
-                        return false;
-                    if (!EntityCollisionHelper.CanCollideFaction(maskHostile, maskFriendly, ent1Faction, ent2))
-                        return false;
-                    return true;
-                }
+                    int maskHostile = ent1.GetCollisionMaskHostile();
+                    int maskFriendly = ent1.GetCollisionMaskFriendly();
+                    var maskTotal = maskHostile | maskFriendly;
+                    int ent1Faction = ent1.Cache.Faction;
+
+
+                    bool ColliderFilter(BuiltinCollisionCollider collider2)
+                    {
+                        if (collider1 == collider2)
+                            return false;
+                        var ent2 = collider2.Entity;
+                        if (ent1 == ent2)
+                            return false;
+                        if (ent2.IsCollisionCheckDisabled())
+                            return false;
+                        if (!EntityCollisionHelper.CanCollideFaction(maskHostile, maskFriendly, ent1Faction, ent2))
+                            return false;
+                        return true;
+                    }
                 ;
 
-                var rect1 = collider1.GetCollisionRect();
+                    var rect1 = collider1.GetCollisionRect();
 
-                var sorter = colliderComparer;
-                sorter.SetCollider(collider1);
+                    var sorter = colliderComparer;
+                    sorter.SetCollider(collider1);
 
-                collisionBuffer.Clear();
-                FindCollidersRange(maskTotal, rect1, collisionBuffer, 0, ColliderFilter);
-                collisionBuffer.Sort(sorter);
+                    collisionBuffer.Clear();
+                    FindCollidersRange(maskTotal, rect1, collisionBuffer, 0, ColliderFilter);
+                    collisionBuffer.Sort(sorter);
 
-                foreach (var collider2 in collisionBuffer)
-                {
-                    collider1.DoCollision(collider2, Vector3.zero);
+                    foreach (var collider2 in collisionBuffer)
+                    {
+                        collider1.DoCollision(collider2, Vector3.zero);
+                    }
                 }
-
                 collider1.ExitCollision();
             }
         }
