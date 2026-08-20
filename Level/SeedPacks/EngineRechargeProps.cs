@@ -17,10 +17,10 @@ namespace PVZEngine.SeedPacks
         {
             return def.GetProperty<int>(MAX_RECHARGE);
         }
-        public static readonly PropertyMeta<int> QUALITY = new PropertyMeta<int>("quality");
-        public static int GetQuality(this RechargeDefinition def)
+        public static readonly PropertyMeta<float> QUALITY = new PropertyMeta<float>("quality");
+        public static float GetQuality(this RechargeDefinition def)
         {
-            return def.GetProperty<int>(QUALITY);
+            return def.GetProperty<float>(QUALITY);
         }
         public static readonly PropertyMeta<string> NAME = new PropertyMeta<string>("name");
         public static string? GetName(this RechargeDefinition def)
