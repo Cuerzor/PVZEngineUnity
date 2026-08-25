@@ -20,6 +20,10 @@ namespace PVZEngine.Entities
         {
             return auraComponent.List.Get<T>();
         }
+        public AuraEffect[] GetAuraEffects<T>() where T : AuraEffectDefinition
+        {
+            return auraComponent.List.GetAll<T>();
+        }
         public AuraEffect[] GetAuraEffects()
         {
             return auraComponent.List.GetAll();

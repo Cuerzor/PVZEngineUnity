@@ -30,13 +30,21 @@ namespace PVZEngine.Auras
                 auraEffect.PostRemove();
             }
         }
-        public AuraEffect Get<T>() where T : AuraEffectDefinition
+        public AuraEffect Get<T>()
         {
             return auraEffects.FirstOrDefault(a => a.Definition is T);
         }
         public AuraEffect Get(AuraEffectDefinition auraDef)
         {
             return auraEffects.FirstOrDefault(a => a.Definition == auraDef);
+        }
+        public AuraEffect[] GetAll<T>()
+        {
+            return auraEffects.Where(a => a.Definition is T).ToArray();
+        }
+        public AuraEffect[] GetAll(AuraEffectDefinition auraDef)
+        {
+            return auraEffects.Where(a => a.Definition == auraDef).ToArray();
         }
         public AuraEffect[] GetAll()
         {
