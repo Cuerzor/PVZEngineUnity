@@ -8,5 +8,7 @@ namespace PVZEngine.Placements
     public abstract class SpawnCondition
     {
         public abstract NamespaceID? GetSpawnError(PlacementDefinition placement, LawnGrid grid, EntityDefinition entity);
+        public abstract NamespaceID? GetTerrainSpawnErrorOfGrid(PlacementDefinition placement, LawnGrid grid, EntityDefinition entity);
+        public abstract NamespaceID? GetEntitySpawnErrorOfGrid(PlacementDefinition placement, LawnGrid grid, EntityDefinition entity);
     }
 }

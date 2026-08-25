@@ -32,12 +32,20 @@ namespace PVZEngine.Placements
         }
         public bool ValidateSpawn(LawnGrid grid, EntityDefinition entity)
         {
-            var e = spawnCondition.GetSpawnError(this, grid, entity);
+            var e = GetSpawnError(grid, entity);
             return !NamespaceID.IsValid(e);
         }
         public NamespaceID? GetSpawnError(LawnGrid grid, EntityDefinition entity)
         {
             return spawnCondition.GetSpawnError(this, grid, entity);
+        }
+        public NamespaceID? GetTerrainSpawnErrorOfGrid(LawnGrid grid, EntityDefinition entity)
+        {
+            return spawnCondition.GetTerrainSpawnErrorOfGrid(this, grid, entity);
+        }
+        public NamespaceID? GetEntitySpawnErrorOfGrid(LawnGrid grid, EntityDefinition entity)
+        {
+            return spawnCondition.GetEntitySpawnErrorOfGrid(this, grid, entity);
         }
         public NamespaceID? GetPlaceError(LawnGrid grid, EntityDefinition entity)
         {
