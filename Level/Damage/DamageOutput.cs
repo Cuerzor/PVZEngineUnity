@@ -13,9 +13,9 @@ namespace PVZEngine.Damages
         }
 
         public Entity Entity { get; set; }
-        public BodyDamageResult? BodyResult { get; set; }
-        public ArmorDamageResult? ArmorResult { get; set; }
-        public ArmorDamageResult? ShieldResult { get; set; }
+        public BodyDamageOutputPart? BodyResult { get; set; }
+        public ArmorDamageOutputPart? ArmorResult { get; set; }
+        public ArmorDamageOutputPart? ShieldResult { get; set; }
         public NamespaceID? ShieldTarget { get; set; }
         public bool HasDamageAmount()
         {
@@ -29,13 +29,13 @@ namespace PVZEngine.Damages
         }
         public bool HasAnyNotFatal()
         {
-            if (ArmorResult != null && ArmorResult.Fatal)
-                return false;
-            if (BodyResult != null && BodyResult.Fatal)
-                return false;
-            if (ShieldResult != null && ShieldResult.Fatal)
-                return false;
-            return true;
+            if (ArmorResult != null && !ArmorResult.Fatal)
+                return true;
+            if (BodyResult != null && !BodyResult.Fatal)
+                return true;
+            if (ShieldResult != null && !ShieldResult.Fatal)
+                return true;
+            return false;
         }
         public bool HasAnyFatal()
         {
@@ -58,20 +58,41 @@ namespace PVZEngine.Damages
                 sum += ShieldResult.Amount;
             return sum;
         }
-        public float GetTotalSpendAmount()
+        public float GetTotalEffectiveAmount()
         {
             float sum = 0;
             if (ArmorResult != null)
-                sum += ArmorResult.SpendAmount;
+                sum += ArmorResult.EffectiveAmount;
             if (BodyResult != null)
-                sum += BodyResult.SpendAmount;
+                sum += BodyResult.EffectiveAmount;
             if (ShieldResult != null)
-                sum += ShieldResult.SpendAmount;
+                sum += ShieldResult.EffectiveAmount;
             return sum;
         }
-        public DamageResult[] GetAllResults()
+        public float GetTotalOverflowAmount()
         {
-            List<DamageResult> results = new List<DamageResult>();
+            float sum = 0;
+            if (ArmorResult != null)
+                sum += ArmorResult.OverflowAmount;
+            if (BodyResult != null)
+                sum += BodyResult.OverflowAmount;
+            if (ShieldResult != null)
+                sum += ShieldResult.OverflowAmount;
+            return sum;
+        }
+        public float GetFinalOverflowAmount()
+        {
+            if (BodyResult != null)
+                return BodyResult.OverflowAmount;
+            if (ArmorResult != null)
+                return ArmorResult.OverflowAmount;
+            if (ShieldResult != null)
+                return ShieldResult.OverflowAmount;
+            return 0;
+        }
+        public DamageOutputPart[] GetAllResults()
+        {
+            List<DamageOutputPart> results = new List<DamageOutputPart>();
             if (ArmorResult != null) results.Add(ArmorResult);
             if (BodyResult != null) results.Add(BodyResult);
             if (ShieldResult != null) results.Add(ShieldResult);

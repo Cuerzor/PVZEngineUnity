@@ -122,15 +122,15 @@ namespace PVZEngine.Entities
         #endregion
 
         #region 死亡
-        public void Die(Entity? source = null, DamageResultValues? damage = null)
+        public void Die(Entity? source = null, DamageOutputPartValues? damage = null)
         {
             Die(new DamageEffectList(), source, damage);
         }
-        public void Die(DamageEffectList effects, Entity? source = null, DamageResultValues? damage = null)
+        public void Die(DamageEffectList effects, Entity? source = null, DamageOutputPartValues? damage = null)
         {
             Die(effects, source == null ? null : new EntitySourceReference(source), damage);
         }
-        public void Die(DamageEffectList effects, ILevelSourceReference? source, DamageResultValues? damage = null)
+        public void Die(DamageEffectList effects, ILevelSourceReference? source, DamageOutputPartValues? damage = null)
         {
             Die(new DeathInfo(this, effects, source, damage));
         }

@@ -11,11 +11,11 @@ namespace PVZEngine.Damages
         public DamageEffectList Effects { get; private set; }
         public Entity Entity { get; private set; }
         public ILevelSourceReference? Source { get; set; }
-        public ArmorDamageResult? Damage { get; private set; }
+        public ArmorDamageOutputPart? Damage { get; private set; }
         public Armor Armor { get; private set; }
         public NamespaceID Slot { get; private set; }
 
-        public ArmorDestroyInfo(Entity entity, Armor armor, NamespaceID slot, DamageEffectList effects, ILevelSourceReference? source, ArmorDamageResult? damage)
+        public ArmorDestroyInfo(Entity entity, Armor armor, NamespaceID slot, DamageEffectList effects, ILevelSourceReference? source, ArmorDamageOutputPart? damage)
         {
             Effects = effects;
             Entity = entity;

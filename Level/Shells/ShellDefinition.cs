@@ -11,7 +11,7 @@ namespace PVZEngine.Shells
         public ShellDefinition(string nsp, string name) : base(nsp, name)
         {
         }
-        public virtual void EvaluateDamage(DamageInput damageInfo)
+        public virtual void EvaluateDamage(DamageInputPart input)
         {
         }
         public sealed override string GetDefinitionType() => EngineDefinitionTypes.SHELL;

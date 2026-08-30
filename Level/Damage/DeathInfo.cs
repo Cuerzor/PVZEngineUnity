@@ -11,9 +11,9 @@ namespace PVZEngine.Damages
         public DamageEffectList Effects { get; private set; }
         public Entity Entity { get; private set; }
         public ILevelSourceReference? Source { get; set; }
-        public DamageResultValues? Damage { get; private set; }
+        public DamageOutputPartValues? Damage { get; private set; }
 
-        public DeathInfo(Entity entity, DamageEffectList effects, ILevelSourceReference? source, DamageResultValues? damage = null)
+        public DeathInfo(Entity entity, DamageEffectList effects, ILevelSourceReference? source, DamageOutputPartValues? damage = null)
         {
             Effects = effects;
             Entity = entity;
@@ -45,7 +45,7 @@ namespace PVZEngine.Damages
         public NamespaceID[] effects;
         public long entityID;
         public ILevelSourceReference? source;
-        public DamageResultValues? damage;
+        public DamageOutputPartValues? damage;
 
         public SerializableDeathInfo(DeathInfo deathInfo)
         {

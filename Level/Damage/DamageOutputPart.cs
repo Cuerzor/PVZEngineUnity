@@ -8,17 +8,17 @@ using UnityEngine;
 
 namespace PVZEngine.Damages
 {
-    public abstract class DamageResult
+    public abstract class DamageOutputPart
     {
-        public DamageResult(DamageInput input, ShellDefinition? shell)
+        public DamageOutputPart(DamageInputPart input, ShellDefinition? shell)
         {
-            values = new DamageResultValues(input.OriginalAmount, input.Amount, 0);
+            values = new DamageOutputPartValues(input.Amount, 0, 0);
             Entity = input.Entity;
             Effects = input.Effects;
             Source = input.Source;
             ShellDefinition = shell;
         }
-        public DamageResult(LevelEngine level, SerializableDamageResult seri)
+        public DamageOutputPart(LevelEngine level, SerializableDamageOutputPart seri)
         {
             var ent = level.FindEntityByID(seri.entityID);
             if (ent == null)
@@ -41,42 +41,45 @@ namespace PVZEngine.Damages
         {
             return Amount > 0;
         }
-        public abstract SerializableDamageResult ToSerializable();
-        public DamageResultValues GetValues() => values;
+        public void SetDamageAmount(float amount, float effective, float overflow)
+        {
+            values.amount = amount;
+            values.effectiveAmount = effective;
+            values.overflowAmount = overflow;
+        }
+        public abstract SerializableDamageOutputPart ToSerializable();
+        public DamageOutputPartValues GetValues() => values;
 
-        private DamageResultValues values;
+        private DamageOutputPartValues values;
         public ILevelSourceReference? Source { get; set; }
         public DamageEffectList Effects { get; set; }
         public ShellDefinition? ShellDefinition { get; set; }
         public bool Fatal { get; set; }
         public Entity Entity { get; set; }
-        public float OriginalAmount
-        {
-            get => values.originalAmount;
-            set => values.originalAmount = value;
-        }
         public float Amount
         {
             get => values.amount;
-            set => values.amount = value;
         }
-        public float SpendAmount
+        public float EffectiveAmount
         {
-            get => values.spendAmount;
-            set => values.spendAmount = value;
+            get => values.effectiveAmount;
+        }
+        public float OverflowAmount
+        {
+            get => values.overflowAmount;
         }
     }
     [Serializable]
-    public abstract class SerializableDamageResult
+    public abstract class SerializableDamageOutputPart
     {
         public ILevelSourceReference? source;
         public NamespaceID[] effects;
         public NamespaceID? shellID;
         public long entityID;
         public bool fatal;
-        public DamageResultValues values;
+        public DamageOutputPartValues values;
 
-        protected SerializableDamageResult(DamageResult result)
+        protected SerializableDamageOutputPart(DamageOutputPart result)
         {
             source = result.Source;
             effects = result.Effects.GetEffects();
@@ -85,6 +88,6 @@ namespace PVZEngine.Damages
             entityID = result.Entity.ID;
             values = result.GetValues();
         }
-        public abstract DamageResult ToDeserialized(LevelEngine level);
+        public abstract DamageOutputPart ToDeserialized(LevelEngine level);
     }
 }

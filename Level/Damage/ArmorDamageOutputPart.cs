@@ -8,13 +8,13 @@ using UnityEngine;
 
 namespace PVZEngine.Damages
 {
-    public class ArmorDamageResult : DamageResult
+    public class ArmorDamageOutputPart : DamageOutputPart
     {
-        public ArmorDamageResult(DamageInput input, Armor armor, ShellDefinition? shell) : base(input, shell)
+        public ArmorDamageOutputPart(ArmorDamageInputPart input, ShellDefinition? shell) : base(input, shell)
         {
-            Armor = armor;
+            Armor = input.Armor;
         }
-        public ArmorDamageResult(LevelEngine level, SerializableArmorDamageResult seri) : base(level, seri)
+        public ArmorDamageOutputPart(LevelEngine level, SerializableArmorDamageResult seri) : base(level, seri)
         {
             var armor = Entity.GetArmorAtSlot(seri.armorSlot);
             if (armor == null)
@@ -28,22 +28,22 @@ namespace PVZEngine.Damages
         {
             return Entity.Position;
         }
-        public override SerializableDamageResult ToSerializable()
+        public override SerializableDamageOutputPart ToSerializable()
         {
             return new SerializableArmorDamageResult(this);
         }
         public Armor Armor { get; set; }
     }
     [Serializable]
-    public class SerializableArmorDamageResult : SerializableDamageResult
+    public class SerializableArmorDamageResult : SerializableDamageOutputPart
     {
-        public SerializableArmorDamageResult(ArmorDamageResult result) : base(result)
+        public SerializableArmorDamageResult(ArmorDamageOutputPart result) : base(result)
         {
             this.armorSlot = result.Armor.Slot;
         }
-        public override DamageResult ToDeserialized(LevelEngine level)
+        public override DamageOutputPart ToDeserialized(LevelEngine level)
         {
-            return new ArmorDamageResult(level, this);
+            return new ArmorDamageOutputPart(level, this);
         }
         public NamespaceID armorSlot;
     }
