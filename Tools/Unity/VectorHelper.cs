@@ -11,6 +11,10 @@ namespace PVZEngine.Tools.Unity
         {
             return Quaternion.AngleAxis(angle, Vector3.back) * vector;
         }
+        public static Vector3 RotateClockwiseXZ(this Vector3 vector, float angle)
+        {
+            return Quaternion.AngleAxis(angle, Vector3.down) * vector;
+        }
         public static Vector3 Abs(this Vector3 vector)
         {
             vector.x = Mathf.Abs(vector.x);
