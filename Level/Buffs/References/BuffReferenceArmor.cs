@@ -7,43 +7,37 @@ using PVZEngine.Level;
 namespace PVZEngine.Buffs
 {
     [Serializable]
-    public class BuffReferenceArmor : BuffReference
+    public class BuffReferenceArmor : IBuffReference
     {
         public BuffReferenceArmor(long id, NamespaceID armorSlot, long buffId)
         {
-            entityID = id;
-            this.armorSlot = armorSlot;
-            this.buffId = buffId;
+            EntityID = id;
+            this.ArmorSlot = armorSlot;
+            this.BuffID = buffId;
         }
-        public override IBuffTarget? GetTarget(LevelEngine level)
+        public Buff? GetBuff(LevelEngine level)
         {
-            return level.FindEntityByID(EntityID)?.GetArmorAtSlot(ArmorSlot);
+            return level.FindEntityByID(EntityID)?.GetArmorAtSlot(ArmorSlot)?.GetBuff(BuffID);
         }
-        public override object Clone()
+        public object Clone()
         {
-            return new BuffReferenceArmor(EntityID, ArmorSlot, BuffId);
+            return new BuffReferenceArmor(EntityID, ArmorSlot, BuffID);
         }
         public override bool Equals(object obj)
         {
             if (obj is not BuffReferenceArmor other)
                 return false;
-            return BuffId == other.BuffId && EntityID == other.EntityID && ArmorSlot == other.ArmorSlot;
+            return BuffID == other.BuffID && EntityID == other.EntityID && ArmorSlot == other.ArmorSlot;
         }
         public override int GetHashCode()
         {
-            return HashCode.Combine(BuffId, EntityID, ArmorSlot);
+            return HashCode.Combine(BuffID, EntityID, ArmorSlot);
         }
-        [BsonIgnore]
-        public long EntityID => entityID;
-        [BsonElement]
-        private long entityID;
-        [BsonIgnore]
-        public NamespaceID ArmorSlot => armorSlot;
-        [BsonElement]
-        private NamespaceID armorSlot;
-        [BsonIgnore]
-        public override long BuffId => buffId;
-        [BsonElement]
-        private long buffId;
+        [BsonElement("entityID")]
+        public long EntityID { get; private set; }
+        [BsonElement("armorSlot")]
+        public NamespaceID ArmorSlot { get; private set; }
+        [BsonElement("buffId")]
+        public long BuffID { get; private set; }
     }
 }

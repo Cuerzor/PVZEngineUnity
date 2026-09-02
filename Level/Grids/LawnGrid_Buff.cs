@@ -26,7 +26,7 @@ namespace PVZEngine.Grids
         #endregion
 
         #region 增益
-        public BuffReference GetBuffReference(Buff buff)
+        public IBuffReference GetBuffReference(Buff buff)
         {
             return new BuffReferenceLawnGrid(GetIndex(), buff.ID);
         }

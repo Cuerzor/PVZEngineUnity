@@ -11,6 +11,6 @@ namespace PVZEngine.Auras
     {
         public int id;
         public FrameTimer? updateTimer;
-        public BuffReference[]? buffs;
+        public IBuffReference[]? buffs;
     }
 }

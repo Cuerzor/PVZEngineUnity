@@ -20,7 +20,7 @@ namespace PVZEngine.Entities
         #endregion
 
         #region 增益
-        public BuffReference GetBuffReference(Buff buff) => new BuffReferenceEntity(ID, buff.ID);
+        public IBuffReference GetBuffReference(Buff buff) => new BuffReferenceEntity(ID, buff.ID);
         #endregion
 
         #region 序列化

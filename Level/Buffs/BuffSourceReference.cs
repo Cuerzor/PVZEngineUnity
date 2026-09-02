@@ -10,7 +10,7 @@ namespace PVZEngine.Entities
     [Serializable]
     public class BuffSourceReference : ILevelSourceReference
     {
-        public BuffSourceReference(BuffReference reference, NamespaceID defID)
+        public BuffSourceReference(IBuffReference reference, NamespaceID defID)
         {
             this.reference = reference;
             this.definitionID = defID;
@@ -27,10 +27,6 @@ namespace PVZEngine.Entities
         public Buff? GetBuff(LevelEngine level)
         {
             return reference.GetBuff(level);
-        }
-        public IBuffTarget? GetBuffTarget(LevelEngine level)
-        {
-            return reference.GetTarget(level);
         }
         public override bool Equals(object obj)
         {
@@ -66,10 +62,10 @@ namespace PVZEngine.Entities
         [BsonIgnore]
         public NamespaceID DefinitionID => definitionID;
         [BsonIgnore]
-        public BuffReference Reference => reference;
+        public IBuffReference Reference => reference;
         [BsonElement]
         private NamespaceID definitionID;
         [BsonElement]
-        private BuffReference reference;
+        private IBuffReference reference;
     }
 }

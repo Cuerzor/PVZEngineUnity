@@ -106,13 +106,10 @@ namespace PVZEngine.Auras
             {
                 foreach (var seriBuff in serializable.buffs)
                 {
-                    var entity = seriBuff.GetTarget(level);
-                    if (entity == null)
-                        continue;
                     var buff = seriBuff.GetBuff(level);
-                    if (buff == null)
+                    if (buff == null || buff.Target == null)
                         continue;
-                    buffCaches.Add(entity, buff);
+                    buffCaches.Add(buff.Target, buff);
                 }
             }
         }

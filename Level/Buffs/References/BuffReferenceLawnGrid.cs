@@ -7,38 +7,34 @@ using PVZEngine.Level;
 namespace PVZEngine.Buffs
 {
     [Serializable]
-    public class BuffReferenceLawnGrid : BuffReference
+    public class BuffReferenceLawnGrid : IBuffReference
     {
         public BuffReferenceLawnGrid(int gridIndex, long buffId)
         {
-            this.gridIndex = gridIndex;
-            this.buffId = buffId;
+            this.TileIndex = gridIndex;
+            this.BuffID = buffId;
         }
-        public override IBuffTarget? GetTarget(LevelEngine level)
+        public Buff? GetBuff(LevelEngine level)
         {
-            return level.GetGrid(TileIndex);
+            return level.GetGrid(TileIndex)?.GetBuff(BuffID);
         }
-        public override object Clone()
+        public object Clone()
         {
-            return new BuffReferenceEntity(TileIndex, BuffId);
+            return new BuffReferenceEntity(TileIndex, BuffID);
         }
         public override bool Equals(object obj)
         {
             if (obj is not BuffReferenceLawnGrid other)
                 return false;
-            return BuffId == other.BuffId && TileIndex == other.TileIndex;
+            return BuffID == other.BuffID && TileIndex == other.TileIndex;
         }
         public override int GetHashCode()
         {
-            return HashCode.Combine(BuffId, TileIndex);
+            return HashCode.Combine(BuffID, TileIndex);
         }
-        [BsonIgnore]
-        public int TileIndex => gridIndex;
-        [BsonElement]
-        private int gridIndex;
-        [BsonIgnore]
-        public override long BuffId => buffId;
-        [BsonElement]
-        private long buffId;
+        [BsonElement("gridIndex")]
+        public int TileIndex { get; private set; }
+        [BsonElement("buffId")]
+        public long BuffID { get; private set; }
     }
 }

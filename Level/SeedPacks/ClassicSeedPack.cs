@@ -19,7 +19,7 @@ namespace PVZEngine.SeedPacks
         {
             return GetIndex() >= 0;
         }
-        public override BuffReference GetBuffReference(Buff buff)
+        public override IBuffReference GetBuffReference(Buff buff)
         {
             return new BuffReferenceClassicSeedPack(ID, buff.ID);
         }

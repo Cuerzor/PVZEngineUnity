@@ -7,38 +7,34 @@ using PVZEngine.Level;
 namespace PVZEngine.Buffs
 {
     [Serializable]
-    public class BuffReferenceEntity : BuffReference
+    public class BuffReferenceEntity : IBuffReference
     {
         public BuffReferenceEntity(long id, long buffId)
         {
-            entityID = id;
-            this.buffId = buffId;
+            EntityID = id;
+            this.BuffID = buffId;
         }
-        public override IBuffTarget? GetTarget(LevelEngine level)
+        public Buff? GetBuff(LevelEngine level)
         {
-            return level.FindEntityByID(EntityID);
+            return level.FindEntityByID(EntityID)?.GetBuff(BuffID);
         }
-        public override object Clone()
+        public object Clone()
         {
-            return new BuffReferenceEntity(EntityID, BuffId);
+            return new BuffReferenceEntity(EntityID, BuffID);
         }
         public override bool Equals(object obj)
         {
             if (obj is not BuffReferenceEntity other)
                 return false;
-            return BuffId == other.BuffId && EntityID == other.EntityID;
+            return BuffID == other.BuffID && EntityID == other.EntityID;
         }
         public override int GetHashCode()
         {
-            return HashCode.Combine(BuffId, EntityID);
+            return HashCode.Combine(BuffID, EntityID);
         }
-        [BsonIgnore]
-        public long EntityID => entityID;
-        [BsonElement]
-        private long entityID;
-        [BsonIgnore]
-        public override long BuffId => buffId;
-        [BsonElement]
-        private long buffId;
+        [BsonElement("entityID")]
+        public long EntityID { get; private set; }
+        [BsonElement("buffId")]
+        public long BuffID { get; private set; }
     }
 }

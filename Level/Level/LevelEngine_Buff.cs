@@ -7,7 +7,7 @@ namespace PVZEngine.Level
     public partial class LevelEngine
     {
         #region 增益
-        public BuffReference GetBuffReference(Buff buff) => new BuffReferenceLevel(buff.ID);
+        public IBuffReference GetBuffReference(Buff buff) => new BuffReferenceLevel(buff.ID);
         public Buff CreateBuff<T>(long buffID) where T : BuffDefinition
         {
             var buffDefinition = Content.GetBuffDefinition<T>();

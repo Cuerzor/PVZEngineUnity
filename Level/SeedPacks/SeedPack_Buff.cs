@@ -29,7 +29,7 @@ namespace PVZEngine.SeedPacks
         #endregion
 
         #region 增益
-        public abstract BuffReference GetBuffReference(Buff buff);
+        public abstract IBuffReference GetBuffReference(Buff buff);
         #endregion
 
         #region 序列化

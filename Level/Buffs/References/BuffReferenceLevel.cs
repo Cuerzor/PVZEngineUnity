@@ -8,33 +8,31 @@ using PVZEngine.Level;
 namespace PVZEngine.Buffs
 {
     [Serializable]
-    public class BuffReferenceLevel : BuffReference
+    public class BuffReferenceLevel : IBuffReference
     {
         public BuffReferenceLevel(long buffId)
         {
-            this.buffId = buffId;
+            this.BuffID = buffId;
         }
-        public override IBuffTarget? GetTarget(LevelEngine level)
+        public Buff? GetBuff(LevelEngine level)
         {
-            return level;
+            return level.GetBuff(BuffID);
         }
-        public override object Clone()
+        public object Clone()
         {
-            return new BuffReferenceLevel(BuffId);
+            return new BuffReferenceLevel(BuffID);
         }
         public override bool Equals(object obj)
         {
             if (obj is not BuffReferenceLevel other)
                 return false;
-            return BuffId == other.BuffId;
+            return BuffID == other.BuffID;
         }
         public override int GetHashCode()
         {
-            return HashCode.Combine(BuffId);
+            return HashCode.Combine(BuffID);
         }
-        [BsonIgnore]
-        public override long BuffId => buffId;
-        [BsonElement]
-        private long buffId;
+        [BsonElement("buffId")]
+        public long BuffID { get; private set; }
     }
 }

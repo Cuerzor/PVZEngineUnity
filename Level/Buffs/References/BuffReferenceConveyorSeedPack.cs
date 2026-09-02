@@ -7,38 +7,34 @@ using PVZEngine.Level;
 namespace PVZEngine.Buffs
 {
     [Serializable]
-    public class BuffReferenceConveyorSeedPack : BuffReference
+    public class BuffReferenceConveyorSeedPack : IBuffReference
     {
         public BuffReferenceConveyorSeedPack(long seedId, long buffId)
         {
-            this.seedId = seedId;
-            this.buffId = buffId;
+            this.SeedID = seedId;
+            this.BuffID = buffId;
         }
-        public override IBuffTarget? GetTarget(LevelEngine level)
+        public Buff? GetBuff(LevelEngine level)
         {
-            return level.GetConveyorSeedPackByID(SeedID);
+            return level.GetConveyorSeedPackByID(SeedID)?.GetBuff(BuffID);
         }
-        public override object Clone()
+        public object Clone()
         {
-            return new BuffReferenceConveyorSeedPack(SeedID, BuffId);
+            return new BuffReferenceConveyorSeedPack(SeedID, BuffID);
         }
         public override bool Equals(object obj)
         {
             if (obj is not BuffReferenceConveyorSeedPack other)
                 return false;
-            return BuffId == other.BuffId && SeedID == other.SeedID;
+            return BuffID == other.BuffID && SeedID == other.SeedID;
         }
         public override int GetHashCode()
         {
-            return HashCode.Combine(SeedID, BuffId);
+            return HashCode.Combine(SeedID, BuffID);
         }
-        [BsonIgnore]
-        public override long BuffId => buffId;
-        [BsonElement]
-        private long buffId;
-        [BsonIgnore]
-        public long SeedID => seedId;
-        [BsonElement]
-        private long seedId;
+        [BsonElement("buffId")]
+        public long BuffID { get; private set; }
+        [BsonElement("seedId")]
+        public long SeedID { get; private set; }
     }
 }

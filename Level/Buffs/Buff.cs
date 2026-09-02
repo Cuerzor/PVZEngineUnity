@@ -88,7 +88,7 @@ namespace PVZEngine.Buffs
         {
             return Target as SeedPack;
         }
-        public BuffReference? ToReference()
+        public IBuffReference? ToReference()
         {
             if (Target == null)
                 return null;

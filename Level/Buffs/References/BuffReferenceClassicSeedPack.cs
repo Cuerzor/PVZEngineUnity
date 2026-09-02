@@ -8,38 +8,34 @@ using PVZEngine.Level;
 namespace PVZEngine.Buffs
 {
     [Serializable]
-    public class BuffReferenceClassicSeedPack : BuffReference
+    public class BuffReferenceClassicSeedPack : IBuffReference
     {
         public BuffReferenceClassicSeedPack(long seedId, long buffId)
         {
-            this.seedId = seedId;
-            this.buffId = buffId;
+            this.SeedID = seedId;
+            this.BuffID = buffId;
         }
-        public override IBuffTarget? GetTarget(LevelEngine level)
+        public Buff? GetBuff(LevelEngine level)
         {
-            return level.GetSeedPackByID(SeedID);
+            return level.GetSeedPackByID(SeedID)?.GetBuff(BuffID);
         }
-        public override object Clone()
+        public object Clone()
         {
-            return new BuffReferenceClassicSeedPack(SeedID, BuffId);
+            return new BuffReferenceClassicSeedPack(SeedID, BuffID);
         }
         public override bool Equals(object obj)
         {
             if (obj is not BuffReferenceClassicSeedPack other)
                 return false;
-            return BuffId == other.BuffId && SeedID == other.SeedID;
+            return BuffID == other.BuffID && SeedID == other.SeedID;
         }
         public override int GetHashCode()
         {
-            return HashCode.Combine(SeedID, BuffId);
+            return HashCode.Combine(SeedID, BuffID);
         }
-        [BsonIgnore]
-        public override long BuffId => buffId;
-        [BsonElement]
-        private long buffId;
-        [BsonIgnore]
-        public long SeedID => seedId;
-        [BsonElement]
-        private long seedId;
+        [BsonElement("buffId")]
+        public long BuffID { get; private set; }
+        [BsonElement("seedId")]
+        public long SeedID { get; private set; }
     }
 }

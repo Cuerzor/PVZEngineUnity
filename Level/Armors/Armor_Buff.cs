@@ -12,7 +12,7 @@ namespace PVZEngine.Armors
         }
 
         #region 增益
-        public BuffReference GetBuffReference(Buff buff) => new BuffReferenceArmor(Owner.ID, Slot, buff.ID);
+        public IBuffReference GetBuffReference(Buff buff) => new BuffReferenceArmor(Owner.ID, Slot, buff.ID);
         private void InitBuffEvents()
         {
         }
