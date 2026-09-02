@@ -73,13 +73,13 @@ namespace PVZEngine
             {
                 foreach (var pair in seri.properties)
                 {
-                    dict.propertyDict.Add(new PropertyKeyString(pair.Key), pair.Value);
+                    dict.propertyDict.Add(PropertyKeyString.GetOrCreate(pair.Key), pair.Value);
                 }
             }
             return dict;
         }
         public int Count => propertyDict.Count;
-        private Dictionary<PropertyKeyString, object?> propertyDict = new Dictionary<PropertyKeyString, object?>(32);
+        private Dictionary<PropertyKeyString, object?> propertyDict = new Dictionary<PropertyKeyString, object?>(32, new PropertyKeyStringComparer());
     }
     [Serializable]
     public class SerializablePropertyDictionaryString
