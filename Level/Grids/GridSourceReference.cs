@@ -47,7 +47,7 @@ namespace PVZEngine.Grids
         {
             return !(lhs == rhs);
         }
-        ILevelSourceReference ILevelSourceReference.Clone()
+        ILevelSourceReference ILevelSourceReference.CloneReference()
         {
             return Clone();
         }

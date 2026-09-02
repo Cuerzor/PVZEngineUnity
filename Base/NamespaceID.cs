@@ -3,11 +3,12 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using PVZEngine.Tools.Cloning;
 
 namespace PVZEngine
 {
     [Serializable]
-    public class NamespaceID
+    public class NamespaceID : ICanClone
     {
         public NamespaceID(string nsp, string name)
         {
@@ -182,6 +183,14 @@ namespace PVZEngine
         {
             concatCache ??= $"{SpaceName}:{Path}";
             return concatCache;
+        }
+        public NamespaceID Clone()
+        {
+            return new NamespaceID(spacename, path);
+        }
+        object ICanClone.Clone()
+        {
+            return Clone();
         }
         public static bool operator ==(NamespaceID? lhs, NamespaceID? rhs) => Equals(lhs, rhs);
         public static bool operator !=(NamespaceID? lhs, NamespaceID? rhs) => !Equals(lhs, rhs);

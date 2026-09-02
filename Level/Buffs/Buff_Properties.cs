@@ -17,6 +17,10 @@ namespace PVZEngine.Buffs
                 OnPropertyChanged?.Invoke(this, name);
             }
         }
+        private void ClonePropertiesTo(Buff target)
+        {
+            propertyDict.CloneTo(target.propertyDict);
+        }
         private void WritePropertiesToSerializable(SerializableBuff seri)
         {
             seri.propertyDict = propertyDict.ToSerializable();

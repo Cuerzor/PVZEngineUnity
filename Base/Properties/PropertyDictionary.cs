@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PVZEngine.Tools;
+using PVZEngine.Tools.Cloning;
 using UnityEngine;
 
 namespace PVZEngine
@@ -73,6 +74,18 @@ namespace PVZEngine
         public void Clear()
         {
             propertyDict.Clear();
+        }
+        public void CloneTo(PropertyDictionary target)
+        {
+            target.propertyDict.Clear();
+            foreach (var pair in propertyDict)
+            {
+                target.propertyDict.Add(pair.Key, CloneProperty(pair.Value));
+            }
+        }
+        public object? CloneProperty(object? value)
+        {
+            return Cloner.CloneValue(value);
         }
         public IPropertyKey[] GetPropertyNames()
         {

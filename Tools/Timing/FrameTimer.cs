@@ -2,26 +2,27 @@
 
 using System;
 using MongoDB.Bson.Serialization.Attributes;
+using PVZEngine.Tools.Cloning;
 using UnityEngine;
 
 namespace PVZEngine.Tools.Timing
 {
     [Serializable]
-    public class FrameTimer : Timer
+    public class FrameTimer : Timer, ICanClone
     {
         public FrameTimer() : this(0)
         {
         }
         public FrameTimer(int time) : this(time, DEFAULT_PRECISION)
         {
+        }
+        public FrameTimer(int time, int precision)
+        {
             MaxFrame = time;
             Frame = time;
             FrameFraction = 0;
             LastFrame = time;
             LastFrameFraction = FrameFraction;
-        }
-        public FrameTimer(int time, int precision)
-        {
             Precision = precision;
         }
         public override void Run(float speed)
@@ -82,6 +83,22 @@ namespace PVZEngine.Tools.Timing
         {
             MaxFrame = time;
             Reset();
+        }
+        public FrameTimer Clone()
+        {
+            return new FrameTimer()
+            {
+                MaxFrame = MaxFrame,
+                Frame = Frame,
+                FrameFraction = FrameFraction,
+                LastFrame = LastFrame,
+                LastFrameFraction = LastFrameFraction,
+                Precision = Precision
+            };
+        }
+        object ICanClone.Clone()
+        {
+            return Clone();
         }
         public override bool Expired => Frame <= 0;
         [BsonElement("maxFrame")]

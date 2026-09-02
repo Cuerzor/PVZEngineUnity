@@ -83,6 +83,10 @@ namespace PVZEngine.Auras
                 buffCaches.Remove(removeBuffBuffer[i]);
             }
         }
+        public AuraEffect Clone(int id)
+        {
+            return new AuraEffect(Definition, id, Source);
+        }
         public SerializableAuraEffect ToSerializable()
         {
             return new SerializableAuraEffect()

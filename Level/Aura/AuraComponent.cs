@@ -25,6 +25,13 @@ namespace PVZEngine.Auras
 
         public void Update() => List?.Update();
 
+        public void CloneTo(AuraComponent target)
+        {
+            if (List != null)
+            {
+                List.CloneTo(target.List);
+            }
+        }
         public void WriteToSerializable<T>(T seri) where T : IHasSerializableAuras
         {
             if (List != null)

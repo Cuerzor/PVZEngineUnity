@@ -26,6 +26,13 @@ namespace PVZEngine.Buffs
         }
         #endregion
 
+        #region 复制
+        private void CloneAurasTo(Buff target)
+        {
+            auraComponent.CloneTo(target.auraComponent);
+        }
+        #endregion
+
         #region 序列化
         private void WriteAurasToSerializable(SerializableBuff seri)
         {

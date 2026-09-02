@@ -16,12 +16,12 @@ namespace PVZEngine.Entities
             this.parent = parent;
             this.faction = faction;
         }
-        public EntitySourceReference(Entity entity) : this(entity.ID, entity.Definition.GetID(), entity.SpawnerReference?.Clone(), entity.Cache.Faction)
+        public EntitySourceReference(Entity entity) : this(entity.ID, entity.Definition.GetID(), entity.SpawnerReference?.CloneReference(), entity.Cache.Faction)
         {
         }
         public EntitySourceReference Clone()
         {
-            return new EntitySourceReference(ID, DefinitionID, parent?.Clone(), faction);
+            return new EntitySourceReference(ID, DefinitionID, parent?.CloneReference(), faction);
         }
         public Entity? GetEntity(LevelEngine game)
         {
@@ -49,7 +49,7 @@ namespace PVZEngine.Entities
         {
             return !(lhs == rhs);
         }
-        ILevelSourceReference ILevelSourceReference.Clone()
+        ILevelSourceReference ILevelSourceReference.CloneReference()
         {
             return Clone();
         }

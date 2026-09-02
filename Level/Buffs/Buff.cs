@@ -103,6 +103,16 @@ namespace PVZEngine.Buffs
         }
         #endregion
 
+        #region 复制
+        public Buff Clone(IBuffTarget target)
+        {
+            var buff = target.NewBuff(Definition);
+            ClonePropertiesTo(buff);
+            CloneAurasTo(buff);
+            return buff;
+        }
+        #endregion
+
         #region 序列化
         public SerializableBuff ToSerializable()
         {

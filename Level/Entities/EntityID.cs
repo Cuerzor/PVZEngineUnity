@@ -3,11 +3,12 @@
 using System;
 using MongoDB.Bson.Serialization.Attributes;
 using PVZEngine.Level;
+using PVZEngine.Tools.Cloning;
 
 namespace PVZEngine.Entities
 {
     [Serializable]
-    public class EntityID
+    public class EntityID : ICanClone
     {
         public EntityID()
         {
@@ -51,6 +52,10 @@ namespace PVZEngine.Entities
         public override int GetHashCode()
         {
             return ID.GetHashCode();
+        }
+        public object Clone()
+        {
+            return new EntityID(id);
         }
         public static bool operator ==(EntityID? lhs, EntityID? rhs)
         {

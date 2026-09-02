@@ -57,6 +57,15 @@ namespace PVZEngine.Auras
                 aura.UpdateAuraInterval();
             }
         }
+        public void CloneTo(AuraEffectList target)
+        {
+            target.auraEffects.Clear();
+            for (int i = 0; i < auraEffects.Count; i++)
+            {
+                var aura = auraEffects[i];
+                target.auraEffects.Add(aura.Clone(i));
+            }
+        }
         public void LoadFromSerializable(LevelEngine level, IEnumerable<SerializableAuraEffect?>? effects)
         {
             if (effects == null)
