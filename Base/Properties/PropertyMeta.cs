@@ -33,7 +33,7 @@ namespace PVZEngine
     }
     public class PropertyMeta<T> : PropertyMeta
     {
-        private PropertyKey<T> key;
+        private PropertyKey<T> key = new PropertyKey<T>(0, 0, default);
         public PropertyMeta(string name, T? defaultValue = default, params string[] obsoleteNames) : base(name, typeof(T), defaultValue, obsoleteNames)
         {
         }
@@ -49,7 +49,7 @@ namespace PVZEngine
         {
             if (obj is IPropertyKey key)
             {
-                return this.key.Equals(key);
+                return this.key != null && this.key.Equals(key);
             }
             return obj is PropertyMeta<T> meta &&
                    namespaceName == meta.namespaceName &&

@@ -54,12 +54,15 @@ namespace PVZEngine.Modifiers
                 }
                 list.Add(item);
 
-                if (!modifierCachesUsingProperty.TryGetValue(usingName, out var usingList))
+                if (PropertyKeyHelper.IsValid(usingName))
                 {
-                    usingList = new List<ModifierSourceItem>();
-                    modifierCachesUsingProperty.Add(usingName, usingList);
+                    if (!modifierCachesUsingProperty.TryGetValue(usingName, out var usingList))
+                    {
+                        usingList = new List<ModifierSourceItem>();
+                        modifierCachesUsingProperty.Add(usingName, usingList);
+                    }
+                    usingList.Add(item);
                 }
-                usingList.Add(item);
 
                 CallModifiedPropertyChanged(modifyName);
             }
@@ -76,9 +79,12 @@ namespace PVZEngine.Modifiers
                 }
 
                 var usingName = modifier.UsingContainerPropertyName;
-                if (modifierCachesUsingProperty.TryGetValue(usingName, out var usingList))
+                if (PropertyKeyHelper.IsValid(usingName))
                 {
-                    usingList.Remove(item);
+                    if (modifierCachesUsingProperty.TryGetValue(usingName, out var usingList))
+                    {
+                        usingList.Remove(item);
+                    }
                 }
 
                 CallModifiedPropertyChanged(modifyName);

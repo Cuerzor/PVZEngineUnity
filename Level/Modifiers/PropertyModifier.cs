@@ -26,7 +26,7 @@ namespace PVZEngine.Modifiers
         public abstract ModifierCalculator GetCalculator();
         public abstract IPropertyKey PropertyName { get; }
         public abstract object? ConstValue { get; }
-        public abstract IPropertyKey UsingContainerPropertyName { get; }
+        public abstract IPropertyKey? UsingContainerPropertyName { get; }
         public int Priority { get; set; }
         public bool NoStack { get; set; }
     }
@@ -49,7 +49,7 @@ namespace PVZEngine.Modifiers
         }
         public T? GetModifierValueGeneric(IModifierSource container)
         {
-            if (PropertyKeyHelper.IsValid(UsingContainerPropertyName))
+            if (PropertyKeyHelper.IsValid(UsingContainerPropertyNameGeneric))
             {
                 return container.GetProperty<T>(UsingContainerPropertyNameGeneric);
             }
@@ -67,10 +67,10 @@ namespace PVZEngine.Modifiers
         public PropertyKey<T> PropertyNameGeneric { get; }
         public T? ConstValueGeneric { get; }
         public ModifierCondition<T>? Condition { get; set; }
-        public PropertyKey<T> UsingContainerPropertyNameGeneric { get; }
+        public PropertyKey<T>? UsingContainerPropertyNameGeneric { get; }
         public override IPropertyKey PropertyName => PropertyNameGeneric;
         public override object? ConstValue => ConstValueGeneric;
-        public override IPropertyKey UsingContainerPropertyName => UsingContainerPropertyNameGeneric;
+        public override IPropertyKey? UsingContainerPropertyName => UsingContainerPropertyNameGeneric;
     }
     public delegate bool ModifierCondition<T>(T? modifierValue);
 }

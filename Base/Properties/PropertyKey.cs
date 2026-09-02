@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace PVZEngine
@@ -74,19 +75,19 @@ namespace PVZEngine
             var type = typeof(PropertyKey<>).MakeGenericType(propertyType);
             return (IPropertyKey)Activator.CreateInstance(type, namespaceKey, propertyKey, defaultValue);
         }
-        public static bool IsValid(this IPropertyKey key)
+        public static bool IsValid([NotNullWhen(true)]this IPropertyKey? key)
         {
-            return key.Key > 0;
+            return key != null && key.Key > 0;
         }
         public static readonly IPropertyKey Invalid = new InvalidPropertyKey();
     }
-    public struct InvalidPropertyKey : IPropertyKey
+    public class InvalidPropertyKey : IPropertyKey
     {
         int IPropertyKey.Key => 0;
         Type IPropertyKey.Type => typeof(object);
         object? IPropertyKey.DefaultValue => null;
     }
-    public struct PropertyKey<T> : IPropertyKey
+    public sealed class PropertyKey<T> : IPropertyKey
     {
         int IPropertyKey.Key => key;
         Type IPropertyKey.Type => typeof(T);
@@ -100,7 +101,7 @@ namespace PVZEngine
         private const int PROPERTY_KEY_MASK = (1 << PROPERTY_BITS) - 1;
         private const int NAMESPACE_KEY_SHIFT = PROPERTY_KEY_SHIFT + PROPERTY_BITS;
         private const int NAMESPACE_KEY_MASK = ((1 << NAMESPACE_BITS) - 1) << NAMESPACE_KEY_SHIFT;
-        public PropertyKey(int namespaceKey, int propertyKey, T defaultValue)
+        public PropertyKey(int namespaceKey, int propertyKey, T? defaultValue)
         {
             key = ((propertyKey << PROPERTY_KEY_SHIFT) & PROPERTY_KEY_MASK) |
                 ((namespaceKey << NAMESPACE_KEY_SHIFT) & NAMESPACE_KEY_MASK);
@@ -118,19 +119,15 @@ namespace PVZEngine
         {
             return key;
         }
-        public static bool operator ==(PropertyKey<T> lhs, IPropertyKey rhs)
+        public static bool operator ==(PropertyKey<T>? lhs, IPropertyKey? rhs)
         {
+            if (lhs is null)
+                return rhs is null;
+            if (rhs is null)
+                return false;
             return lhs.key == rhs.Key;
         }
-        public static bool operator !=(PropertyKey<T> lhs, IPropertyKey rhs)
-        {
-            return !(lhs == rhs);
-        }
-        public static bool operator ==(IPropertyKey lhs, PropertyKey<T> rhs)
-        {
-            return lhs.Key == rhs.key;
-        }
-        public static bool operator !=(IPropertyKey lhs, PropertyKey<T> rhs)
+        public static bool operator !=(PropertyKey<T>? lhs, IPropertyKey? rhs)
         {
             return !(lhs == rhs);
         }
