@@ -96,7 +96,7 @@ namespace PVZEngine.Level
 
                 StageID = stageId;
                 StageDefinition = definition;
-                properties.ClearFallbackCaches();
+                properties.NotifyFallbacksChanged();
 
                 modifierLibrary.AddModifierCaches(definition.GetModifiers().Select(m => new ModifierSourceItem(this, m)));
             }
@@ -119,7 +119,7 @@ namespace PVZEngine.Level
 
                 AreaID = areaId;
                 AreaDefinition = definition;
-                properties.ClearFallbackCaches();
+                properties.NotifyFallbacksChanged();
 
                 modifierLibrary.AddModifierCaches(definition.GetModifiers().Select(m => new ModifierSourceItem(this, m)));
             }

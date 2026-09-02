@@ -82,7 +82,7 @@ namespace PVZEngine.SeedPacks
         public void ChangeDefinition(SeedDefinition definition)
         {
             Definition = definition;
-            properties.ClearFallbackCaches();
+            properties.NotifyFallbacksChanged();
             UpdateAllBuffedProperties(true);
             OnDefinitionChanged?.Invoke(definition);
         }

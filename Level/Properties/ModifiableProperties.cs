@@ -2,9 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using PVZEngine.Level;
 using PVZEngine.Modifiers;
 using PVZEngine.Tools;
+using UnityEngine;
 
 namespace PVZEngine.Properties
 {
@@ -26,6 +28,7 @@ namespace PVZEngine.Properties
             var beforeValue = GetProperty(name);
             if (properties.SetProperty(name, value))
             {
+                ClearCaches();
                 UpdateModifiedProperty(name, beforeValue);
             }
         }
@@ -34,6 +37,7 @@ namespace PVZEngine.Properties
             var beforeValue = GetPropertyObject(name);
             if (properties.SetPropertyObject(name, value))
             {
+                ClearCaches();
                 UpdateModifiedPropertyObject(name, beforeValue);
             }
         }
@@ -42,6 +46,7 @@ namespace PVZEngine.Properties
             var beforeValue = GetPropertyObject(name);
             if (properties.RemovePropertyObject(name))
             {
+                ClearCaches();
                 UpdateModifiedPropertyObject(name, beforeValue);
                 return true;
             }
@@ -52,33 +57,15 @@ namespace PVZEngine.Properties
         #region 获取属性
         public bool TryGetPropertyObject(IPropertyKey name, out object? result, bool ignoreBuffs = false)
         {
-            if (!ignoreBuffs)
-            {
-                if (modifiedProperties.TryGetPropertyObject(name, out var value))
-                {
-                    result = value;
-                    return true;
-                }
-            }
-            if (properties.TryGetPropertyObject(name, out var prop))
-            {
-                result = prop;
+            var cache = ignoreBuffs ? readCacheWithoutBuffs : readCacheWithBuffs;
+
+            if (cache.TryGetValue(name, out result))
                 return true;
-            }
-            if (fallbackCaches.TryGetValue(name, out var fallbackCache))
-            {
-                result = fallbackCache;
-                return true;
-            }
-            if (Target.GetFallbackProperty(name, out var fallback))
-            {
-                AddFallbackCache(name, fallback);
-                result = fallback;
-                return true;
-            }
-            result = name.DefaultValue;
-            AddFallbackCache(name, result);
-            return false;
+
+            result = CalculatePropertyValue(name, ignoreBuffs);
+
+            cache[name] = result;
+            return true;
         }
         public bool TryGetProperty<T>(PropertyKey<T> name, out T? result, bool ignoreBuffs = false)
         {
@@ -110,22 +97,36 @@ namespace PVZEngine.Properties
         }
         #endregion
 
-        #region 后备缓存
-        public void AddFallbackCache(IPropertyKey key, object? value)
+        #region 缓存
+        public void NotifyFallbacksChanged()
         {
-            fallbackCaches.Add(key, value);
-        }
-        public bool RemoveFallbackCache(IPropertyKey key)
-        {
-            return fallbackCaches.Remove(key);
-        }
-        public void ClearFallbackCaches()
-        {
-            fallbackCaches.Clear();
+            ClearCaches();
         }
         public IPropertyKey[] GetPropertyNames()
         {
             return properties.GetPropertyNames();
+        }
+        private void ClearCaches()
+        {
+            readCacheWithBuffs.Clear();
+            readCacheWithoutBuffs.Clear();
+        }
+        private void ClearCachesWithBuffs()
+        {
+            readCacheWithBuffs.Clear();
+        }
+        private object? CalculatePropertyValue(IPropertyKey name, bool ignoreBuffs)
+        {
+            if (!ignoreBuffs)
+            {
+                if (modifiedProperties.TryGetPropertyObject(name, out var modified))
+                    return modified;
+            }
+            if (properties.TryGetPropertyObject(name, out var prop))
+                return prop;
+            if (Target.GetFallbackProperty(name, out var fallback))
+                return fallback;
+            return name.DefaultValue;
         }
         #endregion
 
@@ -161,6 +162,7 @@ namespace PVZEngine.Properties
             {
                 modifiedProperties.RemovePropertyObject(name);
             }
+            ClearCachesWithBuffs();
             CallPropertyChanged(name, beforeValue, value, triggersEvaluation);
         }
         public void UpdateModifiedProperty<T>(PropertyKey<T> name, T? beforeValue, bool triggersEvaluation = true)
@@ -183,11 +185,11 @@ namespace PVZEngine.Properties
             {
                 modifiedProperties.RemoveProperty(name);
             }
+            ClearCachesWithBuffs();
             CallPropertyChanged(name, beforeValue, value, triggersEvaluation);
         }
         private void CallPropertyChanged(IPropertyKey name, object? beforeValue, object? afterValue, bool triggersEvaluation)
         {
-            RemoveFallbackCache(name);
             Target.OnPropertyChanged(name, beforeValue, afterValue, triggersEvaluation);
         }
         #endregion
@@ -217,8 +219,9 @@ namespace PVZEngine.Properties
 
         public IModifiablePropertyTarget Target { get; }
         public IModifierProvider[] Providers { get; }
-        private Dictionary<IPropertyKey, object?> fallbackCaches = new Dictionary<IPropertyKey, object?>(new PropertyKeyComparer());
         private List<ModifierSourceItem> modifierContainerBuffer = new List<ModifierSourceItem>();
+        private Dictionary<IPropertyKey, object?> readCacheWithBuffs = new Dictionary<IPropertyKey, object?>();
+        private Dictionary<IPropertyKey, object?> readCacheWithoutBuffs = new Dictionary<IPropertyKey, object?>();
         private PropertyDictionary properties = new PropertyDictionary();
         private PropertyDictionary modifiedProperties = new PropertyDictionary();
     }
