@@ -6,9 +6,12 @@ namespace PVZEngine.Callbacks
     {
         internal ICallbackHandler CreateHandler();
     }
-    public sealed class CallbackType<TArgs> : ICallbackType
+    public class CallbackType<TArgs, TResult> : ICallbackType
     {
         public CallbackType() { }
-        ICallbackHandler ICallbackType.CreateHandler() => new CallbackHandler<TArgs>();
+        ICallbackHandler ICallbackType.CreateHandler() => new CallbackHandler<TArgs, TResult>();
+    }
+    public sealed class CallbackType<TArgs> : CallbackType<TArgs, object>
+    {
     }
 }

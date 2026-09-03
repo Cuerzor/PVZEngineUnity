@@ -46,17 +46,20 @@ namespace PVZEngine.Entities
         }
         public bool PreCollision(EntityCollision collision)
         {
-            var result = new CallbackResult(true);
+            using var resultItem = CallbackResult.Rent(true);
+            var result = resultItem.Value;
             Definition.PreCollision(collision, result);
+            bool shouldContinue = result.GetValue<bool>();
+
             if (!result.IsBreakRequested)
             {
                 var param = new LevelCallbacks.PreEntityCollisionParams()
                 {
                     collision = collision,
                 };
-                Level.Triggers.RunCallbackWithResult(LevelCallbacks.PRE_ENTITY_COLLISION, param, result);
+                shouldContinue = Level.Triggers.RunCallbackWithResult(LevelCallbacks.PRE_ENTITY_COLLISION, param, shouldContinue);
             }
-            return result.GetValue<bool>();
+            return shouldContinue;
         }
         public void PostCollision(EntityCollision collision, int state)
         {

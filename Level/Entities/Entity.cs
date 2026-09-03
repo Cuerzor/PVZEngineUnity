@@ -146,14 +146,17 @@ namespace PVZEngine.Entities
         }
         private bool PreDeath(DeathInfo info)
         {
-            var param = new LevelCallbacks.EntityDeathParams(this, info);
-            var callbackResult = new CallbackResult(true);
+            using var callbackResultItem = CallbackResult.Rent(true);
+            var callbackResult = callbackResultItem.Value;
             Definition.PreDeath(this, info, callbackResult);
+            var shouldContinue = callbackResult.GetValue<bool>();
+
             if (!callbackResult.IsBreakRequested)
             {
-                Level.Triggers.RunCallbackWithResultFiltered(LevelCallbacks.PRE_ENTITY_DEATH, param, callbackResult, Type);
+                var args = new LevelCallbacks.EntityDeathParams(this, info);
+                shouldContinue = Level.Triggers.RunCallbackWithResultFiltered(LevelCallbacks.PRE_ENTITY_DEATH, args, shouldContinue, Type);
             }
-            return callbackResult.GetValue<bool>();
+            return shouldContinue;
         }
         private void PostDeath(DeathInfo info)
         {
