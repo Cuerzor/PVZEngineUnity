@@ -38,7 +38,7 @@ namespace PVZEngine.Collisions.Level
             item.node.Remove(item);
             RemoveItem(item);
         }
-        public void FindTargetsInRect(Rect rect, List<T> results, float rewind = 0, Predicate<T>? predicate = null)
+        public void FindTargetsInRect(Rect rect, List<T> results, float rewind = 0, IQuadTreeNodeFilter<T>? predicate = null)
         {
             root.FindTargetsInRect(rect, results, rewind, predicate);
         }

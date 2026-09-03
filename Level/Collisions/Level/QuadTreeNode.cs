@@ -180,7 +180,7 @@ namespace PVZEngine.Collisions.Level
         #endregion
 
         #region 查找目标
-        public void FindTargetsInRect(Rect rect, List<T> results, float rewind = 0, Predicate<T>? predicate = null)
+        public void FindTargetsInRect(Rect rect, List<T> results, float rewind = 0, IQuadTreeNodeFilter<T>? filter = null)
         {
             if (!rect.OverlapOptimized(looseBounds))
                 return;
@@ -191,7 +191,7 @@ namespace PVZEngine.Collisions.Level
                 var target = item.target;
                 if (!rect.OverlapOptimized(target.GetCollisionRect(rewind)))
                     continue;
-                if (predicate != null && !predicate(target))
+                if (filter != null && !filter.Validate(target))
                     continue;
                 results.Add(target);
             }
@@ -199,7 +199,7 @@ namespace PVZEngine.Collisions.Level
             //遍历子节点
             foreach (var child in children)
             {
-                child.FindTargetsInRect(rect, results, rewind, predicate);
+                child.FindTargetsInRect(rect, results, rewind, filter);
             }
         }
         #endregion
@@ -296,5 +296,9 @@ namespace PVZEngine.Collisions.Level
     public interface IQuadTreeNodeObject : IEquatable<IQuadTreeNodeObject>
     {
         Rect GetCollisionRect(float rewind = 0);
+    }
+    public interface IQuadTreeNodeFilter<T> where T : IQuadTreeNodeObject
+    {
+        bool Validate(T obj);
     }
 }
