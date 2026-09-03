@@ -91,19 +91,19 @@ namespace PVZEngine.Callbacks
             public ArmorDestroyInfo info;
         }
 
-        public readonly static CallbackType<EntityCallbackParams> POST_ENTITY_INIT = new();
-        public readonly static CallbackType<EntityCallbackParams> POST_ENTITY_UPDATE = new();
-        public readonly static CallbackType<EntityCallbackParams> POST_ENTITY_REMOVE = new();
+        public readonly static CallbackTypeFiltered<EntityCallbackParams, int> POST_ENTITY_INIT = new();
+        public readonly static CallbackTypeFiltered<EntityCallbackParams, int> POST_ENTITY_UPDATE = new();
+        public readonly static CallbackTypeFiltered<EntityCallbackParams, int> POST_ENTITY_REMOVE = new();
 
-        public readonly static CallbackType<PostEntityContactGroundParams> POST_ENTITY_CONTACT_GROUND = new();
-        public readonly static CallbackType<EntityCallbackParams> POST_ENTITY_LEAVE_GROUND = new();
+        public readonly static CallbackTypeFiltered<PostEntityContactGroundParams, NamespaceID> POST_ENTITY_CONTACT_GROUND = new();
+        public readonly static CallbackTypeFiltered<EntityCallbackParams, NamespaceID> POST_ENTITY_LEAVE_GROUND = new();
 
         public readonly static CallbackType<PreEntityCollisionParams, bool> PRE_ENTITY_COLLISION = new();
         public readonly static CallbackType<PostEntityCollisionParams> POST_ENTITY_COLLISION = new();
 
-        public readonly static CallbackType<EntityDeathParams, bool> PRE_ENTITY_DEATH = new();
-        public readonly static CallbackType<EntityDeathParams> POST_ENTITY_DEATH = new();
-        public readonly static CallbackType<EntityCallbackParams> POST_ENTITY_REVIVE = new();
+        public readonly static CallbackTypeFiltered<EntityDeathParams, bool, int> PRE_ENTITY_DEATH = new();
+        public readonly static CallbackTypeFiltered<EntityDeathParams, int> POST_ENTITY_DEATH = new();
+        public readonly static CallbackTypeFiltered<EntityCallbackParams, int> POST_ENTITY_REVIVE = new();
 
         public readonly static CallbackType<ArmorParams> POST_EQUIP_ARMOR = new();
         public readonly static CallbackType<PostArmorDestroyParams> POST_DESTROY_ARMOR = new();
@@ -140,7 +140,7 @@ namespace PVZEngine.Callbacks
         public readonly static CallbackType<LevelCallbackParams> POST_FINAL_WAVE_EVENT = new();
 
         public readonly static CallbackType<PostWaveParams> POST_WAVE = new();
-        public readonly static CallbackType<PostWaveParams> POST_WAVE_FINISHED = new();
-        public readonly static CallbackType<PostGameOverParams> POST_GAME_OVER = new();
+        public readonly static CallbackTypeFiltered<PostWaveParams, int> POST_WAVE_FINISHED = new();
+        public readonly static CallbackTypeFiltered<PostGameOverParams, int> POST_GAME_OVER = new();
     }
 }

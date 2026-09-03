@@ -6,14 +6,24 @@ namespace PVZEngine.Callbacks
     {
         internal ICallbackHandler CreateHandler();
     }
+    public sealed class CallbackType<TArgs> : ICallbackType
+    {
+        public CallbackType() { }
+        ICallbackHandler ICallbackType.CreateHandler() => new CallbackHandler<TArgs>();
+    }
     public class CallbackType<TArgs, TResult> : ICallbackType
     {
         public CallbackType() { }
         ICallbackHandler ICallbackType.CreateHandler() => new CallbackHandler<TArgs, TResult>();
     }
-    public sealed class CallbackType<TArgs> : ICallbackType
+    public sealed class CallbackTypeFiltered<TArgs, TFilter> : ICallbackType
     {
-        public CallbackType() { }
-        ICallbackHandler ICallbackType.CreateHandler() => new CallbackHandler<TArgs>();
+        public CallbackTypeFiltered() { }
+        ICallbackHandler ICallbackType.CreateHandler() => new CallbackHandlerFiltered<TArgs, TFilter>();
+    }
+    public class CallbackTypeFiltered<TArgs, TResult, TFilter> : ICallbackType
+    {
+        public CallbackTypeFiltered() { }
+        ICallbackHandler ICallbackType.CreateHandler() => new CallbackHandlerFiltered<TArgs, TResult, TFilter>();
     }
 }

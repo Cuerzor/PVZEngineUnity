@@ -297,7 +297,7 @@ namespace PVZEngine.Entities
             {
                 entity = this,
             };
-            Level.Triggers.RunCallback(LevelCallbacks.POST_ENTITY_LEAVE_GROUND, param);
+            Level.Triggers.RunCallbackFiltered(LevelCallbacks.POST_ENTITY_LEAVE_GROUND, param, Definition.GetID());
         }
         #endregion
 

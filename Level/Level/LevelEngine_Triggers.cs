@@ -11,23 +11,49 @@ namespace PVZEngine.Level
     public partial class LevelEngine
     {
         #region 公有方法
-        public void AddTrigger<TArgs, TResult>(Trigger<TArgs, TResult> trigger)
-        {
-            Triggers.AddTrigger(trigger);
-            addedTriggers.Add(trigger);
-        }
         public void AddTrigger<TArgs>(Trigger<TArgs> trigger)
         {
             Triggers.AddTrigger(trigger);
             addedTriggers.Add(trigger);
         }
-        public void AddTrigger<TArgs, TResult>(CallbackType<TArgs, TResult> callbackID, Action<TArgs, CallbackResult<TResult>> action, int priority = 0, object? filter = null)
+        public void AddTrigger<TArgs, TResult>(Trigger<TArgs, TResult> trigger)
         {
-            AddTrigger(new Trigger<TArgs, TResult>(callbackID, action, priority, filter));
+            Triggers.AddTrigger(trigger);
+            addedTriggers.Add(trigger);
         }
-        public void AddTrigger<TArgs>(CallbackType<TArgs> callbackID, Action<TArgs, CallbackResultVoid> action, int priority = 0, object? filter = null)
+        public void AddTriggerFiltered<TArgs, TFilter>(TriggerFiltered<TArgs, TFilter> trigger)
         {
-            AddTrigger(new Trigger<TArgs>(callbackID, action, priority, filter));
+            Triggers.AddTrigger(trigger);
+            addedTriggers.Add(trigger);
+        }
+        public void AddTriggerFiltered<TArgs, TResult, TFilter>(TriggerFiltered<TArgs, TResult, TFilter> trigger)
+        {
+            Triggers.AddTrigger(trigger);
+            addedTriggers.Add(trigger);
+        }
+        public void AddTrigger<TArgs>(CallbackType<TArgs> callbackID, Action<TArgs, CallbackResultVoid> action, int priority = 0)
+        {
+            AddTrigger(new Trigger<TArgs>(callbackID, action, priority));
+        }
+        public void AddTrigger<TArgs, TResult>(CallbackType<TArgs, TResult> callbackID, Action<TArgs, CallbackResult<TResult>> action, int priority = 0)
+        {
+            AddTrigger(new Trigger<TArgs, TResult>(callbackID, action, priority));
+        }
+        public void AddTrigger<TArgs, TFiltered>(CallbackTypeFiltered<TArgs, TFiltered> callbackID, Action<TArgs, CallbackResultVoid> action, int priority = 0)
+        {
+            AddTriggerFiltered(new TriggerFiltered<TArgs, TFiltered>(callbackID, action, priority));
+        }
+        public void AddTrigger<TArgs, TResult, TFiltered>(CallbackTypeFiltered<TArgs, TResult, TFiltered> callbackID, Action<TArgs, CallbackResult<TResult>> action, int priority = 0)
+        {
+            AddTriggerFiltered(new TriggerFiltered<TArgs, TResult, TFiltered>(callbackID, action, priority));
+        }
+        public void AddTriggerFiltered<TArgs, TFiltered>(CallbackTypeFiltered<TArgs, TFiltered> callbackID, Action<TArgs, CallbackResultVoid> action, TFiltered? filter, int priority = 0)
+        {
+            AddTriggerFiltered(new TriggerFiltered<TArgs, TFiltered>(callbackID, action, priority, filter));
+        }
+        public void AddTriggerFiltered<TArgs, TResult, TFiltered>(CallbackTypeFiltered<TArgs, TResult, TFiltered> callbackID, Action<TArgs, CallbackResult<TResult>> action, TFiltered? filter, int priority = 0)
+        {
+            AddTriggerFiltered(new TriggerFiltered<TArgs, TResult, TFiltered>(callbackID, action, priority, filter));
         }
         public bool RemoveTrigger(ITrigger trigger)
         {

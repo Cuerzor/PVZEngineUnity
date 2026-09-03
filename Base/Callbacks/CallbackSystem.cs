@@ -28,24 +28,24 @@ namespace PVZEngine.Callbacks
             }
             return result;
         }
-        public void RunCallbackFiltered<TArgs>(CallbackType<TArgs> callbackType, TArgs args, object? filter)
+        public void RunCallbackFiltered<TArgs, TFilter>(CallbackTypeFiltered<TArgs, TFilter> callbackType, TArgs args, TFilter? filter)
         {
             if (handlers.TryGetValue(callbackType, out var handler))
             {
-                var callbackHandler = (CallbackHandler<TArgs>)handler;
+                var callbackHandler = (CallbackHandlerFiltered<TArgs, TFilter>)handler;
                 using var callbackResultItem = CallbackResultVoid.Rent();
                 var callbackResult = callbackResultItem.Value;
-                callbackHandler.ExecuteFiltered(args, filter, callbackResult);
+                callbackHandler.Execute(args, filter, callbackResult);
             }
         }
-        public TResult? RunCallbackWithResultFiltered<TArgs, TResult>(CallbackType<TArgs, TResult> callbackType, TArgs args, TResult? result, object? filter)
+        public TResult? RunCallbackWithResultFiltered<TArgs, TResult, TFilter>(CallbackTypeFiltered<TArgs, TResult, TFilter> callbackType, TArgs args, TResult? result, TFilter? filter)
         {
             if (handlers.TryGetValue(callbackType, out var handler))
             {
-                var callbackHandler = (CallbackHandler<TArgs, TResult>)handler;
+                var callbackHandler = (CallbackHandlerFiltered<TArgs, TResult, TFilter>)handler;
                 using var callbackResultItem = CallbackResult<TResult>.Rent(result);
                 var callbackResult = callbackResultItem.Value;
-                callbackHandler.ExecuteFiltered(args, filter, callbackResult);
+                callbackHandler.Execute(args, filter, callbackResult);
                 result = callbackResult.GetValue();
             }
             return result;

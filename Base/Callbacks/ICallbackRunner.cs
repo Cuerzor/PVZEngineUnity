@@ -6,7 +6,7 @@ namespace PVZEngine.Callbacks
     {
         void RunCallback<TArgs>(CallbackType<TArgs> callbackType, TArgs args);
         TResult? RunCallbackWithResult<TArgs, TResult>(CallbackType<TArgs, TResult> callbackType, TArgs args, TResult? result);
-        void RunCallbackFiltered<TArgs>(CallbackType<TArgs> callbackType, TArgs args, object? filter);
-        TResult? RunCallbackWithResultFiltered<TArgs, TResult>(CallbackType<TArgs, TResult> callbackType, TArgs args, TResult? result, object? filter);
+        void RunCallbackFiltered<TArgs, TFilter>(CallbackTypeFiltered<TArgs, TFilter> callbackType, TArgs args, TFilter? filter);
+        TResult? RunCallbackWithResultFiltered<TArgs, TResult, TFilter>(CallbackTypeFiltered<TArgs, TResult, TFilter> callbackType, TArgs args, TResult? result, TFilter? filter);
     }
 }
