@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using PVZEngine.Entities;
 using PVZEngine.Level;
@@ -192,62 +193,62 @@ namespace PVZEngine.Collisions.Level
         {
             var min = center - size * 0.5f;
             var filterRect = new Rect(min.x, min.z, size.x, size.z);
-            var bounds = new Bounds(center, size);
-            return Overlap(filterRect, param, h => bounds.IntersectsOptimized(h.GetBounds()));
+            var totalMask = param.hostileMask | param.friendlyMask;
+            overlapBoxFilter.SetParameters(param, center, size);
+            overlapBuffer.Clear();
+            FindCollidersRange(totalMask, filterRect, overlapBuffer, 0, overlapBoxFilter);
+            return overlapBuffer.ToArray();
         }
         public void OverlapBoxNonAlloc(Vector3 center, Vector3 size, OverlapParams param, List<IEntityCollider> results)
         {
             var min = center - size * 0.5f;
             var filterRect = new Rect(min.x, min.z, size.x, size.z);
-            var bounds = new Bounds(center, size);
-            OverlapNonAlloc(filterRect, param, h => bounds.IntersectsOptimized(h.GetBounds()), results);
+            var totalMask = param.hostileMask | param.friendlyMask;
+            overlapBoxFilter.SetParameters(param, center, size);
+            overlapBuffer.Clear();
+            FindCollidersRange(totalMask, filterRect, overlapBuffer, 0, overlapBoxFilter);
+            results.AddRange(overlapBuffer);
         }
         public IEntityCollider[] OverlapSphere(Vector3 center, float radius, OverlapParams param)
         {
             var min = center - Vector3.one * radius;
             var filterRect = new Rect(min.x, min.z, radius * 2, radius * 2);
-            return Overlap(filterRect, param, h => Geometry.CollideBetweenCubeAndSphere(h.GetBounds(), center, radius));
+            var totalMask = param.hostileMask | param.friendlyMask;
+            overlapSphereFilter.SetParameters(param, center, radius);
+            overlapBuffer.Clear();
+            FindCollidersRange(totalMask, filterRect, overlapBuffer, 0, overlapSphereFilter);
+            return overlapBuffer.ToArray();
         }
         public void OverlapSphereNonAlloc(Vector3 center, float radius, OverlapParams param, List<IEntityCollider> results)
         {
             var min = center - Vector3.one * radius;
             var filterRect = new Rect(min.x, min.z, radius * 2, radius * 2);
-            OverlapNonAlloc(filterRect, param, h => Geometry.CollideBetweenCubeAndSphere(h.GetBounds(), center, radius), results);
+            var totalMask = param.hostileMask | param.friendlyMask;
+            overlapSphereFilter.SetParameters(param, center, radius);
+            overlapBuffer.Clear();
+            FindCollidersRange(totalMask, filterRect, overlapBuffer, 0, overlapSphereFilter);
+            results.AddRange(overlapBuffer);
         }
         public IEntityCollider[] OverlapCapsule(Vector3 point0, Vector3 point1, float radius, OverlapParams param)
         {
             var center = (point1 + point0) * 0.5f;
             var min = center - Vector3.one * radius;
             var filterRect = new Rect(min.x, min.z, radius * 2, radius * 2);
-            var capsule = new Capsule(point0, point1, radius);
-            return Overlap(filterRect, param, h => Geometry.CollideBetweenCubeAndCapsule(capsule, h.GetBounds()));
+            var totalMask = param.hostileMask | param.friendlyMask;
+            overlapCapsuleFilter.SetParameters(param, point0, point1, radius);
+            overlapBuffer.Clear();
+            FindCollidersRange(totalMask, filterRect, overlapBuffer, 0, overlapSphereFilter);
+            return overlapBuffer.ToArray();
         }
         public void OverlapCapsuleNonAlloc(Vector3 point0, Vector3 point1, float radius, OverlapParams param, List<IEntityCollider> results)
         {
             var center = (point1 + point0) * 0.5f;
             var min = center - Vector3.one * radius;
             var filterRect = new Rect(min.x, min.z, radius * 2, radius * 2);
-            var capsule = new Capsule(point0, point1, radius);
-            OverlapNonAlloc(filterRect, param, h => Geometry.CollideBetweenCubeAndCapsule(capsule, h.GetBounds()), results);
-        }
-        public IEntityCollider[] Overlap(Rect filterRect, OverlapParams param, Predicate<Hitbox> predicate)
-        {
-            if (predicate == null)
-                return Array.Empty<IEntityCollider>();
             var totalMask = param.hostileMask | param.friendlyMask;
-            overlapFilter.SetParameters(param, predicate);
+            overlapCapsuleFilter.SetParameters(param, point0, point1, radius);
             overlapBuffer.Clear();
-            FindCollidersRange(totalMask, filterRect, overlapBuffer, 0, overlapFilter);
-            return overlapBuffer.ToArray();
-        }
-        private void OverlapNonAlloc(Rect filterRect, OverlapParams param, Predicate<Hitbox> predicate, List<IEntityCollider> results)
-        {
-            if (predicate == null)
-                return;
-            var totalMask = param.hostileMask | param.friendlyMask;
-            overlapFilter.SetParameters(param, predicate);
-            overlapBuffer.Clear();
-            FindCollidersRange(totalMask, filterRect, overlapBuffer, 0, overlapFilter);
+            FindCollidersRange(totalMask, filterRect, overlapBuffer, 0, overlapCapsuleFilter);
             results.AddRange(overlapBuffer);
         }
         #endregion
@@ -384,7 +385,9 @@ namespace PVZEngine.Collisions.Level
         private QuadTreeParams quadTreeParams;
         private ColliderComparer colliderComparer = new ColliderComparer();
         private QuadTreeNodeFilterCollider colliderFilter = new QuadTreeNodeFilterCollider();
-        private QuadTreeNodeFilterOverlapCollider overlapFilter = new QuadTreeNodeFilterOverlapCollider();
+        private QuadTreeNodeFilterOverlapBoxCollider overlapBoxFilter = new QuadTreeNodeFilterOverlapBoxCollider();
+        private QuadTreeNodeFilterOverlapSphereCollider overlapSphereFilter = new QuadTreeNodeFilterOverlapSphereCollider();
+        private QuadTreeNodeFilterOverlapCapsuleCollider overlapCapsuleFilter = new QuadTreeNodeFilterOverlapCapsuleCollider();
 
         private SortedDictionary<long, BuiltinCollisionEntity> entities = new SortedDictionary<long, BuiltinCollisionEntity>();
         private Dictionary<long, BuiltinCollisionEntity> entityTrash = new Dictionary<long, BuiltinCollisionEntity>();

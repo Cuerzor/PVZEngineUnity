@@ -2,15 +2,19 @@
 
 using System;
 using PVZEngine.Entities;
+using PVZEngine.Tools.Geometry;
+using PVZEngine.Tools.Mathematics;
+using UnityEngine;
 
 namespace PVZEngine.Collisions.Level
 {
-    public class QuadTreeNodeFilterOverlapCollider : IQuadTreeNodeFilter<BuiltinCollisionCollider>
+    public class QuadTreeNodeFilterOverlapBoxCollider : IQuadTreeNodeFilter<BuiltinCollisionCollider>
     {
-        public void SetParameters(OverlapParams param, Predicate<Hitbox>? hitboxPredicate)
+        public void SetParameters(OverlapParams param, Vector3 center, Vector3 size)
         {
             this.param = param;
-            this.hitboxPredicate = hitboxPredicate;
+            this.center = center;
+            this.size = size;
         }
 
         public bool Validate(BuiltinCollisionCollider collider2)
@@ -21,7 +25,7 @@ namespace PVZEngine.Collisions.Level
             if (EntityCollisionHelper.CanCollideFaction(param.hostileMask, param.friendlyMask, param.faction, entity))
             {
                 var hitbox = collider2.GetHitbox();
-                if (hitboxPredicate == null || hitboxPredicate(hitbox))
+                if (hitbox.IsInBox(center, size))
                 {
                     return true;
                 }
@@ -29,6 +33,65 @@ namespace PVZEngine.Collisions.Level
             return false;
         }
         private OverlapParams param;
-        private Predicate<Hitbox>? hitboxPredicate;
+        private Vector3 center;
+        private Vector3 size;
+    }
+    public class QuadTreeNodeFilterOverlapSphereCollider : IQuadTreeNodeFilter<BuiltinCollisionCollider>
+    {
+        public void SetParameters(OverlapParams param, Vector3 center, float radius)
+        {
+            this.param = param;
+            this.center = center;
+            this.radius = radius;
+        }
+
+        public bool Validate(BuiltinCollisionCollider collider2)
+        {
+            var entity = collider2.Entity;
+            if (!param.includeIgnored && entity.IsCollisionOverlapDisabled())
+                return false;
+            if (EntityCollisionHelper.CanCollideFaction(param.hostileMask, param.friendlyMask, param.faction, entity))
+            {
+                var hitbox = collider2.GetHitbox();
+                if (hitbox.IsInSphere(center, radius))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private OverlapParams param;
+        private Vector3 center;
+        private float radius;
+    }
+    public class QuadTreeNodeFilterOverlapCapsuleCollider : IQuadTreeNodeFilter<BuiltinCollisionCollider>
+    {
+        public void SetParameters(OverlapParams param, Vector3 point0, Vector3 point1, float radius)
+        {
+            this.param = param;
+            this.point0 = point0;
+            this.point1 = point1;
+            this.radius = radius;
+        }
+
+        public bool Validate(BuiltinCollisionCollider collider2)
+        {
+            var entity = collider2.Entity;
+            if (!param.includeIgnored && entity.IsCollisionOverlapDisabled())
+                return false;
+            if (EntityCollisionHelper.CanCollideFaction(param.hostileMask, param.friendlyMask, param.faction, entity))
+            {
+                var hitbox = collider2.GetHitbox();
+                if (hitbox.IsInCapsule(point0, point1, radius))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        private OverlapParams param;
+        private Vector3 point0;
+        private Vector3 point1;
+        private float radius;
     }
 }
