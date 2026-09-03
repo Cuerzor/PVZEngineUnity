@@ -110,7 +110,7 @@ namespace PVZEngine.Entities
                 behaviour.Update(entity);
             }
         }
-        public void PreTakeDamage(DamageInput input, CallbackResult result)
+        public void PreTakeDamage(DamageInput input, CallbackResult<bool> result)
         {
             foreach (var behaviour in behaviourCaches)
             {
@@ -140,7 +140,7 @@ namespace PVZEngine.Entities
                 behaviour.PostLeaveGround(entity);
             }
         }
-        public void PreCollision(EntityCollision collision, CallbackResult callbackResult)
+        public void PreCollision(EntityCollision collision, CallbackResult<bool> callbackResult)
         {
             foreach (var behaviour in behaviourCaches)
             {
@@ -156,7 +156,7 @@ namespace PVZEngine.Entities
                 behaviour.PostCollision(collision, state);
             }
         }
-        public void PreDeath(Entity entity, DeathInfo deathInfo, CallbackResult result)
+        public void PreDeath(Entity entity, DeathInfo deathInfo, CallbackResult<bool> result)
         {
             foreach (var behaviour in behaviourCaches)
             {

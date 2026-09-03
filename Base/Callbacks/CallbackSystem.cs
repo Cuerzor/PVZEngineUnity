@@ -8,33 +8,45 @@ namespace PVZEngine.Callbacks
     {
         public void RunCallback<TArgs>(CallbackType<TArgs> callbackType, TArgs args)
         {
-            RunCallbackWithResult<TArgs, object>(callbackType, args, null);
-        }
-        public TResult? RunCallbackWithResult<TArgs, TResult>(CallbackType<TArgs> callbackType, TArgs args, TResult? result)
-        {
             if (handlers.TryGetValue(callbackType, out var handler))
             {
                 var callbackHandler = (CallbackHandler<TArgs>)handler;
-                using var callbackResultItem = CallbackResult.Rent(result);
+                using var callbackResultItem = CallbackResultVoid.Rent();
                 var callbackResult = callbackResultItem.Value;
                 callbackHandler.Execute(args, callbackResult);
-                result = callbackResult.GetValue<TResult>();
+            }
+        }
+        public TResult? RunCallbackWithResult<TArgs, TResult>(CallbackType<TArgs, TResult> callbackType, TArgs args, TResult? result)
+        {
+            if (handlers.TryGetValue(callbackType, out var handler))
+            {
+                var callbackHandler = (CallbackHandler<TArgs, TResult>)handler;
+                using var callbackResultItem = CallbackResult<TResult>.Rent(result);
+                var callbackResult = callbackResultItem.Value;
+                callbackHandler.Execute(args, callbackResult);
+                result = callbackResult.GetValue();
             }
             return result;
         }
         public void RunCallbackFiltered<TArgs>(CallbackType<TArgs> callbackType, TArgs args, object? filter)
         {
-            RunCallbackWithResultFiltered<TArgs, object>(callbackType, args, null, filter);
-        }
-        public TResult? RunCallbackWithResultFiltered<TArgs, TResult>(CallbackType<TArgs> callbackType, TArgs args, TResult? result, object? filter)
-        {
             if (handlers.TryGetValue(callbackType, out var handler))
             {
                 var callbackHandler = (CallbackHandler<TArgs>)handler;
-                using var callbackResultItem = CallbackResult.Rent(result);
+                using var callbackResultItem = CallbackResultVoid.Rent();
                 var callbackResult = callbackResultItem.Value;
                 callbackHandler.ExecuteFiltered(args, filter, callbackResult);
-                result = callbackResult.GetValue<TResult>();
+            }
+        }
+        public TResult? RunCallbackWithResultFiltered<TArgs, TResult>(CallbackType<TArgs, TResult> callbackType, TArgs args, TResult? result, object? filter)
+        {
+            if (handlers.TryGetValue(callbackType, out var handler))
+            {
+                var callbackHandler = (CallbackHandler<TArgs, TResult>)handler;
+                using var callbackResultItem = CallbackResult<TResult>.Rent(result);
+                var callbackResult = callbackResultItem.Value;
+                callbackHandler.ExecuteFiltered(args, filter, callbackResult);
+                result = callbackResult.GetValue();
             }
             return result;
         }

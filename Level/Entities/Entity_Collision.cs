@@ -46,10 +46,10 @@ namespace PVZEngine.Entities
         }
         public bool PreCollision(EntityCollision collision)
         {
-            using var resultItem = CallbackResult.Rent(true);
+            using var resultItem = CallbackResult<bool>.Rent(true);
             var result = resultItem.Value;
             Definition.PreCollision(collision, result);
-            bool shouldContinue = result.GetValue<bool>();
+            bool shouldContinue = result.GetValue();
 
             if (!result.IsBreakRequested)
             {

@@ -4,15 +4,31 @@ using System;
 
 namespace PVZEngine.Callbacks
 {
+    public class Trigger<TArgs, TResult> : ITrigger
+    {
+        public CallbackType<TArgs, TResult> Type { get; }
+        ICallbackType ITrigger.Type => Type;
+        public Action<TArgs, CallbackResult<TResult>> Action { get; }
+        public int Priority { get; }
+        public object? Filter { get; }
+
+        public Trigger(CallbackType<TArgs, TResult> type, Action<TArgs, CallbackResult<TResult>> action, int priority, object? filter = null)
+        {
+            Type = type;
+            Action = action;
+            Priority = priority;
+            Filter = filter;
+        }
+    }
     public class Trigger<TArgs> : ITrigger
     {
         public CallbackType<TArgs> Type { get; }
         ICallbackType ITrigger.Type => Type;
-        public Action<TArgs, CallbackResult> Action { get; }
+        public Action<TArgs, CallbackResultVoid> Action { get; }
         public int Priority { get; }
         public object? Filter { get; }
 
-        public Trigger(CallbackType<TArgs> type, Action<TArgs, CallbackResult> action, int priority, object? filter = null)
+        public Trigger(CallbackType<TArgs> type, Action<TArgs, CallbackResultVoid> action, int priority, object? filter = null)
         {
             Type = type;
             Action = action;

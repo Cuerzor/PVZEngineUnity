@@ -22,7 +22,11 @@ namespace PVZEngine
         {
             return triggers.ToArray();
         }
-        public void AddTrigger<TArgs>(CallbackType<TArgs> callbackID, Action<TArgs, CallbackResult> action, int priority = 0, object? filter = null)
+        public void AddTrigger<TArgs, TResult>(CallbackType<TArgs, TResult> callbackID, Action<TArgs, CallbackResult<TResult>> action, int priority = 0, object? filter = null)
+        {
+            triggers.Add(new Trigger<TArgs, TResult>(callbackID, action, priority, filter));
+        }
+        public void AddTrigger<TArgs>(CallbackType<TArgs> callbackID, Action<TArgs, CallbackResultVoid> action, int priority = 0, object? filter = null)
         {
             triggers.Add(new Trigger<TArgs>(callbackID, action, priority, filter));
         }

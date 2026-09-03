@@ -146,10 +146,10 @@ namespace PVZEngine.Entities
         }
         private bool PreDeath(DeathInfo info)
         {
-            using var callbackResultItem = CallbackResult.Rent(true);
+            using var callbackResultItem = CallbackResult<bool>.Rent(true);
             var callbackResult = callbackResultItem.Value;
             Definition.PreDeath(this, info, callbackResult);
-            var shouldContinue = callbackResult.GetValue<bool>();
+            var shouldContinue = callbackResult.GetValue();
 
             if (!callbackResult.IsBreakRequested)
             {

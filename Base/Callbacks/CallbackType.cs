@@ -11,7 +11,9 @@ namespace PVZEngine.Callbacks
         public CallbackType() { }
         ICallbackHandler ICallbackType.CreateHandler() => new CallbackHandler<TArgs, TResult>();
     }
-    public sealed class CallbackType<TArgs> : CallbackType<TArgs, object>
+    public sealed class CallbackType<TArgs> : ICallbackType
     {
+        public CallbackType() { }
+        ICallbackHandler ICallbackType.CreateHandler() => new CallbackHandler<TArgs>();
     }
 }

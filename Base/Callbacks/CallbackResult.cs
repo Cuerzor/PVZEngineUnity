@@ -6,44 +6,60 @@ using UnityEngine.Pool;
 
 namespace PVZEngine.Callbacks
 {
-    public class CallbackResult
+    public abstract class CallbackResultBase
+    {
+        public void Break() => IsBreakRequested = true;
+        public bool IsBreakRequested { get; protected set; }
+
+    }
+    public class CallbackResult<T> : CallbackResultBase
     {
         private CallbackResult()
         {
         }
-        public void SetValue(object? value)
+        public void SetValue(T? value)
         {
             this.value = value;
         }
-        public void SetFinalValue(object? value)
+        public void SetFinalValue(T? value)
         {
             SetValue(value);
             Break();
         }
-        public T? GetValue<T>()
+        public T? GetValue()
         {
-            if (value.TryToGeneric<T>(out var v))
-                return v;
-            return default;
+            return value;
         }
-        public void Break() => IsBreakRequested = true;
 
-        public static PoolItem<CallbackResult> Rent(object? value)
+        public static PoolItem<CallbackResult<T>> Rent(T? value)
         {
-            var item = new PoolItem<CallbackResult>(pool);
+            var item = new PoolItem<CallbackResult<T>>(pool);
             item.Value.value = value;
             return item;
         }
-        private static CallbackResult CreateFunc() => new CallbackResult();
-        private static void GetFunc(CallbackResult item) { }
-        private static void ReleaseFunc(CallbackResult item)
+        private static CallbackResult<T> CreateFunc() => new CallbackResult<T>();
+        private static void GetFunc(CallbackResult<T> item) { }
+        private static void ReleaseFunc(CallbackResult<T> item)
         {
             item.IsBreakRequested = false;
-            item.value = null;
+            item.value = default;
         }
-        public bool IsBreakRequested { get; private set; }
-        private object? value;
+        private T? value;
 
-        private static readonly ObjectPool<CallbackResult> pool = new ObjectPool<CallbackResult>(CreateFunc, GetFunc, ReleaseFunc);
+        private static readonly ObjectPool<CallbackResult<T>> pool = new ObjectPool<CallbackResult<T>>(CreateFunc, GetFunc, ReleaseFunc);
+    }
+    public class CallbackResultVoid : CallbackResultBase
+    {
+        public static PoolItem<CallbackResultVoid> Rent()
+        {
+            return new PoolItem<CallbackResultVoid>(pool);
+        }
+        private static CallbackResultVoid CreateFunc() => new CallbackResultVoid();
+        private static void GetFunc(CallbackResultVoid item) { }
+        private static void ReleaseFunc(CallbackResultVoid item)
+        {
+            item.IsBreakRequested = false;
+        }
+        private static readonly ObjectPool<CallbackResultVoid> pool = new ObjectPool<CallbackResultVoid>(CreateFunc, GetFunc, ReleaseFunc);
     }
 }

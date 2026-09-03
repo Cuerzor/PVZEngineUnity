@@ -4,18 +4,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PVZEngine.Callbacks;
+using static UnityEngine.Networking.UnityWebRequest;
 
 namespace PVZEngine.Level
 {
     public partial class LevelEngine
     {
         #region 公有方法
+        public void AddTrigger<TArgs, TResult>(Trigger<TArgs, TResult> trigger)
+        {
+            Triggers.AddTrigger(trigger);
+            addedTriggers.Add(trigger);
+        }
         public void AddTrigger<TArgs>(Trigger<TArgs> trigger)
         {
             Triggers.AddTrigger(trigger);
             addedTriggers.Add(trigger);
         }
-        public void AddTrigger<TArgs>(CallbackType<TArgs> callbackID, Action<TArgs, CallbackResult> action, int priority = 0, object? filter = null)
+        public void AddTrigger<TArgs, TResult>(CallbackType<TArgs, TResult> callbackID, Action<TArgs, CallbackResult<TResult>> action, int priority = 0, object? filter = null)
+        {
+            AddTrigger(new Trigger<TArgs, TResult>(callbackID, action, priority, filter));
+        }
+        public void AddTrigger<TArgs>(CallbackType<TArgs> callbackID, Action<TArgs, CallbackResultVoid> action, int priority = 0, object? filter = null)
         {
             AddTrigger(new Trigger<TArgs>(callbackID, action, priority, filter));
         }

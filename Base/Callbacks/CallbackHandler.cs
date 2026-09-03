@@ -64,9 +64,9 @@ namespace PVZEngine.Callbacks
         protected List<TTrigger> triggers = new List<TTrigger>();
         protected volatile TTrigger[]? triggersSnapshot;
     }
-    internal class CallbackHandler<TArgs> : CallbackHandlerBase<Trigger<TArgs>>
+    internal class CallbackHandler<TArgs, TResult> : CallbackHandlerBase<Trigger<TArgs, TResult>>
     {
-        public void Execute(TArgs args, CallbackResult result)
+        public void Execute(TArgs args, CallbackResult<TResult> result)
         {
             var currentTriggers = GetTriggersSnapshot();
             foreach (var trigger in currentTriggers)
@@ -76,7 +76,39 @@ namespace PVZEngine.Callbacks
                     break;
             }
         }
-        public void ExecuteFiltered(TArgs args, object? filter, CallbackResult result)
+        public void ExecuteFiltered(TArgs args, object? filter, CallbackResult<TResult> result)
+        {
+            var currentTriggers = GetTriggersSnapshot();
+            foreach (var trigger in currentTriggers)
+            {
+                if (!IsFilterMatched(trigger.Filter, filter))
+                    continue;
+
+                trigger.Action(args, result);
+                if (result.IsBreakRequested)
+                    break;
+            }
+        }
+        private bool IsFilterMatched(object? triggerFilter, object? callbackFilter)
+        {
+            if (triggerFilter == null || callbackFilter == null)
+                return true;
+            return triggerFilter.Equals(callbackFilter);
+        }
+    }
+    internal class CallbackHandler<TArgs> : CallbackHandlerBase<Trigger<TArgs>>
+    {
+        public void Execute(TArgs args, CallbackResultVoid result)
+        {
+            var currentTriggers = GetTriggersSnapshot();
+            foreach (var trigger in currentTriggers)
+            {
+                trigger.Action(args, result);
+                if (result.IsBreakRequested)
+                    break;
+            }
+        }
+        public void ExecuteFiltered(TArgs args, object? filter, CallbackResultVoid result)
         {
             var currentTriggers = GetTriggersSnapshot();
             foreach (var trigger in currentTriggers)
