@@ -89,8 +89,8 @@ namespace PVZEngine
     }
     public sealed class PropertyKey<T> : IPropertyKey
     {
-        int IPropertyKey.Key => key;
-        Type IPropertyKey.Type => typeof(T);
+        public int Key => key;
+        public Type Type => typeof(T);
         object? IPropertyKey.DefaultValue => DefaultValue;
         public T? DefaultValue { get; }
         private int key;

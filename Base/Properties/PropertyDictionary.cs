@@ -17,9 +17,9 @@ namespace PVZEngine
             {
                 Debug.LogWarning("Trying to set a property with an invalid key!");
             }
-            if (value == null)
+            if (value is null)
             {
-                if (!propertyDict.TryGetValue(key, out var valueBefore) || valueBefore == null)
+                if (!propertyDict.TryGetValue(key, out var valueBefore) || valueBefore is null)
                     return false;
             }
             else
@@ -32,7 +32,22 @@ namespace PVZEngine
         }
         public bool SetProperty<T>(PropertyKey<T> key, T? value)
         {
-            return SetPropertyObject(key, value);
+            if (key.Key == 0)
+            {
+                Debug.LogWarning("Trying to set a property with an invalid key!");
+            }
+            if (value is null)
+            {
+                if (!propertyDict.TryGetValue(key, out var valueBefore) || valueBefore is null)
+                    return false;
+            }
+            else
+            {
+                if (propertyDict.TryGetValue(key, out var valueBefore) && value.Equals(valueBefore))
+                    return false;
+            }
+            propertyDict[key] = value;
+            return true;
         }
         public object? GetPropertyObject(IPropertyKey name)
         {

@@ -9,11 +9,26 @@ namespace PVZEngine
 {
     public class PropertyDictionaryString
     {
+        public bool SetProperty<T>(PropertyKeyString key, T? value)
+        {
+            if (value is null)
+            {
+                if (!propertyDict.TryGetValue(key, out var valueBefore) || valueBefore is null)
+                    return false;
+            }
+            else
+            {
+                if (propertyDict.TryGetValue(key, out var valueBefore) && value.Equals(valueBefore))
+                    return false;
+            }
+            propertyDict[key] = value;
+            return true;
+        }
         public bool SetProperty(PropertyKeyString key, object? value)
         {
-            if (value == null)
+            if (value is null)
             {
-                if (!propertyDict.TryGetValue(key, out var valueBefore) || valueBefore == null)
+                if (!propertyDict.TryGetValue(key, out var valueBefore) || valueBefore is null)
                     return false;
             }
             else

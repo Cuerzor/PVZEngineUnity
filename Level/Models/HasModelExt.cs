@@ -6,7 +6,7 @@ namespace PVZEngine.Models
 {
     public static class HasModelExt
     {
-        public static void SetModelProperty(this IHasModel self, string name, object? value)
+        public static void SetModelProperty<T>(this IHasModel self, string name, T? value)
         {
             self.GetModelInterface()?.SetModelProperty(name, value);
         }

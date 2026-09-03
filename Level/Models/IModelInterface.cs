@@ -10,7 +10,7 @@ namespace PVZEngine.Models
         void SetAnimationInt(string name, int value);
         void SetAnimationFloat(string name, float value);
         IAnimatorInterface? GetAnimatorInterface(string name);
-        void SetModelProperty(string name, object? value);
+        void SetModelProperty<T>(string name, T? value);
         void TriggerModel(string name);
         string SortingLayer { get; set; }
         int SortingOrder { get; set; }
