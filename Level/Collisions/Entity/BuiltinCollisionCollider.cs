@@ -58,7 +58,7 @@ namespace PVZEngine.Collisions
         public void ReevaluateBounds()
         {
             hitbox.ReevaluateBounds();
-            bottomRect = hitbox.GetLocalBounds().GetBottomRect();
+            ClearCollisionRectCache();
         }
         public bool GetCollisionTime(Vector3 prevPosition, BuiltinCollisionCollider target, float precision, out float collisionTime)
         {
@@ -137,17 +137,43 @@ namespace PVZEngine.Collisions
         }
         public Rect GetCollisionRect(float rewind = 0)
         {
-            var rect = bottomRect;
-            var entityPos = Entity.Position;
-            var entityMotion = entityPos - Entity.PreviousPosition;
-            var offset = entityPos - entityMotion * rewind;
-            rect.x += offset.x;
-            rect.y += offset.z;
+            Rect rect;
+            if (isBottomRectCached)
+            {
+                rect = cachedBottomRect;
+            }
+            else
+            {
+                rect = CalculateCollisionRect();
+                cachedBottomRect = rect;
+                isBottomRectCached = true;
+            }
+
+            if (rewind > 0)
+            {
+                var entityMotion = Entity.Position - Entity.PreviousPosition;
+                var offset = -entityMotion * rewind;
+                rect.x += offset.x;
+                rect.y += offset.z;
+            }
             return rect;
         }
         public Hitbox GetHitbox()
         {
             return hitbox;
+        }
+        private Rect CalculateCollisionRect()
+        {
+            var rect = hitbox.GetLocalBounds().GetBottomRect();
+            var entityPos = Entity.Position;
+            var offset = entityPos;
+            rect.x += offset.x;
+            rect.y += offset.z;
+            return rect;
+        }
+        public void ClearCollisionRectCache()
+        {
+            isBottomRectCached = false;
         }
         #endregion
 
@@ -270,7 +296,8 @@ namespace PVZEngine.Collisions
         public Entity Entity { get; set; }
         public NamespaceID? ArmorSlot { get; set; }
         private bool lastEnabledState = true;
-        private Rect bottomRect;
+        private bool isBottomRectCached;
+        private Rect cachedBottomRect;
         private Hitbox hitbox;
         private List<EntityCollision> collisionList = new List<EntityCollision>();
         private List<EntityCollision> exitBuffer = new List<EntityCollision>();

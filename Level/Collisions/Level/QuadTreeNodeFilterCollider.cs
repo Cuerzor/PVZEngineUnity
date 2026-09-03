@@ -22,9 +22,9 @@ namespace PVZEngine.Collisions.Level
             var ent2 = collider2.Entity;
             if (ent1 == ent2)
                 return false;
-            if (ent2.IsCollisionCheckDisabled())
-                return false;
             if (!EntityCollisionHelper.CanCollideFaction(maskHostile, maskFriendly, faction, ent2))
+                return false;
+            if (ent2.IsCollisionCheckDisabled())
                 return false;
             return true;
         }

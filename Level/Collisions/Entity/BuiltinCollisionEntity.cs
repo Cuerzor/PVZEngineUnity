@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using PVZEngine.Entities;
 using PVZEngine.Level;
+using UnityEngine;
 
 namespace PVZEngine.Collisions
 {
@@ -34,6 +35,10 @@ namespace PVZEngine.Collisions
         }
         public void UpdateEntityPosition()
         {
+            foreach (var collider in colliders)
+            {
+                collider.ClearCollisionRectCache();
+            }
         }
         public void UpdateEntitySize()
         {
