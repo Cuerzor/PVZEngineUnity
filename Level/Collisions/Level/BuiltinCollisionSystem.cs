@@ -69,6 +69,8 @@ namespace PVZEngine.Collisions.Level
         }
         private void UpdateTrash()
         {
+            if (entityTrash.Count == 0) 
+                return;
             foreach (var trash in entityTrash)
             {
                 entityPool.Release(trash.Value);
@@ -385,7 +387,7 @@ namespace PVZEngine.Collisions.Level
         private QuadTreeNodeFilterOverlapCollider overlapFilter = new QuadTreeNodeFilterOverlapCollider();
 
         private SortedDictionary<long, BuiltinCollisionEntity> entities = new SortedDictionary<long, BuiltinCollisionEntity>();
-        private SortedDictionary<long, BuiltinCollisionEntity> entityTrash = new SortedDictionary<long, BuiltinCollisionEntity>();
+        private Dictionary<long, BuiltinCollisionEntity> entityTrash = new Dictionary<long, BuiltinCollisionEntity>();
     }
     public class SerializableBuiltinCollisionSystem : ISerializableCollisionSystem
     {
