@@ -2,174 +2,82 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Tools.Random;
 
 namespace PVZEngine.Tools
 {
     public static class LinqHelper
     {
-        public static T Random<T>(this IEnumerable<T> list, RandomGenerator rng)
+        public static void TakeWhileLast<T>(this IList<T> list, Func<T, bool> predicate, List<T> results)
         {
-            var index = rng.Next(0, list.Count());
-            return list.ElementAt(index);
-        }
-        public static IEnumerable<T> RandomTake<T>(this IEnumerable<T> list, int count, RandomGenerator rng)
-        {
-            List<T> results = new List<T>();
-            List<T> pool = new List<T>(list);
-            for (int i = 0; i < count; i++)
+            for (int i = list.Count - 1; i >= 0; i--)
             {
-                var poolCount = pool.Count;
-                if (poolCount <= 0)
-                    break;
-                var index = rng.Next(0, poolCount);
-                var element = pool[index];
-                results.Add(element);
-                pool.Remove(element);
-            }
-            return results;
-        }
-        public static T WeightedRandom<T>(this IEnumerable<T> list, Func<T, int> weightGetter, RandomGenerator rng)
-        {
-            var count = list.Count();
-            if (count <= 0)
-                throw new ArgumentException("The list to get weighted random element is empty.");
-            var weights = list.Select(weightGetter);
-            int totalWeight = weights.Sum();
-            int value = rng.Next(0, totalWeight);
-            for (int i = 0; i < count; i++)
-            {
-                value -= weights.ElementAt(i);
-                if (value <= 0)
+                var element = list[i];
+                if (predicate(element))
                 {
-                    return list.ElementAt(i);
+                    results.Insert(0, element);
+                }
+                else
+                {
+                    break;
                 }
             }
-            throw new ArgumentException("The list to get weighted random element ran out.");
         }
-        public static T WeightedRandom<T>(this IEnumerable<T> list, Func<T, float> weightGetter, RandomGenerator rng)
+
+        #region 极端值（单个）
+        public static float GetMostOne(this IEnumerable<float> targets)
         {
-            var count = list.Count();
-            if (count <= 0)
-                throw new ArgumentException("The list to get weighted random element is empty.");
-            var index = rng.WeightedRandom(list.Select(weightGetter));
-            return list.ElementAt(index);
+            return GetExtremeOne(targets, v => v, comparer: static (current, max) => current > max, initialValue: float.MinValue);
         }
-        public static T WeightedRandom<T>(this IEnumerable<T> list, Func<T, int> weightGetter, int value)
+        public static float GetLeastOne(this IEnumerable<float> targets)
         {
-            var count = list.Count();
-            if (count <= 0)
-                throw new ArgumentException("The list to get weighted random element is empty.");
-            for (int i = 0; i < count; i++)
+            return GetExtremeOne(targets, v => v, comparer: static (current, max) => current < max, initialValue: float.MaxValue);
+        }
+        public static T? GetMostOne<T>(this IEnumerable<T> targets, Func<T, float> selector)
+        {
+            return GetExtremeOne(targets, selector, comparer: static (current, max) => current > max, initialValue: float.MinValue);
+        }
+        public static T? GetLeastOne<T>(this IEnumerable<T> targets, Func<T, float> selector)
+        {
+            return GetExtremeOne(targets, selector, comparer: static (current, max) => current < max, initialValue: float.MaxValue);
+        }
+        private static T? GetExtremeOne<T>(IEnumerable<T> targets, Func<T, float> selector, Func<float, float, bool> comparer, float initialValue)
+        {
+            float extremeValue = initialValue;
+            T? extremeItem = default;
+
+            foreach (var item in targets)
             {
-                var element = list.ElementAt(i);
-                var weight = weightGetter(element);
-                value -= weight;
-                if (value <= 0)
+                float value = selector(item);
+                if (comparer(value, extremeValue))
                 {
-                    return list.ElementAt(i);
+                    extremeValue = value;
+                    extremeItem = item;
                 }
             }
-            throw new ArgumentException("The list to get weighted random element ran out.");
+            return extremeItem;
         }
-        public static T WeightedRandom<T>(this IEnumerable<T> list, Func<T, float> weightGetter, float value)
-        {
-            var count = list.Count();
-            if (count <= 0)
-                throw new ArgumentException("The list to get weighted random element is empty.");
-            for (int i = 0; i < count; i++)
-            {
-                var element = list.ElementAt(i);
-                var weight = weightGetter(element);
-                value -= weight;
-                if (value <= 0)
-                {
-                    return list.ElementAt(i);
-                }
-            }
-            throw new ArgumentException("The list to get weighted random element ran out.");
-        }
-        public static IEnumerable<T> WeightedRandomTake<T>(this IEnumerable<T> list, IList<int> weights, int count, RandomGenerator rng)
-        {
-            List<T> results = new List<T>();
+        #endregion
 
-            List<T> pool = new List<T>(list);
-            List<int> weightPool = new List<int>(weights);
-            for (int i = 0; i < count; i++)
-            {
-                if (pool.Count <= 0 || weights.Count <= 0)
-                    break;
-                var index = rng.WeightedRandom(weightPool);
-                var element = pool[index];
-
-                results.Add(element);
-
-                pool.RemoveAt(index);
-                weightPool.RemoveAt(index);
-            }
-            return results;
-        }
-        public static IEnumerable<T> WeightedRandomTake<T>(this IEnumerable<T> list, IList<float> weights, int count, RandomGenerator rng)
+        #region 极端值（多个）
+        public static void GetMostOnes(this IEnumerable<float> targets, List<float> results)
         {
-            List<T> results = new List<T>();
-
-            List<T> pool = new List<T>(list);
-            List<float> weightPool = new List<float>(weights);
-            for (int i = 0; i < count; i++)
-            {
-                if (pool.Count <= 0 || weights.Count <= 0)
-                    break;
-                var index = rng.WeightedRandom(weightPool);
-                var element = pool[index];
-
-                results.Add(element);
-
-                pool.RemoveAt(index);
-                weightPool.RemoveAt(index);
-            }
-            return results;
+            GetExtremeOnes(targets, v => v, comparer: static (current, max) => current > max, initialValue: float.MinValue, results);
         }
-        public static IEnumerable<T> Randomize<T>(this IEnumerable<T> list, RandomGenerator rng)
+        public static void GetLeastOnes(this IEnumerable<float> targets, List<float> results)
         {
-            return list.RandomTake(list.Count(), rng);
+            GetExtremeOnes(targets, v => v, comparer: static (current, max) => current < max, initialValue: float.MaxValue, results);
         }
-        public static void Shuffle<T>(this T[] array, RandomGenerator rng)
+        public static void GetMostOnes<T>(this IEnumerable<T> targets, Func<T, float> selector, List<T> results)
         {
-            if (array.Length <= 1)
-                return;
-
-            for (int i = array.Length - 1; i > 0; i--)
-            {
-                int j = rng.Next(i + 1);
-                (array[i], array[j]) = (array[j], array[i]);
-            }
+            GetExtremeOnes(targets, selector, comparer: static (current, max) => current > max, initialValue: float.MinValue, results);
         }
-        public static IEnumerable<T> TakeWhileLast<T>(this IEnumerable<T> list, Func<T, bool> predicate)
+        public static void GetLeastOnes<T>(this IEnumerable<T> targets, Func<T, float> selector, List<T> results)
         {
-            return list.Reverse().TakeWhile(predicate).Reverse();
+            GetExtremeOnes(targets, selector, comparer: static (current, max) => current < max, initialValue: float.MaxValue, results);
         }
-
-        #region 极端值
-        public static IEnumerable<float> GetMostOnes(this IEnumerable<float> targets)
+        private static void GetExtremeOnes<T>(IEnumerable<T> targets, Func<T, float> selector, Func<float, float, bool> comparer, float initialValue, List<T> results)
         {
-            return GetExtremeOnes(targets, v => v, comparer: (current, max) => current > max, initialValue: float.MinValue);
-        }
-        public static IEnumerable<float> GetLeastOnes(this IEnumerable<float> targets)
-        {
-            return GetExtremeOnes(targets, v => v, comparer: (current, max) => current < max, initialValue: float.MaxValue);
-        }
-        public static IEnumerable<T> GetMostOnes<T>(this IEnumerable<T> targets, Func<T, float> selector)
-        {
-            return GetExtremeOnes(targets, selector, comparer: (current, max) => current > max, initialValue: float.MinValue);
-        }
-        public static IEnumerable<T> GetLeastOnes<T>(this IEnumerable<T> targets, Func<T, float> selector)
-        {
-            return GetExtremeOnes(targets, selector, comparer: (current, max) => current < max, initialValue: float.MaxValue);
-        }
-        private static IEnumerable<T> GetExtremeOnes<T>(IEnumerable<T> targets, Func<T, float> selector, Func<float, float, bool> comparer, float initialValue)
-        {
-            List<T> bestItems = new List<T>();
             float extremeValue = initialValue;
 
             foreach (var item in targets)
@@ -178,16 +86,14 @@ namespace PVZEngine.Tools
                 if (comparer(value, extremeValue))
                 {
                     extremeValue = value;
-                    bestItems.Clear();
-                    bestItems.Add(item);
+                    results.Clear();
+                    results.Add(item);
                 }
                 else if (value == extremeValue)
                 {
-                    bestItems.Add(item);
+                    results.Add(item);
                 }
             }
-
-            return bestItems;
         }
         #endregion
     }

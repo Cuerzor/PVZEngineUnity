@@ -2,57 +2,436 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using UnityEngine;
 
 namespace PVZEngine.Tools.Random
 {
     public static class RandomHelper
     {
-        public static bool NextPercent(this RandomGenerator rng, float percent, float precision = 100000)
+        #region 随机取单
+        public static T Random<T>(this IList<T> list, RandomGenerator rng)
         {
-            return rng.Next(100 * precision) < percent * precision;
+            return list[rng.Next(list.Count)];
         }
-        public static int WeightedRandom(this RandomGenerator rng, IEnumerable<int> weights)
+        public static T Random<T>(this IEnumerable<T> source, RandomGenerator rng)
         {
-            var count = weights.Count();
+            using var poolItem = ListPool<T>.Rent();
+            var pool = poolItem.Value;
+            pool.AddRange(source);
+            return pool.Random(rng);
+        }
+        #endregion
+
+        #region 随机取多
+        public static void RandomTake<T>(this IEnumerable<T> list, int count, RandomGenerator rng, List<T> results)
+        {
+            using var poolItem = ListPool<T>.Rent();
+            var pool = poolItem.Value;
+            pool.AddRange(list);
+
+            int total = pool.Count;
+            if (total == 0)
+                return;
+
+            int takeCount = Math.Min(count, total);
+            pool.ShuffleFirst(count, rng);
+            for (int i = 0; i < takeCount; i++)
+            {
+                results.Add(pool[i]);
+            }
+        }
+        public static void RandomTakeAll<T>(this IEnumerable<T> list, RandomGenerator rng, List<T> results)
+        {
+            using var poolItem = ListPool<T>.Rent();
+            var pool = poolItem.Value;
+            pool.AddRange(list);
+
+            int total = pool.Count;
+            if (total == 0)
+                return;
+
+            int takeCount = total;
+            pool.ShuffleFirst(total, rng);
+            for (int i = 0; i < takeCount; i++)
+            {
+                results.Add(pool[i]);
+            }
+        }
+        #endregion
+
+        #region 随机去除多个
+        public static void RandomRemove<T>(this List<T> list, int count, RandomGenerator rng)
+        {
             if (count <= 0)
-                return -1;
-            int totalWeight = weights.Sum();
+                return;
+
+            int total = list.Count;
+            if (total == 0)
+                return;
+
+            if (count >= total)
+            {
+                list.Clear();
+                return;
+            }
+
+            int removeCount = Math.Min(count, total);
+            list.ShuffleLast(count, rng);
+            list.RemoveRange(list.Count - removeCount, removeCount);
+        }
+        #endregion
+
+        #region 随机保留多个
+        public static void RandomKeep<T>(this List<T> list, int count, RandomGenerator rng)
+        {
+            RandomRemove(list, list.Count - count, rng);
+        }
+        #endregion
+
+        #region 权重取值
+        public static int WeightedRandom(this RandomGenerator rng, IList<int> weights)
+        {
+            var count = weights.Count;
+            if (count <= 0)
+                throw new ArgumentException("The list to get weighted random element is empty.");
+
+            int totalWeight = 0;
+            for (int i = 0; i < count; i++)
+                totalWeight += weights[i];
+
+            if (totalWeight <= 0)
+                throw new ArgumentException("Total weight must be positive.");
+
             int value = rng.Next(0, totalWeight);
             for (int i = 0; i < count; i++)
             {
-                value -= weights.ElementAt(i);
-                if (value < 0)
-                {
+                value -= weights[i];
+                if (value <= 0)
                     return i;
-                }
             }
-            return -1;
+            throw new ArgumentException("The list to get weighted random element ran out.");
         }
-        public static int WeightedRandom(this RandomGenerator rng, IEnumerable<float> weights)
+        public static int WeightedRandom(this RandomGenerator rng, IList<float> weights)
         {
-            var count = weights.Count();
+            var count = weights.Count;
             if (count <= 0)
-                return -1;
-            float totalWeight = weights.Sum();
+                throw new ArgumentException("The list to get weighted random element is empty.");
+
+            float totalWeight = 0;
+            for (int i = 0; i < count; i++)
+                totalWeight += weights[i];
+
+            if (totalWeight <= 0)
+                throw new ArgumentException("Total weight must be positive.");
+
             float value = rng.Next(0, totalWeight);
             for (int i = 0; i < count; i++)
             {
-                value -= weights.ElementAt(i);
-                if (value < 0)
-                {
+                value -= weights[i];
+                if (value <= 0)
                     return i;
+            }
+            throw new ArgumentException("The list to get weighted random element ran out.");
+        }
+        #endregion
+
+        #region 权重取单（权重列表）
+        public static T WeightedRandom<T>(this IList<T> list, IList<int> weights, RandomGenerator rng)
+        {
+            var index = rng.WeightedRandom(weights);
+            return list[index];
+        }
+        public static T WeightedRandom<T>(this IEnumerable<T> source, IList<int> weights, RandomGenerator rng)
+        {
+            using var poolItem = ListPool<T>.Rent();
+            var pool = poolItem.Value;
+            pool.AddRange(source);
+            return pool.WeightedRandom(weights, rng);
+        }
+        public static T WeightedRandom<T>(this IList<T> list, IList<float> weights, RandomGenerator rng)
+        {
+            var index = rng.WeightedRandom(weights);
+            return list[index];
+        }
+        public static T WeightedRandom<T>(this IEnumerable<T> source, IList<float> weights, RandomGenerator rng)
+        {
+            using var poolItem = ListPool<T>.Rent();
+            var pool = poolItem.Value;
+            pool.AddRange(source);
+            return pool.WeightedRandom(weights, rng);
+        }
+        #endregion
+
+        #region 权重取单（权重获取器）
+        public static T WeightedRandom<T>(this IList<T> list, Func<T, int> weightGetter, RandomGenerator rng)
+        {
+            var count = list.Count;
+            if (count <= 0)
+                throw new ArgumentException("The list to get weighted random element is empty.");
+
+            int totalWeight = 0;
+            for (int i = 0; i < count; i++)
+                totalWeight += weightGetter(list[i]);
+
+            if (totalWeight <= 0)
+                throw new ArgumentException("Total weight must be positive.");
+
+            int value = rng.Next(0, totalWeight);
+            for (int i = 0; i < count; i++)
+            {
+                value -= weightGetter(list[i]);
+                if (value <= 0)
+                    return list[i];
+            }
+            throw new ArgumentException("The list to get weighted random element ran out.");
+        }
+        public static T WeightedRandom<T>(this IEnumerable<T> source, Func<T, int> weightGetter, RandomGenerator rng)
+        {
+            using var poolItem = ListPool<T>.Rent();
+            var pool = poolItem.Value;
+            pool.AddRange(source);
+            return pool.WeightedRandom(weightGetter, rng);
+        }
+        public static T WeightedRandom<T>(this IList<T> list, Func<T, float> weightGetter, RandomGenerator rng)
+        {
+            var count = list.Count;
+            if (count <= 0)
+                throw new ArgumentException("The list to get weighted random element is empty.");
+
+            float totalWeight = 0;
+            for (int i = 0; i < count; i++)
+                totalWeight += weightGetter(list[i]);
+
+            if (totalWeight <= 0)
+                throw new ArgumentException("Total weight must be positive.");
+
+            float value = rng.Next(0, totalWeight);
+            for (int i = 0; i < count; i++)
+            {
+                value -= weightGetter(list[i]);
+                if (value <= 0)
+                    return list[i];
+            }
+            throw new ArgumentException("The list to get weighted random element ran out.");
+        }
+        public static T WeightedRandom<T>(this IEnumerable<T> source, Func<T, float> weightGetter, RandomGenerator rng)
+        {
+            using var poolItem = ListPool<T>.Rent();
+            var pool = poolItem.Value;
+            pool.AddRange(source);
+            return pool.WeightedRandom(weightGetter, rng);
+        }
+        #endregion
+
+        #region 权重取单（给定随机值）
+        public static T WeightedRandom<T>(this IList<T> list, Func<T, int> weightGetter, int value)
+        {
+            var count = list.Count;
+            if (count <= 0)
+                throw new ArgumentException("The list to get weighted random element is empty.");
+
+            for (int i = 0; i < count; i++)
+            {
+                value -= weightGetter(list[i]);
+                if (value <= 0)
+                    return list[i];
+            }
+            throw new ArgumentException("The list to get weighted random element ran out.");
+        }
+        public static T WeightedRandom<T>(this IEnumerable<T> source, Func<T, int> weightGetter, int value)
+        {
+            using var poolItem = ListPool<T>.Rent();
+            var pool = poolItem.Value;
+            pool.AddRange(source);
+            return pool.WeightedRandom(weightGetter, value);
+        }
+        public static T WeightedRandom<T>(this IList<T> list, Func<T, float> weightGetter, float value)
+        {
+            var count = list.Count;
+            if (count <= 0)
+                throw new ArgumentException("The list to get weighted random element is empty.");
+
+            for (int i = 0; i < count; i++)
+            {
+                value -= weightGetter(list[i]);
+                if (value <= 0)
+                    return list[i];
+            }
+            throw new ArgumentException("The list to get weighted random element ran out.");
+        }
+        public static T WeightedRandom<T>(this IEnumerable<T> source, Func<T, float> weightGetter, float value)
+        {
+            using var poolItem = ListPool<T>.Rent();
+            var pool = poolItem.Value;
+            pool.AddRange(source);
+            return pool.WeightedRandom(weightGetter, value);
+        }
+        #endregion
+
+        #region 权重取多（权重列表）
+        public static void WeightedRandomTake<T>(this IEnumerable<T> source, IList<int> weights, int count, RandomGenerator rng, List<T> results)
+        {
+            using var poolItem = ListPool<T>.Rent();
+            var list = poolItem.Value;
+            list.AddRange(source);
+
+            using var weightsItems = ListPool<int>.Rent();
+            var weightsCopy = weightsItems.Value;
+            weightsCopy.AddRange(weights);
+
+            int total = list.Count;
+            if (total <= 0 || weightsCopy.Count <= 0)
+                return;
+            if (total != weightsCopy.Count)
+                throw new ArgumentException("The size of weights must be equal to the size of source.");
+
+            var takeCount = Mathf.Min(count, total);
+            // 部分加权 Fisher-Yates 洗牌：只洗前 count 个位置
+            for (int i = 0; i < takeCount; i++)
+            {
+                // 在循环中，仅对从 i 到 list.Count-1 的部分进行加权随机
+                float totalWeight = 0;
+                for (int k = i; k < list.Count; k++) 
+                    totalWeight += weightsCopy[k];
+
+                if (totalWeight <= 0)
+                    throw new ArgumentException("Total weight must be positive.");
+
+                float rand = rng.Next(totalWeight);
+                int j = i;
+                for (; j < list.Count; j++)
+                {
+                    rand -= weightsCopy[j];
+                    if (rand <= 0f) 
+                        break;
+                }
+                if (j >= list.Count) 
+                    j = list.Count - 1;
+                // 然后交换 i 和 j 的元素及权重
+                // 交换元素及对应的权重，使选中的元素到达位置 i
+                if (i != j)
+                {
+                    (list[i], list[j]) = (list[j], list[i]);
+                    (weightsCopy[i], weightsCopy[j]) = (weightsCopy[j], weightsCopy[i]);
                 }
             }
-            return -1;
+            // 将前 takeCount 个元素加入 results
+            for (int i = 0; i < takeCount; i++)
+            {
+                results.Add(list[i]);
+            }
         }
-        public static T GetRandomOfMostOnes<T>(this RandomGenerator rng, IEnumerable<T> values, Func<T, float> selector)
+        public static void WeightedRandomTake<T>(this IEnumerable<T> source, IList<float> weights, int count, RandomGenerator rng, List<T> results)
         {
-            return values.GetMostOnes(selector).Random(rng);
+            using var poolItem = ListPool<T>.Rent();
+            var list = poolItem.Value;
+            list.AddRange(source);
+
+            using var weightsItems = ListPool<float>.Rent();
+            var weightsCopy = weightsItems.Value;
+            weightsCopy.AddRange(weights);
+
+            int total = list.Count;
+            if (total <= 0 || weightsCopy.Count <= 0)
+                return;
+            if (total != weightsCopy.Count)
+                throw new ArgumentException("The size of weights must be equal to the size of source.");
+
+            var takeCount = Mathf.Min(count, total);
+            // 部分加权 Fisher-Yates 洗牌：只洗前 count 个位置
+            for (int i = 0; i < takeCount; i++)
+            {
+                // 在循环中，仅对从 i 到 list.Count-1 的部分进行加权随机
+                float totalWeight = 0;
+                for (int k = i; k < list.Count; k++)
+                    totalWeight += weightsCopy[k];
+
+                if (totalWeight <= 0)
+                    throw new ArgumentException("Total weight must be positive.");
+
+                float rand = rng.Next(totalWeight);
+                int j = i;
+                for (; j < list.Count; j++)
+                {
+                    rand -= weightsCopy[j];
+                    if (rand <= 0f)
+                        break;
+                }
+                if (j >= list.Count)
+                    j = list.Count - 1;
+                // 交换元素及对应的权重，使选中的元素到达位置 i
+                if (i != j)
+                {
+                    (list[i], list[j]) = (list[j], list[i]);
+                    (weightsCopy[i], weightsCopy[j]) = (weightsCopy[j], weightsCopy[i]);
+                }
+            }
+            // 将前 takeCount 个元素加入 results
+            for (int i = 0; i < takeCount; i++)
+            {
+                results.Add(list[i]);
+            }
         }
-        public static T GetRandomOfLeastOnes<T>(this RandomGenerator rng, IEnumerable<T> values, Func<T, float> selector)
+        #endregion
+
+        #region 洗牌
+        public static void ShuffleLast<T>(this IList<T> list, int count, RandomGenerator rng)
         {
-            return values.GetLeastOnes(selector).Random(rng);
+            if (count <= 0 || list.Count == 0) 
+                return;
+            int total = list.Count;
+            int takeCount = Math.Min(count, total);
+            for (int i = total - 1; i >= total - takeCount; i--)
+            {
+                int j = rng.Next(i + 1);        // 范围 [0, i]，包含自身
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+        }
+        public static void ShuffleFirst<T>(this IList<T> list, int count, RandomGenerator rng)
+        {
+            if (count <= 0 || list.Count == 0)
+                return;
+
+            int total = list.Count;
+            int takeCount = Math.Min(count, total);
+            for (int i = 0; i < takeCount; i++)
+            {
+                int j = rng.Next(i, total);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+        }
+        public static void Shuffle<T>(this IList<T> array, RandomGenerator rng)
+        {
+            if (array.Count <= 1)
+                return;
+
+            for (int i = array.Count - 1; i > 0; i--)
+            {
+                int j = rng.Next(i + 1);
+                (array[i], array[j]) = (array[j], array[i]);
+            }
+        }
+        #endregion
+
+        #region 极端值
+        public static T GetRandomOfMostOnes<T>(this IEnumerable<T> values, Func<T, float> selector, RandomGenerator rng)
+        {
+            using var listItem = ListPool<T>.Rent();
+            var list = listItem.Value;
+            values.GetMostOnes(selector, list);
+            return list.Random(rng);
+        }
+        public static T GetRandomOfLeastOnes<T>(this IEnumerable<T> values, Func<T, float> selector, RandomGenerator rng)
+        {
+            using var listItem = ListPool<T>.Rent();
+            var list = listItem.Value;
+            values.GetLeastOnes(selector, list);
+            return list.Random(rng);
+        }
+        #endregion
+        public static bool NextPercent(this RandomGenerator rng, float percent, int precision = 100000)
+        {
+            return rng.Next(precision) < (int)(percent * precision);
         }
     }
 }

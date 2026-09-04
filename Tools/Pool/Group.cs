@@ -2,8 +2,6 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
 
 namespace PVZEngine.Tools
 {
@@ -77,6 +75,21 @@ namespace PVZEngine.Tools
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable)groupings).GetEnumerator();
+        }
+        public int Count => groupings.Count;
+        public Grouping<TKey, TElement>? this[TKey key]
+        {
+            get 
+            {
+                foreach (var grouping in groupings)
+                {
+                    if (keyEqualityComparer.Equals(grouping.Key, key))
+                    {
+                        return grouping;
+                    }
+                }
+                return null;
+            }
         }
         private static readonly IComparer<Grouping<TKey, TElement>> keySortComparer = new GroupingSortComparer(false);
         private static readonly IComparer<Grouping<TKey, TElement>> keySortComparerDescending = new GroupingSortComparer(true);

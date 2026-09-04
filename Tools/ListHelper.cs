@@ -2,13 +2,30 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Tools.Random;
 
 namespace PVZEngine.Tools
 {
     public static class ListHelper
     {
+        public static void TakeToList<T>(this IList<T> list, int count, List<T> results)
+        {
+            if (count == 0)
+                return;
+            for (int i = 0; i < count; i++)
+            {
+                if (i >= list.Count)
+                    return;
+                results.Add(list[i]);
+            }
+        }
+        public static void FillRange(this List<int> list, int min, int max)
+        {
+            for (int i = min; i < max; i++)
+            {
+                list.Add(i);
+            }
+        }
         public static void AppendList<T>(this List<T> list, IList<T>? operand)
         {
             if (operand == null)

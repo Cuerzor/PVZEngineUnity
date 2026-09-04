@@ -29,6 +29,7 @@ namespace PVZEngine.Tools
             return GetEnumerator();
         }
         public int Count => list.Count;
+        public TElement this[int index] => list[index];
         public TKey Key { get; internal set; } = default!;
         private List<TElement> list = new List<TElement>();
     }

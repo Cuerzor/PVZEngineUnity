@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using PVZEngine.Callbacks;
 using PVZEngine.Entities;
 using PVZEngine.Tools;
+using PVZEngine.Tools.Random;
 
 namespace PVZEngine.Level
 {

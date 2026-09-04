@@ -197,7 +197,7 @@ namespace PVZEngine.Level
         }
         public void GetAllGrids(List<LawnGrid> results)
         {
-            results.AddRange(results);
+            results.AddRange(grids);
         }
         public LawnGrid? GetGrid(int column, int lane)
         {
