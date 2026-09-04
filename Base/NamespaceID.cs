@@ -8,7 +8,7 @@ using PVZEngine.Tools.Cloning;
 namespace PVZEngine
 {
     [Serializable]
-    public class NamespaceID : ICanClone
+    public class NamespaceID : ICanClone, IEquatable<NamespaceID>
     {
         public NamespaceID(string nsp, string name)
         {

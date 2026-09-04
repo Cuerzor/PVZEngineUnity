@@ -11,14 +11,14 @@ namespace PVZEngine
     {
         public bool SetProperty<T>(PropertyKeyString key, T? value)
         {
-            if (value is null)
+            if (!typeof(T).IsValueType && value is null)
             {
                 if (!propertyDict.TryGetValue(key, out var valueBefore) || valueBefore is null)
                     return false;
             }
             else
             {
-                if (propertyDict.TryGetValue(key, out var valueBefore) && value.Equals(valueBefore))
+                if (propertyDict.TryGetValue(key, out var valueBefore) && value!.Equals(valueBefore))
                     return false;
             }
             propertyDict[key] = value;

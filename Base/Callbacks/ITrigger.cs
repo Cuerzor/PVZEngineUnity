@@ -7,4 +7,9 @@ namespace PVZEngine.Callbacks
         public ICallbackType Type { get; }
         public int Priority { get; }
     }
+    public interface ITriggerFiltered<TFilter> : ITrigger
+    {
+        bool UseFilter { get; }
+        TFilter? Filter { get; }
+    }
 }
