@@ -2,19 +2,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Buffs;
+using PVZEngine.Tools;
 
 namespace PVZEngine.Modifiers
 {
     public static class PropertyCalculator
     {
-        public static object? CalculateProperty(this IEnumerable<ModifierSourceItem> modifiers, object? value)
+        public static object? CalculateProperty(this IList<ModifierSourceItem> modifiers, object? value)
         {
-            if (modifiers == null || modifiers.Count() == 0)
+            if (modifiers == null || modifiers.Count == 0)
                 return value;
 
-            var calculators = modifiers.Select(p => p.modifier.GetCalculator()).Where(c => c != null).Distinct();
+            using var calculatorsItem = HashSetPool<ModifierCalculator>.Rent();
+            var calculators = calculatorsItem.Value;
+
+            foreach (var modifierItem in modifiers)
+            {
+                var calc = modifierItem.modifier.GetCalculator();
+                if (calc == null)
+                    continue;
+                calculators.Add(calc);
+            }
             ModifierCalculator? calculator = null;
             foreach (var calc in calculators)
             {
@@ -26,12 +35,21 @@ namespace PVZEngine.Modifiers
                 throw new NullReferenceException($"Calculator for property does not exists.");
             return calculator.Calculate(value, modifiers);
         }
-        public static T? CalculateProperty<T>(this IEnumerable<ModifierSourceItem> modifiers, T? value)
+        public static T? CalculateProperty<T>(this IList<ModifierSourceItem> modifiers, T? value)
         {
-            if (modifiers == null || modifiers.Count() == 0)
+            if (modifiers == null || modifiers.Count == 0)
                 return value;
 
-            var calculators = modifiers.Select(p => p.modifier.GetCalculator()).Where(p => p != null).Distinct();
+            using var calculatorsItem = HashSetPool<ModifierCalculator>.Rent();
+            var calculators = calculatorsItem.Value;
+
+            foreach (var modifierItem in modifiers)
+            {
+                var calc = modifierItem.modifier.GetCalculator();
+                if (calc == null)
+                    continue;
+                calculators.Add(calc);
+            }
             ModifierCalculator<T>? calculator = null;
             foreach (var c in calculators)
             {

@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Entities;
+using static UnityEngine.Networking.UnityWebRequest;
 
 namespace PVZEngine.Grids
 {
@@ -85,17 +85,12 @@ namespace PVZEngine.Grids
         {
             if (layerEntities.TryGetValue(layer, out var hashSet))
             {
-                return hashSet.FirstOrDefault();
+                foreach (var ent in hashSet)
+                {
+                    return ent;
+                }
             }
             return null;
-        }
-        public Entity[] GetLayerEntities(NamespaceID layer)
-        {
-            if (layerEntities.TryGetValue(layer, out var hashSet))
-            {
-                return hashSet.ToArray();
-            }
-            return Array.Empty<Entity>();
         }
         public void GetLayerEntities(NamespaceID layer, List<Entity> results)
         {
@@ -120,25 +115,17 @@ namespace PVZEngine.Grids
         {
             return layerEntities.Count == 0;
         }
-        public Entity[] GetEntities()
+        public void GetEntities(List<Entity> results)
         {
-            return reverseLayerEntities.Keys.ToArray();
+            results.AddRange(reverseLayerEntities.Keys);
         }
-        public NamespaceID[] GetLayers()
+        public void GetLayers(List<NamespaceID> results)
         {
-            return layerEntities.Keys.ToArray();
+            results.AddRange(layerEntities.Keys);
         }
         #endregion
 
         #region 获取实体占据层
-        public NamespaceID[] GetEntityLayers(Entity entity)
-        {
-            if (reverseLayerEntities.TryGetValue(entity, out var reverseHashSet))
-            {
-                return reverseHashSet.ToArray();
-            }
-            return Array.Empty<NamespaceID>();
-        }
         public void GetEntityLayersNonAlloc(Entity entity, List<NamespaceID> results)
         {
             if (reverseLayerEntities.TryGetValue(entity, out var reverseHashSet))
@@ -151,7 +138,18 @@ namespace PVZEngine.Grids
         #region 序列化
         private void WriteLayersToSerializable(SerializableGrid seri)
         {
-            seri.layerEntityLists = layerEntities.ToDictionary(p => p.Key.ToString(), p => p.Value.Select(e => e.ID).ToArray());
+            seri.layerEntityLists = new Dictionary<string, long[]>();
+            foreach (var pair in layerEntities)
+            {
+                var entities = new long[pair.Value.Count];
+                int index = 0;
+                foreach (var ent in pair.Value)
+                {
+                    entities[index] = ent.ID;
+                    index++;
+                }
+                seri.layerEntityLists.Add(pair.Key.ToString(), entities);
+            }
         }
         private void LoadLayersFromSerializable(SerializableGrid seri)
         {

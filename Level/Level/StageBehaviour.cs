@@ -23,9 +23,13 @@ namespace PVZEngine.Level
         {
             return level.StageDefinition.HasBehaviour<T>();
         }
-        public PropertyModifier[] GetModifiers()
+        public int GetModifierCount()
         {
-            return modifiers.ToArray();
+            return modifiers.Count;
+        }
+        public PropertyModifier GetModifierAt(int index)
+        {
+            return modifiers[index];
         }
         protected void AddModifier(PropertyModifier modifier)
         {

@@ -12,9 +12,13 @@ namespace PVZEngine.Armors
         {
         }
         public virtual void PostUpdate(Armor armor) { }
-        public AuraEffectDefinition[] GetAuras()
+        public int GetAuraCount()
         {
-            return auraDefinitions.ToArray();
+            return auraDefinitions.Count;
+        }
+        public AuraEffectDefinition GetAuraAt(int i)
+        {
+            return auraDefinitions[i];
         }
         protected void AddAura(AuraEffectDefinition aura)
         {

@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Armors;
 using PVZEngine.Auras;
 using PVZEngine.Callbacks;
@@ -92,9 +91,13 @@ namespace PVZEngine.Entities
         {
             return behaviourCaches.Count;
         }
-        public T[] GetBehaviours<T>()
+        public void GetBehaviours<T>(List<T> results)
         {
-            return behaviourCaches.OfType<T>().ToArray();
+            foreach (var behaviour in behaviourCaches)
+            {
+                if (behaviour is T tBehaviour)
+                    results.Add(tBehaviour);
+            }
         }
         public void Init(Entity entity)
         {
@@ -215,9 +218,13 @@ namespace PVZEngine.Entities
         {
             return auraCaches;
         }
-        public PropertyModifier[] GetModifiers()
+        public int GetModifierCount()
         {
-            return modifierCaches;
+            return modifierCaches.Length;
+        }
+        public PropertyModifier GetModifierAt(int i)
+        {
+            return modifierCaches[i];
         }
         public sealed override string GetDefinitionType() => EngineDefinitionTypes.ENTITY;
         public abstract int Type { get; }

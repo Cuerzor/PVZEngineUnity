@@ -75,7 +75,7 @@ namespace PVZEngine
             var type = typeof(PropertyKey<>).MakeGenericType(propertyType);
             return (IPropertyKey)Activator.CreateInstance(type, namespaceKey, propertyKey, defaultValue);
         }
-        public static bool IsValid([NotNullWhen(true)] this IPropertyKey? key)
+        public static bool IsValid([NotNullWhen(true)]this IPropertyKey? key)
         {
             return key != null && key.Key > 0;
         }

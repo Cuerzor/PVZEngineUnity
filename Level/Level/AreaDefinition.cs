@@ -27,9 +27,13 @@ namespace PVZEngine.Level
         public virtual void PostFinalWaveEvent(LevelEngine level) { }
         public virtual void Update(LevelEngine level) { }
         public virtual float GetGroundY(LevelEngine level, float x, float z) { return 0; }
-        public PropertyModifier[] GetModifiers()
+        public int GetModifierCount()
         {
-            return modifiers.ToArray();
+            return modifiers.Count;
+        }
+        public PropertyModifier GetModifierAt(int i)
+        {
+            return modifiers[i];
         }
         protected void AddModifier(PropertyModifier modifier)
         {

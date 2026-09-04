@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.SeedPacks;
 using PVZEngine.Tools;
 using PVZEngine.Tools.Random;
@@ -82,14 +81,20 @@ namespace PVZEngine.Level
         #region 获取种子包数量
         public int GetConveyorSeedPackCount()
         {
-            return conveyorSeedPacks.Count(s => s != null);
+            int count = 0;
+            foreach (var seedPack in conveyorSeedPacks)
+            {
+                if (seedPack != null)
+                    count++;
+            }
+            return count;
         }
         #endregion
 
         #region 获取种子包
-        public ConveyorSeedPack[] GetAllConveyorSeedPacks()
+        public void GetAllConveyorSeedPacks(List<ConveyorSeedPack> results)
         {
-            return conveyorSeedPacks.ToArray();
+            results.AddRange(conveyorSeedPacks);
         }
         public ConveyorSeedPack? GetConveyorSeedPackAt(int index)
         {
@@ -99,11 +104,21 @@ namespace PVZEngine.Level
         }
         public ConveyorSeedPack? GetConveyorSeedPack(NamespaceID seedRef)
         {
-            return conveyorSeedPacks.FirstOrDefault(r => r != null && r.GetDefinitionID() == seedRef);
+            foreach (var seedPack in conveyorSeedPacks)
+            {
+                if (seedPack != null && seedPack.GetDefinitionID() == seedRef)
+                    return seedPack;
+            }
+            return null;
         }
         public ConveyorSeedPack? GetConveyorSeedPackByID(long id)
         {
-            return conveyorSeedPacks.FirstOrDefault(s => s.ID == id);
+            foreach (var seedPack in conveyorSeedPacks)
+            {
+                if (seedPack.ID == id)
+                    return seedPack;
+            }
+            return null;
         }
         #endregion
 
@@ -153,15 +168,25 @@ namespace PVZEngine.Level
             {
                 return null;
             }
-            var weights = entries.Select(e => GetSeedCountFromConveyorDrawPile(e.ID, e.Count));
-            var index = rng.WeightedRandom(weights.ToArray());
+            var weights = new int[entries.Length];
+            for (int i = 0; i < weights.Length; i++)
+            {
+                var e = entries[i];
+                weights[i] = GetSeedCountFromConveyorDrawPile(e.ID, e.Count);
+            }
+            var index = rng.WeightedRandom(weights);
             var entry = entries[index];
             TakeSeedFromConveyorDrawPile(entry.ID);
             return entry.ID;
         }
         public bool IsConveyorPoolEmpty(IConveyorPoolEntry[] entries)
         {
-            return entries.All(e => GetSeedCountFromConveyorDrawPile(e.ID, e.Count) <= 0);
+            foreach (var e in entries)
+            {
+                if (GetSeedCountFromConveyorDrawPile(e.ID, e.Count) > 0)
+                    return false;
+            }
+            return true;
         }
         public void RefillConveyorPool(IConveyorPoolEntry[] entries)
         {
@@ -207,7 +232,15 @@ namespace PVZEngine.Level
         #region 序列化
         public void WriteConveyorToSerializable(SerializableLevel seri)
         {
-            seri.conveyorSeedPacks = conveyorSeedPacks.OfType<ConveyorSeedPack>().Select(s => s.ToSerializable()).ToArray();
+            using var seriConveyorSeedPacksItem = ListPool<SerializableConveyorSeedPack>.Rent();
+            var seriConveyorSeedPacks = seriConveyorSeedPacksItem.Value;
+            foreach (var seedPack in conveyorSeedPacks)
+            {
+                if (seedPack == null)
+                    continue;
+                seriConveyorSeedPacks.Add(seedPack.ToSerializable());
+            }
+            seri.conveyorSeedPacks = seriConveyorSeedPacks.ToArray();
             seri.conveyorSlotCount = conveyorSlotCount;
             seri.conveyorSeedSpendRecord = conveyorSeedSpendRecord.ToSerializable();
         }
@@ -215,7 +248,17 @@ namespace PVZEngine.Level
         {
             conveyorSlotCount = seri.conveyorSlotCount;
             conveyorSeedSpendRecord = ConveyorSeedSpendRecords.ToDeserialized(seri.conveyorSeedSpendRecord);
-            conveyorSeedPacks = seri.conveyorSeedPacks.Select(s => ConveyorSeedPack.CreateFromSerializable(s, this)).OfType<ConveyorSeedPack>().ToList();
+            conveyorSeedPacks.Clear();
+            if (seri.conveyorSeedPacks != null)
+            {
+                foreach (var seriSeedPack in seri.conveyorSeedPacks)
+                {
+                    var seedPack = ConveyorSeedPack.CreateFromSerializable(seriSeedPack, this);
+                    if (seedPack == null)
+                        continue;
+                    conveyorSeedPacks.Add(seedPack);
+                }
+            }
         }
         public void ReadConveyorFromSerializable(SerializableLevel seri)
         {
@@ -223,7 +266,17 @@ namespace PVZEngine.Level
             {
                 if (seed == null)
                     continue;
-                var seriSeed = seri.conveyorSeedPacks.FirstOrDefault(s => s != null && s.id == seed.ID);
+                SerializableConveyorSeedPack? seriSeed = null;
+                if (seri.conveyorSeedPacks != null)
+                {
+                    foreach (var seriSeedPack in seri.conveyorSeedPacks)
+                    {
+                        if (seriSeedPack != null && seriSeedPack.id == seed.ID)
+                        {
+                            seriSeed = seriSeedPack;
+                        }
+                    }
+                }
                 if (seriSeed == null)
                     continue;
                 seed.LoadFromSerializable(this, seriSeed);

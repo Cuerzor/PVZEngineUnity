@@ -46,10 +46,6 @@ namespace PVZEngine.Entities
         {
             results.AddRange(takenGrids);
         }
-        public NamespaceID[] GetTakingGridLayers(LawnGrid grid)
-        {
-            return grid.GetEntityLayers(this);
-        }
         public void GetTakingGridLayersNonAlloc(LawnGrid grid, List<NamespaceID> results)
         {
             grid.GetEntityLayersNonAlloc(this, results);

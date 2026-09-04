@@ -6,13 +6,13 @@ namespace PVZEngine.Buffs
 {
     public partial class Buff
     {
-        public PropertyModifier[] GetModifiers()
+        public int GetModifierCount()
         {
-            return Definition.GetModifiers();
+            return Definition.GetModifierCount();
         }
-        public PropertyModifier[] GetModifiers(IPropertyKey propName)
+        public PropertyModifier GetModifierAt(int index)
         {
-            return Definition.GetModifiers(propName);
+            return Definition.GetModifierAt(index);
         }
         T? IModifierSource.GetProperty<T>(PropertyKey<T> name) where T : default => GetProperty<T>(name);
     }

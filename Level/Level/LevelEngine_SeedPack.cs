@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.SeedPacks;
+using PVZEngine.Tools;
 
 namespace PVZEngine.Level
 {
@@ -66,12 +66,12 @@ namespace PVZEngine.Level
             if (seed != null)
                 InsertSeedPackAt(index, seed);
         }
-        public void ReplaceSeedPacks(IEnumerable<ClassicSeedPack> targetsID)
+        public void ReplaceSeedPacks(IList<ClassicSeedPack> targetsID)
         {
-            var targetCount = targetsID.Count();
+            var targetCount = targetsID.Count;
             for (int i = 0; i < GetSeedSlotCount(); i++)
             {
-                var seed = i < targetCount ? targetsID.ElementAt(i) : null;
+                var seed = i < targetCount ? targetsID[i] : null;
                 ReplaceSeedPackAt(i, seed);
             }
         }
@@ -91,7 +91,13 @@ namespace PVZEngine.Level
         #region 获取种子包数量
         public int GetSeedPackCount()
         {
-            return seedPacks.Count(s => s != null);
+            int count = 0;
+            foreach (var seedPack in seedPacks)
+            {
+                if (seedPack != null)
+                    count++;
+            }
+            return count;
         }
         public int GetSeedSlotCount()
         {
@@ -112,9 +118,9 @@ namespace PVZEngine.Level
         #endregion
 
         #region 获取种子包
-        public ClassicSeedPack?[] GetAllSeedPacks()
+        public void GetAllSeedPacks(List<ClassicSeedPack?> results)
         {
-            return seedPacks.ToArray();
+            results.AddRange(seedPacks);
         }
         public ClassicSeedPack? GetSeedPackAt(int index)
         {
@@ -124,11 +130,21 @@ namespace PVZEngine.Level
         }
         public ClassicSeedPack? GetSeedPack(NamespaceID seedRef)
         {
-            return seedPacks.FirstOrDefault(r => r != null && r.GetDefinitionID() == seedRef);
+            foreach (var seedPack in seedPacks)
+            {
+                if (seedPack != null && seedPack.GetDefinitionID() == seedRef)
+                    return seedPack;
+            }
+            return null;
         }
         public ClassicSeedPack? GetSeedPackByID(long id)
         {
-            return seedPacks.FirstOrDefault(s => s != null && s.ID == id);
+            foreach (var seedPack in seedPacks)
+            {
+                if (seedPack != null && seedPack.ID == id)
+                    return seedPack;
+            }
+            return null;
         }
         #endregion
 
@@ -173,12 +189,25 @@ namespace PVZEngine.Level
         private void WriteSeedPacksToSerializable(SerializableLevel seri)
         {
             seri.currentSeedPackID = currentSeedPackID;
-            seri.seedPacks = seedPacks.Select(g => g != null ? g.ToSerializable() : null).ToArray();
+            seri.seedPacks = new SerializableClassicSeedPack[seedPacks.Length];
+            for (int i = 0; i < seri.seedPacks.Length; i++)
+            {
+                var seedPack = seedPacks[i];
+                seri.seedPacks[i] = seedPack != null ? seedPack.ToSerializable() : null;
+            }
         }
         private void CreateSeedPacksFromSerializable(SerializableLevel seri)
         {
             currentSeedPackID = seri.currentSeedPackID;
-            seedPacks = seri.seedPacks.Select(g => g != null ? ClassicSeedPack.CreateFromSerializable(g, this) : null).ToArray();
+            if (seri.seedPacks != null)
+            {
+                seedPacks = new ClassicSeedPack[seri.seedPacks.Length];
+                for (int i = 0; i < seedPacks.Length; i++)
+                {
+                    var seriSeedPack = seri.seedPacks[i];
+                    seedPacks[i] = seriSeedPack != null ? ClassicSeedPack.CreateFromSerializable(seriSeedPack, this) : null;
+                }
+            }
         }
         private void ReadSeedPacksFromSerializable(SerializableLevel seri)
         {
@@ -186,7 +215,18 @@ namespace PVZEngine.Level
             {
                 if (seed == null)
                     continue;
-                var seriSeed = seri.seedPacks.FirstOrDefault(s => s != null && s.id == seed.ID);
+                SerializableClassicSeedPack? seriSeed = null;
+                if (seri.seedPacks != null)
+                {
+                    foreach (var seriPack in seri.seedPacks)
+                    {
+                        if (seriPack != null && seriPack.id == seed.ID)
+                        {
+                            seriSeed = seriPack;
+                            break;
+                        }
+                    }
+                }
                 if (seriSeed == null)
                     continue;
                 seed.LoadFromSerializable(this, seriSeed);

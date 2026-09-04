@@ -2,12 +2,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Armors;
 using PVZEngine.Callbacks;
 using PVZEngine.Collisions;
 using PVZEngine.Damages;
 using PVZEngine.Level;
+using PVZEngine.Tools;
 
 namespace PVZEngine.Entities
 {
@@ -111,9 +111,12 @@ namespace PVZEngine.Entities
         {
             return armorDict.TryGetValue(slot, out var armor) ? armor : null;
         }
-        public NamespaceID[] GetActiveArmorSlots()
+        public void GetActiveArmorSlots(List<NamespaceID> results)
         {
-            return armorDict.Keys.ToArray();
+            foreach (var pair in armorDict)
+            {
+                results.Add(pair.Key);
+            }
         }
         public void ActivateArmorColliders(NamespaceID slot)
         {
@@ -167,8 +170,10 @@ namespace PVZEngine.Entities
         }
         private void UpdateArmors()
         {
-            var armors = armorDict.Values.ToArray();
-            foreach (var armor in armors)
+            using var armorBufferItem = ListPool<Armor>.Rent();
+            var armorBuffer = armorBufferItem.Value;
+            armorBuffer.AddRange(armorDict.Values);
+            foreach (var armor in armorBuffer)
             {
                 armor.Update();
             }
@@ -200,7 +205,12 @@ namespace PVZEngine.Entities
                 var armor = pair.Value;
                 if (armor == null || seri.armors == null)
                     continue;
-                var seriArmor = seri.armors.Values.FirstOrDefault(a => a.slot == pair.Key);
+                SerializableArmor? seriArmor = null;
+                foreach (var seriPair in seri.armors)
+                {
+                    if (seriPair.Value.slot == pair.Key)
+                        seriArmor = seriPair.Value;
+                }
                 if (seriArmor == null)
                     continue;
                 armor.LoadFromSerializable(seriArmor);

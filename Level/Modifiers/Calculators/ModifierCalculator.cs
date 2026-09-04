@@ -7,17 +7,17 @@ namespace PVZEngine.Modifiers
 {
     public abstract class ModifierCalculator
     {
-        public abstract object? Calculate(object? value, IEnumerable<ModifierSourceItem> modifiers);
+        public abstract object? Calculate(object? value, IList<ModifierSourceItem> modifiers);
     }
     public abstract class ModifierCalculator<TValue> : ModifierCalculator
     {
-        public override sealed object? Calculate(object? value, IEnumerable<ModifierSourceItem> modifiers)
+        public override sealed object? Calculate(object? value, IList<ModifierSourceItem> modifiers)
         {
             if (!value.TryToGeneric<TValue>(out var tValue))
                 return value;
             return CalculateGeneric(tValue, modifiers);
         }
-        public abstract TValue? CalculateGeneric(TValue? value, IEnumerable<ModifierSourceItem> modifiers);
+        public abstract TValue? CalculateGeneric(TValue? value, IList<ModifierSourceItem> modifiers);
     }
     public abstract class ModifierCalculator<TValue, TModifier> : ModifierCalculator<TValue> where TModifier : PropertyModifier<TValue>
     {
@@ -31,5 +31,19 @@ namespace PVZEngine.Modifiers
         }
         public IModifierSource container;
         public PropertyModifier modifier;
+    }
+    public class ModifierSourceItemComparer : SortComparer<int, ModifierSourceItem>
+    {
+        public ModifierSourceItemComparer(bool descending) : base(descending)
+        {
+        }
+        public override int GetKey(ModifierSourceItem element)
+        {
+            return element.modifier.Priority;
+        }
+        private static readonly ModifierSourceItemComparer _default = new ModifierSourceItemComparer(false);
+        public static ModifierSourceItemComparer Default => _default;
+        private static readonly ModifierSourceItemComparer _descending = new ModifierSourceItemComparer(true);
+        public static ModifierSourceItemComparer Descending => _descending;
     }
 }

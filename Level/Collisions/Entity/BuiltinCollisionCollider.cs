@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Collisions.Level;
 using PVZEngine.Entities;
 using PVZEngine.Level;
@@ -213,10 +212,16 @@ namespace PVZEngine.Collisions
         }
         public SerializableEntityCollider ToSerializable()
         {
+            SerializableEntityCollision[] seriCollisionList = new SerializableEntityCollision[collisionList.Count];
+            for (int i = 0; i < seriCollisionList.Length; i++)
+            {
+                var collision = collisionList[i];
+                seriCollisionList[i] = collision.ToSerializable();
+            }
             var seri = new SerializableEntityCollider()
             {
                 name = Name,
-                collisionList = collisionList.Select(c => c.ToSerializable()).ToArray(),
+                collisionList = seriCollisionList,
                 enabled = Enabled,
                 armorSlot = ArmorSlot,
             };

@@ -2,8 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Entities;
+using PVZEngine.Tools;
 using PVZEngine.Tools.Mathematics;
 using UnityEngine;
 
@@ -40,8 +40,16 @@ namespace PVZEngine.Level
         private void WriteEntitiesToSerializable(SerializableLevel seri)
         {
             seri.currentEntityID = currentEntityID;
-            seri.entities = entities.Values.Select(e => e.ToSerializable()).ToList();
-            seri.entityTrash = entityTrash.Values.Select(e => e.ToSerializable()).ToList();
+            seri.entities = new List<SerializableEntity>();
+            foreach (var pair in entities)
+            {
+                seri.entities.Add(pair.Value.ToSerializable());
+            }
+            seri.entityTrash = new List<SerializableEntity>();
+            foreach (var pair in entityTrash)
+            {
+                seri.entityTrash.Add(pair.Value.ToSerializable());
+            }
         }
         private void CreateEntitiesFromSerializable(SerializableLevel seri)
         {
@@ -201,13 +209,25 @@ namespace PVZEngine.Level
         }
         public Entity[] GetEntities(params int[] filterTypes)
         {
-            var list = new List<Entity>();
+            using var listItem = ListPool<Entity>.Rent();
+            var list = listItem.Value;
             foreach (var pair in entities)
             {
                 var entity = pair.Value;
-                if (filterTypes == null || filterTypes.Length <= 0 || filterTypes.Contains(entity.Type))
+                if (filterTypes == null || filterTypes.Length == 0)
                 {
                     list.Add(entity);
+                }
+                else
+                {
+                    foreach (var type in filterTypes)
+                    {
+                        if (type == entity.Type)
+                        {
+                            list.Add(entity);
+                            break;
+                        }
+                    }
                 }
             }
             list.Sort(entityComparer);
@@ -218,9 +238,20 @@ namespace PVZEngine.Level
             foreach (var pair in entities)
             {
                 var entity = pair.Value;
-                if (filterTypes == null || filterTypes.Length <= 0 || filterTypes.Contains(entity.Type))
+                if (filterTypes == null || filterTypes.Length == 0)
                 {
                     results.Add(entity);
+                }
+                else
+                {
+                    foreach (var type in filterTypes)
+                    {
+                        if (type == entity.Type)
+                        {
+                            results.Add(entity);
+                            break;
+                        }
+                    }
                 }
             }
             results.Sort(entityComparer);

@@ -40,55 +40,49 @@ namespace PVZEngine.Modifiers
         #endregion
 
         #region 修改器缓存
-        public void AddModifierCaches(IEnumerable<ModifierSourceItem> modifiers)
+        public void AddModifierCache(ModifierSourceItem item)
         {
-            foreach (var item in modifiers)
+            var modifier = item.modifier;
+            var modifyName = modifier.PropertyName;
+            var usingName = modifier.UsingContainerPropertyName;
+            if (!modifierCachesForProperty.TryGetValue(modifyName, out var list))
             {
-                var modifier = item.modifier;
-                var modifyName = modifier.PropertyName;
-                var usingName = modifier.UsingContainerPropertyName;
-                if (!modifierCachesForProperty.TryGetValue(modifyName, out var list))
-                {
-                    list = new List<ModifierSourceItem>();
-                    modifierCachesForProperty.Add(modifyName, list);
-                }
-                list.Add(item);
-
-                if (PropertyKeyHelper.IsValid(usingName))
-                {
-                    if (!modifierCachesUsingProperty.TryGetValue(usingName, out var usingList))
-                    {
-                        usingList = new List<ModifierSourceItem>();
-                        modifierCachesUsingProperty.Add(usingName, usingList);
-                    }
-                    usingList.Add(item);
-                }
-
-                CallModifiedPropertyChanged(modifyName);
+                list = new List<ModifierSourceItem>();
+                modifierCachesForProperty.Add(modifyName, list);
             }
+            list.Add(item);
+
+            if (PropertyKeyHelper.IsValid(usingName))
+            {
+                if (!modifierCachesUsingProperty.TryGetValue(usingName, out var usingList))
+                {
+                    usingList = new List<ModifierSourceItem>();
+                    modifierCachesUsingProperty.Add(usingName, usingList);
+                }
+                usingList.Add(item);
+            }
+
+            CallModifiedPropertyChanged(modifyName);
         }
-        public void RemoveModifierCaches(IEnumerable<ModifierSourceItem> modifiers)
+        public void RemoveModifierCache(ModifierSourceItem item)
         {
-            foreach (var item in modifiers)
+            var modifier = item.modifier;
+            var modifyName = modifier.PropertyName;
+            if (modifierCachesForProperty.TryGetValue(modifyName, out var list))
             {
-                var modifier = item.modifier;
-                var modifyName = modifier.PropertyName;
-                if (modifierCachesForProperty.TryGetValue(modifyName, out var list))
-                {
-                    list.Remove(item);
-                }
-
-                var usingName = modifier.UsingContainerPropertyName;
-                if (PropertyKeyHelper.IsValid(usingName))
-                {
-                    if (modifierCachesUsingProperty.TryGetValue(usingName, out var usingList))
-                    {
-                        usingList.Remove(item);
-                    }
-                }
-
-                CallModifiedPropertyChanged(modifyName);
+                list.Remove(item);
             }
+
+            var usingName = modifier.UsingContainerPropertyName;
+            if (PropertyKeyHelper.IsValid(usingName))
+            {
+                if (modifierCachesUsingProperty.TryGetValue(usingName, out var usingList))
+                {
+                    usingList.Remove(item);
+                }
+            }
+
+            CallModifiedPropertyChanged(modifyName);
         }
         public void ClearModifierCaches()
         {

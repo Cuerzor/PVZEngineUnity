@@ -8,6 +8,7 @@ using PVZEngine.Models;
 using PVZEngine.Modifiers;
 using PVZEngine.SeedPacks;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 namespace PVZEngine.Buffs
 {
@@ -30,8 +31,9 @@ namespace PVZEngine.Buffs
             if (Target != null)
                 return;
             Target = target;
-            foreach (var modifier in GetModifiers())
+            for (int i = 0; i < GetModifierCount(); i++)
             {
+                var modifier = GetModifierAt(i);
                 modifier.PostAdd(this, target);
             }
             Level.IncreaseLevelObjectChildReference(Target, this);
@@ -46,8 +48,9 @@ namespace PVZEngine.Buffs
         {
             if (Target == null)
                 return;
-            foreach (var modifier in GetModifiers())
+            for (int i = 0; i < GetModifierCount(); i++)
             {
+                var modifier = GetModifierAt(i);
                 modifier.PostRemove(this, Target);
             }
             Level.DecreaseLevelObjectChildReference(Target, this);

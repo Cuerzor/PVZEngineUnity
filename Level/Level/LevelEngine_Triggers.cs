@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Callbacks;
 
 namespace PVZEngine.Level
@@ -63,14 +62,13 @@ namespace PVZEngine.Level
             }
             return false;
         }
-        public int RemoveTriggers(IEnumerable<ITrigger> triggers)
+        public void RemoveAllTriggers()
         {
-            int value = 0;
-            foreach (var trigger in triggers.ToArray())
+            foreach (var trigger in addedTriggers)
             {
-                value += RemoveTrigger(trigger) ? 1 : 0;
+                Triggers.RemoveTrigger(trigger);
             }
-            return value;
+            addedTriggers.Clear();
         }
         #endregion
 

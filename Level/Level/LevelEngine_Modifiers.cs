@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Modifiers;
 
 namespace PVZEngine.Level
@@ -12,8 +11,20 @@ namespace PVZEngine.Level
         private void ReevaluateModifierCaches()
         {
             modifierLibrary.ClearModifierCaches();
-            modifierLibrary.AddModifierCaches(AreaDefinition.GetModifiers().Select(m => new ModifierSourceItem(this, m)));
-            modifierLibrary.AddModifierCaches(StageDefinition.GetModifiers().Select(m => new ModifierSourceItem(this, m)));
+            for (int i = 0; i < AreaDefinition.GetModifierCount(); i++)
+            {
+                var modifier = AreaDefinition.GetModifierAt(i);
+                modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier));
+            }
+            for (int b = 0; b < StageDefinition.GetBehaviourCount(); b++)
+            {
+                var behaviour = StageDefinition.GetBehaviourAt(b);
+                for (int i = 0; i < behaviour.GetModifierCount(); i++)
+                {
+                    var modifier = behaviour.GetModifierAt(i);
+                    modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier));
+                }
+            }
         }
         private void OnModifiedPropertyNeedsUpdateCallback(IPropertyKey name)
         {

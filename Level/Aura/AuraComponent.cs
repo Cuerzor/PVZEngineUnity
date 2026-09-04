@@ -1,6 +1,6 @@
 #nullable enable
 
-using System.Linq;
+using System.Collections.Generic;
 using PVZEngine.Level;
 
 namespace PVZEngine.Auras
@@ -13,11 +13,11 @@ namespace PVZEngine.Auras
     {
         public AuraEffectList List { get; private set; }
 
-        public void Init(IAuraSource source, AuraEffectDefinition[] definitions)
+        public void Init(IAuraSource source, IList<AuraEffectDefinition> definitions)
         {
             List = new AuraEffectList();
             var level = source.GetLevel();
-            for (int i = 0; i < definitions.Length; i++)
+            for (int i = 0; i < definitions.Count; i++)
             {
                 List.Add(level, new AuraEffect(definitions[i], i, source));
             }
@@ -35,7 +35,16 @@ namespace PVZEngine.Auras
         public void WriteToSerializable<T>(T seri) where T : IHasSerializableAuras
         {
             if (List != null)
-                seri.SetSerializableAuras(List.GetAll().Select(a => a.ToSerializable()).ToArray());
+            {
+                var count = List.Count;
+                var seriAuras = new SerializableAuraEffect?[count];
+                for (int i = 0; i < count; i++)
+                {
+                    var aura = List.GetAt(i);
+                    seriAuras[i] = aura.ToSerializable();
+                }
+                seri.SetSerializableAuras(seriAuras);
+            }
         }
 
         public void LoadFromSerializable<T>(T seri, LevelEngine level) where T : IHasSerializableAuras

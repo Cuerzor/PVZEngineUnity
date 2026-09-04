@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Callbacks;
 using PVZEngine.Entities;
 using PVZEngine.Tools;
@@ -71,18 +70,53 @@ namespace PVZEngine.Level
         #region 随机行
         public int GetRandomEnemySpawnLane()
         {
-            var length = GetMaxLaneCount();
-            return GetRandomEnemySpawnLane(Enumerable.Range(0, length));
-        }
-        public int GetRandomEnemySpawnLane(IEnumerable<int> lanes)
-        {
-            if (lanes.Count() <= 0)
+            var maxLane = GetMaxLaneCount();
+            if (maxLane <= 0)
                 return -1;
-            var possibleLanes = lanes.Where(l => !spawnedLanes.Contains(l));
-            if (possibleLanes.Count() <= 0)
+            using var lanesItem = ListPool<int>.Rent();
+            var lanes = lanesItem.Value;
+
+            for (int i = 0; i < maxLane; i++)
+            {
+                var lane = i;
+                if (!spawnedLanes.Contains(lane))
+                {
+                    lanes.Add(lane);
+                }
+            }
+
+            if (lanes.Count <= 0)
             {
                 spawnedLanes.Clear();
-                possibleLanes = lanes;
+                lanes.Clear();
+                for (int i = 0; i < maxLane; i++)
+                {
+                    var lane = i;
+                    lanes.Add(lane);
+                }
+            }
+            int row = lanes.Random(GetSpawnRNG());
+            spawnedLanes.Add(row);
+            return row;
+        }
+        public int GetRandomEnemySpawnLane(IList<int> lanes)
+        {
+            if (lanes.Count <= 0)
+                return -1;
+            using var lanesItem = ListPool<int>.Rent();
+            var possibleLanes = lanesItem.Value;
+            foreach (var lane in lanes)
+            {
+                if (!spawnedLanes.Contains(lane))
+                {
+                    possibleLanes.Add(lane);
+                }
+            }
+            if (possibleLanes.Count <= 0)
+            {
+                spawnedLanes.Clear();
+                possibleLanes.Clear();
+                possibleLanes.AddRange(lanes);
             }
             int row = possibleLanes.Random(GetSpawnRNG());
             spawnedLanes.Add(row);

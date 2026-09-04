@@ -3,9 +3,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Level;
 using PVZEngine.Modifiers;
+using PVZEngine.Tools;
 
 namespace PVZEngine.Buffs
 {
@@ -229,15 +229,33 @@ namespace PVZEngine.Buffs
         #region 获取数量
         public int GetBuffCount<T>() where T : BuffDefinition
         {
-            return buffs.Count(b => b.Definition is T);
+            int count = 0;
+            foreach (var buff in buffs)
+            {
+                if (buff.Definition is T)
+                    count++;
+            }
+            return count;
         }
         public int GetBuffCount(BuffDefinition definition)
         {
-            return buffs.Count(b => b.Definition == definition);
+            int count = 0;
+            foreach (var buff in buffs)
+            {
+                if (buff.Definition == definition)
+                    count++;
+            }
+            return count;
         }
         public int GetBuffCount(NamespaceID id)
         {
-            return buffs.Count(b => b.Definition.GetID() == id);
+            int count = 0;
+            foreach (var buff in buffs)
+            {
+                if (buff.Definition.GetID() == id)
+                    count++;
+            }
+            return count;
         }
         #endregion
 
@@ -262,7 +280,8 @@ namespace PVZEngine.Buffs
             if (buff == null)
                 return false;
 
-            List<ModelInsertion> lastInsertions = new List<ModelInsertion>();
+            using var lastInsertionsBuffer = ListPool<ModelInsertion>.Rent();
+            var lastInsertions = lastInsertionsBuffer.Value;
             GetModelInsertions(lastInsertions);
 
             buffs.Add(buff);
@@ -274,7 +293,15 @@ namespace PVZEngine.Buffs
             foreach (var insertion in insertions)
             {
                 var key = insertion.key;
-                var lastInsertion = lastInsertions.FirstOrDefault(i => i.key == key);
+                ModelInsertion? lastInsertion = null;
+                foreach (var ins in lastInsertions)
+                {
+                    if (ins.key == key)
+                    {
+                        lastInsertion = ins;
+                        break;
+                    }
+                }
                 if (lastInsertion != null)
                     continue;
                 OnModelInsertionAdded?.Invoke(insertion);
@@ -292,14 +319,24 @@ namespace PVZEngine.Buffs
                 OnBuffRemoved?.Invoke(buff);
                 buff.OnPropertyChanged -= OnBuffPropertyChangedCallback;
 
-                List<ModelInsertion> buffInsertions = new List<ModelInsertion>();
-                List<ModelInsertion> currentInsertions = new List<ModelInsertion>();
+                using var buffInsertionsItem = ListPool<ModelInsertion>.Rent();
+                var buffInsertions = buffInsertionsItem.Value;
+                using var currentInsertionsItem = ListPool<ModelInsertion>.Rent();
+                var currentInsertions = currentInsertionsItem.Value;
                 buff.GetModelInsertionsNonAlloc(buffInsertions);
                 GetModelInsertions(currentInsertions);
                 foreach (var insertion in buffInsertions)
                 {
                     var key = insertion.key;
-                    var currentInsertion = currentInsertions.FirstOrDefault(i => i.key == key);
+                    ModelInsertion? currentInsertion = null;
+                    foreach (var ins in currentInsertions)
+                    {
+                        if (ins.key == key)
+                        {
+                            currentInsertion = ins;
+                            break;
+                        }
+                    }
                     if (currentInsertion != null)
                         continue;
                     OnModelInsertionRemoved?.Invoke(insertion);
@@ -321,11 +358,21 @@ namespace PVZEngine.Buffs
         }
         private void AddModifierCaches(Buff buff)
         {
-            modifierLibrary.AddModifierCaches(buff.GetModifiers().Select(m => new ModifierSourceItem(buff, m)));
+            int modifierCount = buff.GetModifierCount();
+            for (int i = 0; i < modifierCount; i++)
+            {
+                var modifier = buff.GetModifierAt(i);
+                modifierLibrary.AddModifierCache(new ModifierSourceItem(buff, modifier));
+            }
         }
         private void RemoveModifierCaches(Buff buff)
         {
-            modifierLibrary.RemoveModifierCaches(buff.GetModifiers().Select(m => new ModifierSourceItem(buff, m)));
+            int modifierCount = buff.GetModifierCount();
+            for (int i = 0; i < modifierCount; i++)
+            {
+                var modifier = buff.GetModifierAt(i);
+                modifierLibrary.RemoveModifierCache(new ModifierSourceItem(buff, modifier));
+            }
         }
         private void ReevaluateModifierCaches()
         {
@@ -378,14 +425,25 @@ namespace PVZEngine.Buffs
         }
         public void LoadFromSerializable(SerializableBuffList serializable)
         {
-            foreach (var buff in buffs)
+            if (serializable.buffs != null)
             {
-                if (buff == null)
-                    continue;
-                var seriBuff = serializable.buffs.FirstOrDefault(b => b.id == buff.ID);
-                if (seriBuff == null)
-                    continue;
-                buff.LoadFromSerializable(seriBuff);
+                foreach (var buff in buffs)
+                {
+                    if (buff == null)
+                        continue;
+                    SerializableBuff? seriBuff = null;
+                    foreach (var sb in serializable.buffs)
+                    {
+                        if (sb.id == buff.ID)
+                        {
+                            seriBuff = sb;
+                            break;
+                        }
+                    }
+                    if (seriBuff == null)
+                        continue;
+                    buff.LoadFromSerializable(seriBuff);
+                }
             }
         }
         #endregion

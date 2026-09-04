@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Buffs;
 using PVZEngine.Callbacks;
 using PVZEngine.Collisions.Level;
@@ -28,7 +27,7 @@ namespace PVZEngine.Level
         }
         public void Dispose()
         {
-            RemoveTriggers(addedTriggers);
+            RemoveAllTriggers();
         }
 
         #region 组件
@@ -91,14 +90,30 @@ namespace PVZEngine.Level
                 var oldDefinition = StageDefinition;
                 if (oldDefinition != null)
                 {
-                    modifierLibrary.RemoveModifierCaches(oldDefinition.GetModifiers().Select(m => new ModifierSourceItem(this, m)));
+                    for (int i = 0; i < oldDefinition.GetBehaviourCount(); i++)
+                    {
+                        var behaviour = oldDefinition.GetBehaviourAt(i);
+                        for (int b = 0; b < behaviour.GetModifierCount(); b++)
+                        {
+                            var modifier = behaviour.GetModifierAt(b);
+                            modifierLibrary.RemoveModifierCache(new ModifierSourceItem(this, modifier));
+                        }
+                    }
                 }
 
                 StageID = stageId;
                 StageDefinition = definition;
                 properties.NotifyFallbacksChanged();
 
-                modifierLibrary.AddModifierCaches(definition.GetModifiers().Select(m => new ModifierSourceItem(this, m)));
+                for (int i = 0; i < definition.GetBehaviourCount(); i++)
+                {
+                    var behaviour = definition.GetBehaviourAt(i);
+                    for (int b = 0; b < behaviour.GetModifierCount(); b++)
+                    {
+                        var modifier = behaviour.GetModifierAt(b);
+                        modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier));
+                    }
+                }
             }
             else
             {
@@ -114,14 +129,22 @@ namespace PVZEngine.Level
                 var oldDefinition = AreaDefinition;
                 if (oldDefinition != null)
                 {
-                    modifierLibrary.RemoveModifierCaches(oldDefinition.GetModifiers().Select(m => new ModifierSourceItem(this, m)));
+                    for (int b = 0; b < oldDefinition.GetModifierCount(); b++)
+                    {
+                        var modifier = oldDefinition.GetModifierAt(b);
+                        modifierLibrary.RemoveModifierCache(new ModifierSourceItem(this, modifier));
+                    }
                 }
 
                 AreaID = areaId;
                 AreaDefinition = definition;
                 properties.NotifyFallbacksChanged();
 
-                modifierLibrary.AddModifierCaches(definition.GetModifiers().Select(m => new ModifierSourceItem(this, m)));
+                for (int b = 0; b < definition.GetModifierCount(); b++)
+                {
+                    var modifier = definition.GetModifierAt(b);
+                    modifierLibrary.RemoveModifierCache(new ModifierSourceItem(this, modifier));
+                }
             }
             else
             {

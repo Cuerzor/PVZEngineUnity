@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using PVZEngine.Modifiers;
 
 namespace PVZEngine.Entities
@@ -12,7 +11,11 @@ namespace PVZEngine.Entities
         private void ReevaluateModifierCaches()
         {
             modifierLibrary.ClearModifierCaches();
-            modifierLibrary.AddModifierCaches(Definition.GetModifiers().Select(m => new ModifierSourceItem(this, m)));
+            for (int i = 0; i < Definition.GetModifierCount(); i++)
+            {
+                var modifier = Definition.GetModifierAt(i);
+                modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier));
+            }
         }
         private void OnModifiedPropertyNeedsUpdateCallback(IPropertyKey name)
         {

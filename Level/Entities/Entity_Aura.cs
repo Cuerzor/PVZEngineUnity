@@ -16,17 +16,21 @@ namespace PVZEngine.Entities
         }
 
         #region 获取
-        public AuraEffect GetAuraEffect<T>() where T : AuraEffectDefinition
+        public AuraEffect? GetAuraEffect<T>()
         {
             return auraComponent.List.Get<T>();
         }
-        public AuraEffect[] GetAuraEffects<T>() where T : AuraEffectDefinition
+        public AuraEffect? GetAuraEffect(AuraEffectDefinition definition)
         {
-            return auraComponent.List.GetAll<T>();
+            return auraComponent.List.Get(definition);
         }
-        public AuraEffect[] GetAuraEffects()
+        public AuraEffect GetAuraEffectAt(int i)
         {
-            return auraComponent.List.GetAll();
+            return auraComponent.List.GetAt(i);
+        }
+        public int GetAuraEffectCount()
+        {
+            return auraComponent.List.Count;
         }
         #endregion
 
