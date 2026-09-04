@@ -203,7 +203,10 @@ namespace PVZEngine.Collisions.Level
             overlapBoxFilter.SetParameters(param, center, size);
             overlapBuffer.Clear();
             FindCollidersRange(totalMask, filterRect, overlapBuffer, 0, overlapBoxFilter);
-            results.AddRange(overlapBuffer);
+            foreach (var target in overlapBuffer)
+            {
+                results.Add(target);
+            }
         }
         public IEntityCollider[] OverlapSphere(Vector3 center, float radius, OverlapParams param)
         {
@@ -223,7 +226,10 @@ namespace PVZEngine.Collisions.Level
             overlapSphereFilter.SetParameters(param, center, radius);
             overlapBuffer.Clear();
             FindCollidersRange(totalMask, filterRect, overlapBuffer, 0, overlapSphereFilter);
-            results.AddRange(overlapBuffer);
+            foreach (var target in overlapBuffer)
+            {
+                results.Add(target);
+            }
         }
         public IEntityCollider[] OverlapCapsule(Vector3 point0, Vector3 point1, float radius, OverlapParams param)
         {
@@ -245,7 +251,10 @@ namespace PVZEngine.Collisions.Level
             overlapCapsuleFilter.SetParameters(param, point0, point1, radius);
             overlapBuffer.Clear();
             FindCollidersRange(totalMask, filterRect, overlapBuffer, 0, overlapCapsuleFilter);
-            results.AddRange(overlapBuffer);
+            foreach (var target in overlapBuffer)
+            {
+                results.Add(target);
+            }
         }
         #endregion
 

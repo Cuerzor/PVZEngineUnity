@@ -36,9 +36,13 @@ namespace PVZEngine.Level
             component.PostAttach(this);
             levelComponents.Add(component);
         }
-        public ILevelComponent[] GetLevelComponents()
+        public int GetLevelComponentCount()
         {
-            return levelComponents.ToArray();
+            return levelComponents.Count;
+        }
+        public ILevelComponent GetLevelComponentAt(int i)
+        {
+            return levelComponents[i];
         }
         public T? GetLevelComponent<T>() where T : ILevelComponent
         {
