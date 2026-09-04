@@ -201,18 +201,29 @@ namespace PVZEngine.Level
         }
         public Entity[] GetEntities(params int[] filterTypes)
         {
-            if (filterTypes == null || filterTypes.Length <= 0)
+            var list = new List<Entity>();
+            foreach (var pair in entities)
             {
-                var array = entities.Values.ToArray();
-                Array.Sort(array, entityComparer);
-                return array;
+                var entity = pair.Value;
+                if (filterTypes == null || filterTypes.Length <= 0 || filterTypes.Contains(entity.Type))
+                {
+                    list.Add(entity);
+                }
             }
-            return FindEntities(predicate);
-
-            bool predicate(Entity e)
+            list.Sort(entityComparer);
+            return list.ToArray();
+        }
+        public void GetEntitiesNonAlloc(List<Entity> results, params int[] filterTypes)
+        {
+            foreach (var pair in entities)
             {
-                return filterTypes.Contains(e.Type);
+                var entity = pair.Value;
+                if (filterTypes == null || filterTypes.Length <= 0 || filterTypes.Contains(entity.Type))
+                {
+                    results.Add(entity);
+                }
             }
+            results.Sort(entityComparer);
         }
         public Entity[] FindEntities(EntityDefinition def)
         {
