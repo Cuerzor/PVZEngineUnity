@@ -79,12 +79,12 @@ namespace PVZEngine.Grids
             {
                 yield return buff;
             }
-		}
-		AuraEffectList IAuraSource.AuraEffects => auraComponent.List;
-		#endregion
+        }
+        AuraEffectList IAuraSource.AuraEffects => auraComponent.List;
+        #endregion
 
-		#region 杂项
-		public override string ToString()
+        #region 杂项
+        public override string ToString()
         {
             return $"LawnGrid_{Lane}x{Column}";
         }

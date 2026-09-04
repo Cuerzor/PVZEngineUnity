@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PVZEngine.Callbacks;
-using static UnityEngine.Networking.UnityWebRequest;
 
 namespace PVZEngine.Level
 {

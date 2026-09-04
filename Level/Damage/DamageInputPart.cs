@@ -43,14 +43,14 @@ namespace PVZEngine.Damages
     public class BodyDamageInputPart : DamageInputPart
     {
         public BodyDamageInputPart(DamageInput input) : this(input.Amount, input.Effects, input.Entity, input.Source) { }
-        public BodyDamageInputPart(float amount, DamageEffectList effects, Entity entity, ILevelSourceReference? source) 
+        public BodyDamageInputPart(float amount, DamageEffectList effects, Entity entity, ILevelSourceReference? source)
             : base(amount, effects, entity, source) { }
     }
     public class ArmorDamageInputPart : DamageInputPart
     {
-        public ArmorDamageInputPart(DamageInput input ,Armor armor) : this(input.Amount, input.Effects, armor, input.Entity, input.Source) { }
-        public ArmorDamageInputPart(float amount, DamageEffectList effects, Armor armor, Entity entity, ILevelSourceReference? source) 
-            : base(amount, effects, entity, source) 
+        public ArmorDamageInputPart(DamageInput input, Armor armor) : this(input.Amount, input.Effects, armor, input.Entity, input.Source) { }
+        public ArmorDamageInputPart(float amount, DamageEffectList effects, Armor armor, Entity entity, ILevelSourceReference? source)
+            : base(amount, effects, entity, source)
         {
             Armor = armor;
         }

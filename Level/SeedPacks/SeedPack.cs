@@ -120,12 +120,12 @@ namespace PVZEngine.SeedPacks
             {
                 yield return buff;
             }
-		}
-		AuraEffectList IAuraSource.AuraEffects => auraComponent.List;
-		#endregion
+        }
+        AuraEffectList IAuraSource.AuraEffects => auraComponent.List;
+        #endregion
 
-		#region 事件
-		public event Action<SeedDefinition>? OnDefinitionChanged;
+        #region 事件
+        public event Action<SeedDefinition>? OnDefinitionChanged;
         #endregion
 
         #region 属性字段

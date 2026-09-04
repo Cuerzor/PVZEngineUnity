@@ -2,7 +2,6 @@
 
 using System;
 using MongoDB.Bson.Serialization.Attributes;
-using PVZEngine.Entities;
 using PVZEngine.Level;
 
 namespace PVZEngine.Buffs

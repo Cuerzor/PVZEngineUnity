@@ -10,7 +10,7 @@ namespace PVZEngine.Tools.Cloning
     {
         public static object? CloneValue(object? original)
         {
-            if (original == null) 
+            if (original == null)
                 return null;
 
             // 1. 值类型和字符串直接返回
