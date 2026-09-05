@@ -17,7 +17,7 @@ namespace PVZEngine.Armors
                 var behaviour = Definition.GetBehaviourAt(i);
                 for (int a = 0; a < behaviour.GetAuraCount(); a++)
                 {
-                    var aura = behaviour.GetAuraAt(i);
+                    var aura = behaviour.GetAuraAt(a);
                     auras.Add(aura);
                 }
             }
