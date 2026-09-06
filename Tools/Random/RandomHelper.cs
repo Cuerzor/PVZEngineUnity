@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace PVZEngine.Tools.Random
@@ -304,7 +303,7 @@ namespace PVZEngine.Tools.Random
             {
                 // 在循环中，仅对从 i 到 list.Count-1 的部分进行加权随机
                 float totalWeight = 0;
-                for (int k = i; k < list.Count; k++) 
+                for (int k = i; k < list.Count; k++)
                     totalWeight += weightsCopy[k];
 
                 if (totalWeight <= 0)
@@ -318,10 +317,10 @@ namespace PVZEngine.Tools.Random
                     if (weight <= 0)
                         continue;
                     rand -= weight;
-                    if (rand <= 0f) 
+                    if (rand <= 0f)
                         break;
                 }
-                if (j >= list.Count) 
+                if (j >= list.Count)
                     j = list.Count - 1;
                 // 然后交换 i 和 j 的元素及权重
                 // 交换元素及对应的权重，使选中的元素到达位置 i
@@ -396,7 +395,7 @@ namespace PVZEngine.Tools.Random
         #region 洗牌
         public static void ShuffleLast<T>(this IList<T> list, int count, RandomGenerator rng)
         {
-            if (count <= 0 || list.Count == 0) 
+            if (count <= 0 || list.Count == 0)
                 return;
             int total = list.Count;
             int takeCount = Math.Min(count, total);

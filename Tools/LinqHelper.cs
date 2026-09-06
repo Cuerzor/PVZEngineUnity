@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using PVZEngine.Tools.Random;
 
 namespace PVZEngine.Tools
 {

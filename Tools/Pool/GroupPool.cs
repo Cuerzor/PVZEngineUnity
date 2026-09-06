@@ -1,6 +1,5 @@
 #nullable enable
 
-using System.Collections.Generic;
 using UnityEngine.Pool;
 
 namespace PVZEngine.Tools

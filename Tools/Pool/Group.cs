@@ -79,7 +79,7 @@ namespace PVZEngine.Tools
         public int Count => groupings.Count;
         public Grouping<TKey, TElement>? this[TKey key]
         {
-            get 
+            get
             {
                 foreach (var grouping in groupings)
                 {

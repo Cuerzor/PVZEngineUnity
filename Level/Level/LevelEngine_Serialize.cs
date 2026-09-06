@@ -135,8 +135,8 @@ namespace PVZEngine.Level
                     foreach (var c in levelComponents)
                     {
                         if (c.GetID().ToString() == seriComp.Key)
-                        { 
-                            comp = c; 
+                        {
+                            comp = c;
                             break;
                         }
                     }
