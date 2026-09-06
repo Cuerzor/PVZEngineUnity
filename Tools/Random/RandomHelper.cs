@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace PVZEngine.Tools.Random
@@ -105,7 +106,10 @@ namespace PVZEngine.Tools.Random
             int value = rng.Next(0, totalWeight);
             for (int i = 0; i < count; i++)
             {
-                value -= weights[i];
+                var weight = weights[i];
+                if (weight <= 0)
+                    continue;
+                value -= weight;
                 if (value <= 0)
                     return i;
             }
@@ -127,7 +131,10 @@ namespace PVZEngine.Tools.Random
             float value = rng.Next(0, totalWeight);
             for (int i = 0; i < count; i++)
             {
-                value -= weights[i];
+                var weight = weights[i];
+                if (weight <= 0)
+                    continue;
+                value -= weight;
                 if (value <= 0)
                     return i;
             }
@@ -179,7 +186,10 @@ namespace PVZEngine.Tools.Random
             int value = rng.Next(0, totalWeight);
             for (int i = 0; i < count; i++)
             {
-                value -= weightGetter(list[i]);
+                var weight = weightGetter(list[i]);
+                if (weight <= 0)
+                    continue;
+                value -= weight;
                 if (value <= 0)
                     return list[i];
             }
@@ -208,7 +218,10 @@ namespace PVZEngine.Tools.Random
             float value = rng.Next(0, totalWeight);
             for (int i = 0; i < count; i++)
             {
-                value -= weightGetter(list[i]);
+                var weight = weightGetter(list[i]);
+                if (weight <= 0)
+                    continue;
+                value -= weight;
                 if (value <= 0)
                     return list[i];
             }
@@ -301,7 +314,10 @@ namespace PVZEngine.Tools.Random
                 int j = i;
                 for (; j < list.Count; j++)
                 {
-                    rand -= weightsCopy[j];
+                    var weight = weightsCopy[j];
+                    if (weight <= 0)
+                        continue;
+                    rand -= weight;
                     if (rand <= 0f) 
                         break;
                 }
@@ -353,7 +369,10 @@ namespace PVZEngine.Tools.Random
                 int j = i;
                 for (; j < list.Count; j++)
                 {
-                    rand -= weightsCopy[j];
+                    var weight = weightsCopy[j];
+                    if (weight <= 0)
+                        continue;
+                    rand -= weight;
                     if (rand <= 0f)
                         break;
                 }

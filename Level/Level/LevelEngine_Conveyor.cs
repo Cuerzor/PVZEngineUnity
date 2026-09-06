@@ -172,10 +172,9 @@ namespace PVZEngine.Level
             for (int i = 0; i < weights.Length; i++)
             {
                 var e = entries[i];
-                weights[i] = GetSeedCountFromConveyorDrawPile(e.ID, e.Count);
+                weights[i] = Mathf.Max(0, GetSeedCountFromConveyorDrawPile(e.ID, e.Count));
             }
-            var index = rng.WeightedRandom(weights);
-            var entry = entries[index];
+            var entry = entries.WeightedRandom(weights, rng);
             TakeSeedFromConveyorDrawPile(entry.ID);
             return entry.ID;
         }
