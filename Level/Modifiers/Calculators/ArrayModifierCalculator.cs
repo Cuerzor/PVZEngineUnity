@@ -108,6 +108,7 @@ namespace PVZEngine.Modifiers
                 if (unionValue.Count > 0)
                 {
                     finalResult.UnionList(unionValue);
+                    resultIsNull = false;
                 }
                 if (exceptValue.Count > 0)
                 {
