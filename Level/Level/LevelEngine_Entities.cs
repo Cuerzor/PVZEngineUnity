@@ -404,6 +404,16 @@ namespace PVZEngine.Level
             }
             return false;
         }
+        public bool EntityExists(IPredicator<Entity> predicator)
+        {
+            foreach (var pair in entities)
+            {
+                var entity = pair.Value;
+                if (predicator.IsMatch(entity))
+                    return true;
+            }
+            return false;
+        }
         public bool EntityExists(long id)
         {
             return entities.ContainsKey(id);
