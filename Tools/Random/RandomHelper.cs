@@ -446,6 +446,37 @@ namespace PVZEngine.Tools.Random
             values.GetLeastOnes(selector, list);
             return list.Random(rng);
         }
+        public static T GetRandomOfTopOnes<T>(this IEnumerable<T> source, Func<T, float> selector, RandomGenerator rng, bool ascending = true)
+        {
+            if (source == null)
+                throw new ArgumentException("The list to get top random element is null.");
+
+            // 1. 复制一份，避免污染原始数据
+            using var elementsItem = ListPool<T>.Rent();
+            var elements = elementsItem.Value;
+            elements.AddRange(source);
+
+            // 2. Fisher-Yates 洗牌算法（随机化位置）
+            int sourceCount = elements.Count;
+            if (sourceCount <= 0)
+                throw new ArgumentException("The list to get top random element is empty.");
+            elements.Shuffle(rng);
+
+            // 3. 记录洗牌后的顺序索引（作为“平局打破器”）
+            using var indexedItem = ListPool<(int ShuffledIndex, float Score, T Item)>.Rent();
+            var indexed = indexedItem.Value;
+            for (int i = 0; i < sourceCount; i++)
+            {
+                var item = elements[i];
+                indexed.Add((i, selector(item), item));
+            }
+
+            // 4. 自定义排序：先按属性，属性相同则按洗牌索引（保留随机顺序）
+            indexed.Sort(ascending ? IndexedComparer<T>.Ascending : IndexedComparer<T>.Descending);
+
+            // 5. 取出前 X 个（直接循环，不依赖 Take）
+            return indexed[0].Item;
+        }
         public static void TakeRandomOfTopOnes<T>(this IEnumerable<T> source, Func<T, float> selector, int count, RandomGenerator rng, List<T> results, bool ascending = true)
         {
             if (source == null)
