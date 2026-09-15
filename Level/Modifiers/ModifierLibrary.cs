@@ -40,7 +40,7 @@ namespace PVZEngine.Modifiers
         #endregion
 
         #region 修改器缓存
-        public void AddModifierCache(ModifierSourceItem item)
+        public void AddModifierCache(ModifierSourceItem item, bool serialization)
         {
             var modifier = item.modifier;
             var modifyName = modifier.PropertyName;
@@ -62,9 +62,9 @@ namespace PVZEngine.Modifiers
                 usingList.Add(item);
             }
 
-            CallModifiedPropertyChanged(modifyName);
+            CallModifiedPropertyChanged(modifyName, serialization);
         }
-        public void RemoveModifierCache(ModifierSourceItem item)
+        public void RemoveModifierCache(ModifierSourceItem item, bool serialization)
         {
             var modifier = item.modifier;
             var modifyName = modifier.PropertyName;
@@ -82,9 +82,9 @@ namespace PVZEngine.Modifiers
                 }
             }
 
-            CallModifiedPropertyChanged(modifyName);
+            CallModifiedPropertyChanged(modifyName, serialization);
         }
-        public void ClearModifierCaches()
+        public void ClearModifierCaches(bool serialization)
         {
             foreach (var pair in modifierCachesForProperty)
             {
@@ -93,7 +93,7 @@ namespace PVZEngine.Modifiers
                 {
                     list.Clear();
                 }
-                CallModifiedPropertyChanged(modifyName);
+                CallModifiedPropertyChanged(modifyName, serialization);
             }
             foreach (var pair in modifierCachesUsingProperty)
             {
@@ -119,15 +119,15 @@ namespace PVZEngine.Modifiers
                 var modifier = item.modifier;
                 if (key.Equals(modifier.UsingContainerPropertyName))
                 {
-                    CallModifiedPropertyChanged(modifier.PropertyName);
+                    CallModifiedPropertyChanged(modifier.PropertyName, false);
                 }
             }
         }
-        public void CallModifiedPropertyChanged(IPropertyKey key)
+        public void CallModifiedPropertyChanged(IPropertyKey key, bool serialization)
         {
-            OnModifiedPropertyNeedsUpdate?.Invoke(key);
+            OnModifiedPropertyNeedsUpdate?.Invoke(key, serialization);
         }
-        public event Action<IPropertyKey>? OnModifiedPropertyNeedsUpdate;
+        public event Action<IPropertyKey, bool>? OnModifiedPropertyNeedsUpdate;
 
         #region 属性字段
         private Dictionary<IPropertyKey, List<ModifierSourceItem>> modifierCachesForProperty = new Dictionary<IPropertyKey, List<ModifierSourceItem>>(new PropertyKeyComparer());

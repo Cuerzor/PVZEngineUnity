@@ -208,10 +208,10 @@ namespace PVZEngine.Properties
         }
         #endregion
 
-        void OnModifiedPropertyNeedsUpdateCallback(IPropertyKey name)
+        void OnModifiedPropertyNeedsUpdateCallback(IPropertyKey name, bool serialization)
         {
             var beforeValue = GetPropertyObject(name);
-            UpdateModifiedPropertyObject(name, beforeValue);
+            UpdateModifiedPropertyObject(name, beforeValue, !serialization);
         }
 
         public IModifiablePropertyTarget Target { get; }

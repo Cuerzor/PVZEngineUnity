@@ -8,18 +8,18 @@ namespace PVZEngine.Entities
 {
     public sealed partial class Entity : IModifierSource, IModifierProvider
     {
-        private void ReevaluateModifierCaches()
+        private void ReevaluateModifierCaches(bool serialization)
         {
-            modifierLibrary.ClearModifierCaches();
+            modifierLibrary.ClearModifierCaches(serialization);
             for (int i = 0; i < Definition.GetModifierCount(); i++)
             {
                 var modifier = Definition.GetModifierAt(i);
-                modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier));
+                modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier), serialization);
             }
         }
-        private void OnModifiedPropertyNeedsUpdateCallback(IPropertyKey name)
+        private void OnModifiedPropertyNeedsUpdateCallback(IPropertyKey name, bool serialization)
         {
-            OnModifiedPropertyNeedsUpdate?.Invoke(name);
+            OnModifiedPropertyNeedsUpdate?.Invoke(name, serialization);
         }
         #region 接口实现
         T? IModifierSource.GetProperty<T>(PropertyKey<T> name) where T : default => GetProperty<T>(name);
@@ -34,7 +34,7 @@ namespace PVZEngine.Entities
         #endregion
 
         #region 事件
-        public event Action<IPropertyKey>? OnModifiedPropertyNeedsUpdate;
+        public event Action<IPropertyKey, bool>? OnModifiedPropertyNeedsUpdate;
         #endregion
 
         #region 属性字段

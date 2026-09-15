@@ -8,13 +8,13 @@ namespace PVZEngine.Level
 {
     public partial class LevelEngine : IModifierSource, IModifierProvider
     {
-        private void ReevaluateModifierCaches()
+        private void ReevaluateModifierCaches(bool serialization)
         {
-            modifierLibrary.ClearModifierCaches();
+            modifierLibrary.ClearModifierCaches(serialization);
             for (int i = 0; i < AreaDefinition.GetModifierCount(); i++)
             {
                 var modifier = AreaDefinition.GetModifierAt(i);
-                modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier));
+                modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier), serialization);
             }
             for (int b = 0; b < StageDefinition.GetBehaviourCount(); b++)
             {
@@ -22,13 +22,13 @@ namespace PVZEngine.Level
                 for (int i = 0; i < behaviour.GetModifierCount(); i++)
                 {
                     var modifier = behaviour.GetModifierAt(i);
-                    modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier));
+                    modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier), serialization);
                 }
             }
         }
-        private void OnModifiedPropertyNeedsUpdateCallback(IPropertyKey name)
+        private void OnModifiedPropertyNeedsUpdateCallback(IPropertyKey name, bool serialization)
         {
-            OnModifiedPropertyNeedsUpdate?.Invoke(name);
+            OnModifiedPropertyNeedsUpdate?.Invoke(name, serialization);
         }
         T? IModifierSource.GetProperty<T>(PropertyKey<T> name) where T : default
         {
@@ -45,7 +45,7 @@ namespace PVZEngine.Level
             modifierLibrary.GetModifierItemsForProperty(name, results);
         }
 
-        public event Action<IPropertyKey>? OnModifiedPropertyNeedsUpdate;
+        public event Action<IPropertyKey, bool>? OnModifiedPropertyNeedsUpdate;
         private ModifierLibrary modifierLibrary;
     }
 }

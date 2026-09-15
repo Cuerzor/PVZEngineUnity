@@ -145,7 +145,7 @@ namespace PVZEngine.Entities
         }
         private void UpdateAfterLoadFinished()
         {
-            ReevaluateModifierCaches();
+            ReevaluateModifierCaches(true);
             UpdateAllModifiedProperties(false);
             Cache.UpdateAll(this);
         }

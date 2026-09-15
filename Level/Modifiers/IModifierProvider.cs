@@ -19,6 +19,6 @@ namespace PVZEngine.Modifiers
         /// <param name="results">返回结果填充列表。</param>
         void GetModifiersForProperty(IPropertyKey name, List<ModifierSourceItem> results);
 
-        event Action<IPropertyKey>? OnModifiedPropertyNeedsUpdate;
+        event Action<IPropertyKey, bool>? OnModifiedPropertyNeedsUpdate;
     }
 }

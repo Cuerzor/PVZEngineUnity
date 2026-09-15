@@ -100,7 +100,7 @@ namespace PVZEngine.Level
                         for (int b = 0; b < behaviour.GetModifierCount(); b++)
                         {
                             var modifier = behaviour.GetModifierAt(b);
-                            modifierLibrary.RemoveModifierCache(new ModifierSourceItem(this, modifier));
+                            modifierLibrary.RemoveModifierCache(new ModifierSourceItem(this, modifier), false);
                         }
                     }
                 }
@@ -115,7 +115,7 @@ namespace PVZEngine.Level
                     for (int b = 0; b < behaviour.GetModifierCount(); b++)
                     {
                         var modifier = behaviour.GetModifierAt(b);
-                        modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier));
+                        modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier), false);
                     }
                 }
             }
@@ -136,7 +136,7 @@ namespace PVZEngine.Level
                     for (int b = 0; b < oldDefinition.GetModifierCount(); b++)
                     {
                         var modifier = oldDefinition.GetModifierAt(b);
-                        modifierLibrary.RemoveModifierCache(new ModifierSourceItem(this, modifier));
+                        modifierLibrary.RemoveModifierCache(new ModifierSourceItem(this, modifier), false);
                     }
                 }
 
@@ -147,7 +147,7 @@ namespace PVZEngine.Level
                 for (int b = 0; b < definition.GetModifierCount(); b++)
                 {
                     var modifier = definition.GetModifierAt(b);
-                    modifierLibrary.RemoveModifierCache(new ModifierSourceItem(this, modifier));
+                    modifierLibrary.AddModifierCache(new ModifierSourceItem(this, modifier), false);
                 }
             }
             else

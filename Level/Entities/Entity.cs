@@ -22,7 +22,7 @@ namespace PVZEngine.Entities
             RNG = new RandomGenerator(seed);
             DropRNG = new RandomGenerator(RNG.Next());
 
-            ReevaluateModifierCaches();
+            ReevaluateModifierCaches(false);
             Cache.UpdateAll(this);
         }
         private Entity(LevelEngine level, long id, EntityDefinition definition, ILevelSourceReference? spawnerSource)

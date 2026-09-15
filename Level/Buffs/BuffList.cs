@@ -285,7 +285,7 @@ namespace PVZEngine.Buffs
             GetModelInsertions(lastInsertions);
 
             buffs.Add(buff);
-            AddModifierCaches(buff);
+            AddModifierCaches(buff, false);
             OnBuffAdded?.Invoke(buff);
             buff.OnPropertyChanged += OnBuffPropertyChangedCallback;
 
@@ -315,7 +315,7 @@ namespace PVZEngine.Buffs
             if (buffs.Remove(buff))
             {
                 buff.RemoveFromTarget();
-                RemoveModifierCaches(buff);
+                RemoveModifierCaches(buff, false);
                 OnBuffRemoved?.Invoke(buff);
                 buff.OnPropertyChanged -= OnBuffPropertyChangedCallback;
 
@@ -356,30 +356,30 @@ namespace PVZEngine.Buffs
         {
             modifierLibrary.GetModifierItemsForProperty(name, results);
         }
-        private void AddModifierCaches(Buff buff)
+        private void AddModifierCaches(Buff buff, bool serialization)
         {
             int modifierCount = buff.GetModifierCount();
             for (int i = 0; i < modifierCount; i++)
             {
                 var modifier = buff.GetModifierAt(i);
-                modifierLibrary.AddModifierCache(new ModifierSourceItem(buff, modifier));
+                modifierLibrary.AddModifierCache(new ModifierSourceItem(buff, modifier), serialization);
             }
         }
-        private void RemoveModifierCaches(Buff buff)
+        private void RemoveModifierCaches(Buff buff, bool serialization)
         {
             int modifierCount = buff.GetModifierCount();
             for (int i = 0; i < modifierCount; i++)
             {
                 var modifier = buff.GetModifierAt(i);
-                modifierLibrary.RemoveModifierCache(new ModifierSourceItem(buff, modifier));
+                modifierLibrary.RemoveModifierCache(new ModifierSourceItem(buff, modifier), serialization);
             }
         }
-        private void ReevaluateModifierCaches()
+        private void ReevaluateModifierCaches(bool serialization)
         {
-            modifierLibrary.ClearModifierCaches();
+            modifierLibrary.ClearModifierCaches(serialization);
             foreach (var buff in buffs)
             {
-                AddModifierCaches(buff);
+                AddModifierCaches(buff, serialization);
             }
         }
         #endregion
@@ -421,7 +421,7 @@ namespace PVZEngine.Buffs
                 }
             }
             currentBuffID = serializable.currentBuffID;
-            ReevaluateModifierCaches();
+            ReevaluateModifierCaches(true);
         }
         public void LoadFromSerializable(SerializableBuffList serializable)
         {
@@ -453,9 +453,9 @@ namespace PVZEngine.Buffs
         {
             modifierLibrary.CallPropertyChanged(buff, key);
         }
-        void OnModifiedPropertyNeedsUpdateCallback(IPropertyKey name)
+        void OnModifiedPropertyNeedsUpdateCallback(IPropertyKey name, bool serialization)
         {
-            OnModifiedPropertyNeedsUpdate?.Invoke(name);
+            OnModifiedPropertyNeedsUpdate?.Invoke(name, serialization);
         }
         #endregion
 
@@ -481,7 +481,7 @@ namespace PVZEngine.Buffs
         public event Action<Buff>? OnBuffRemoved;
         public event Action<ModelInsertion>? OnModelInsertionAdded;
         public event Action<ModelInsertion>? OnModelInsertionRemoved;
-        public event Action<IPropertyKey>? OnModifiedPropertyNeedsUpdate;
+        public event Action<IPropertyKey, bool>? OnModifiedPropertyNeedsUpdate;
         #endregion
 
         #region 属性
