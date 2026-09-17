@@ -29,6 +29,7 @@ namespace PVZEngine.Collisions.Level
                 quadTree.Update();
                 quadTree.GetAllTargets(colliderBuffer);
             }
+            colliderBuffer.Sort(activeColliderComparer);
 
             foreach (var collider1 in colliderBuffer)
             {
@@ -45,7 +46,7 @@ namespace PVZEngine.Collisions.Level
                     int ent1Faction = ent1Cache.Faction;
 
 
-                    var sorter = colliderComparer;
+                    var sorter = passiveColliderComparer;
                     sorter.SetCollider(collider1);
 
                     var rect1 = collider1.GetCollisionRect();
@@ -403,7 +404,8 @@ namespace PVZEngine.Collisions.Level
         private ObjectPool<BuiltinCollisionEntity> entityPool;
         private Dictionary<int, QuadTreeCollider> quadTrees = new Dictionary<int, QuadTreeCollider>();
         private QuadTreeParams quadTreeParams;
-        private ColliderComparer colliderComparer = new ColliderComparer();
+        private ActiveColliderComparer activeColliderComparer = new ActiveColliderComparer();
+        private PassiveColliderComparer passiveColliderComparer = new PassiveColliderComparer();
         private QuadTreeNodeFilterCollider colliderFilter = new QuadTreeNodeFilterCollider();
         private QuadTreeNodeFilterOverlapBoxCollider overlapBoxFilter = new QuadTreeNodeFilterOverlapBoxCollider();
         private QuadTreeNodeFilterOverlapSphereCollider overlapSphereFilter = new QuadTreeNodeFilterOverlapSphereCollider();

@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace PVZEngine.Collisions.Level
 {
-    public class ColliderComparer : IComparer<BuiltinCollisionCollider>
+    public class PassiveColliderComparer : IComparer<BuiltinCollisionCollider>
     {
-        public ColliderComparer(float precision = 1)
+        public PassiveColliderComparer(float precision = 1)
         {
             this.precision = precision;
         }
@@ -37,7 +37,7 @@ namespace PVZEngine.Collisions.Level
         private float GetCollisionTime(BuiltinCollisionCollider c)
         {
             if (collider == null)
-                throw new NullReferenceException($"Collider of a {nameof(ColliderComparer)} is not set before comparing.");
+                throw new NullReferenceException($"Collider of a {nameof(PassiveColliderComparer)} is not set before comparing.");
             if (!collisionTimeCache.TryGetValue(c, out var time))
             {
                 time = collider.GetCollisionTime(prevPosition, c, precision, out var t) ? t : float.PositiveInfinity;
