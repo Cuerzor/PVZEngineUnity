@@ -122,16 +122,6 @@ namespace PVZEngine.Entities
         {
             return definition.Type == EntityTypes.PROJECTILE || definition.Type == EntityTypes.EFFECT || definition.Type == EntityTypes.PICKUP;
         }
-        public static FrameTimer GetOrCreateTimerProperty(this Entity entity, PropertyMeta<FrameTimer> property, int time)
-        {
-            var timer = entity.GetProperty<FrameTimer>(property);
-            if (timer == null)
-            {
-                timer = new FrameTimer(time);
-                entity.SetProperty(property, timer);
-            }
-            return timer;
-        }
     }
     public enum FactionTarget
     {
