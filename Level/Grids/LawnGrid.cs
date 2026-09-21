@@ -91,10 +91,10 @@ namespace PVZEngine.Grids
         #endregion
 
         #region 属性
-        public LevelEngine Level { get; private set; }
-        public int Lane { get; set; }
-        public int Column { get; set; }
-        public GridDefinition Definition { get; set; }
+        public LevelEngine Level { get; }
+        public int Lane { get; }
+        public int Column { get; }
+        public GridDefinition Definition { get; }
         #endregion 属性
     }
 }
