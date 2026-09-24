@@ -19,5 +19,10 @@ namespace PVZEngine.Level
         public static float GetRechargeSpeed(this LevelEngine level) => level.GetProperty<float>(RECHARGE_SPEED);
         public static void SetRechargeSpeed(this LevelEngine level, float value) => level.SetProperty(RECHARGE_SPEED, value);
         public static void SetRechargeSpeed(this StageDefinition stage, float value) => stage.SetProperty(RECHARGE_SPEED, value);
+
+        public static readonly PropertyMeta<bool> NO_RECHARGE = new PropertyMeta<bool>("no_recharge");
+        public static bool NoRecharge(this LevelEngine level) => level.GetProperty<bool>(NO_RECHARGE);
+        public static void SetNoRecharge(this LevelEngine level, bool value) => level.SetProperty(NO_RECHARGE, value);
+        public static void SetNoRecharge(this StageDefinition stage, bool value) => stage.SetProperty(NO_RECHARGE, value);
     }
 }
