@@ -482,6 +482,37 @@ namespace PVZEngine.Tools.Geometry
 
             return (closestOnSegment - closestOnBox).sqrMagnitude;
         }
+        /// <summary>
+        /// 检测胶囊体与球是否相交。
+        /// 胶囊体由线段 capsuleA-capsuleB 和半径 capsuleRadius 定义。
+        /// 球由 sphereCenter 和 sphereRadius 定义。
+        /// </summary>
+        public static bool CollideBetweenSphereAndCapsule(Vector3 capsuleA, Vector3 capsuleB, float capsuleRadius, Vector3 sphereCenter, float sphereRadius)
+        {
+            Vector3 ab = capsuleB - capsuleA;
+            float abSqr = ab.sqrMagnitude;
+
+            Vector3 closestPointOnSegment;
+
+            // 如果线段退化成点，直接取 A
+            if (Mathf.Approximately(abSqr, 0))
+            {
+                closestPointOnSegment = capsuleA;
+            }
+            else
+            {
+                // 球心在胶囊轴线上的投影参数
+                float t = Vector3.Dot(sphereCenter - capsuleA, ab) / abSqr;
+                t = Mathf.Clamp01(t); // 限制在线段内
+                closestPointOnSegment = capsuleA + ab * t;
+            }
+
+            float sumRadius = capsuleRadius + sphereRadius;
+            Vector3 diff = sphereCenter - closestPointOnSegment;
+
+            // 用平方距离比较，避免开方
+            return diff.sqrMagnitude <= sumRadius * sumRadius;
+        }
         public static bool RayIntersectsBox(Vector3 rayOrigin, Vector3 rayDirection, Bounds box, out float hitDistance, out Vector3 hitPoint)
         {
             return RayIntersectsBox(rayOrigin, rayDirection, box.min, box.max, out hitDistance, out hitPoint);
