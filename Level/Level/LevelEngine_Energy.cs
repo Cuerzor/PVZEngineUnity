@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using PVZEngine.Entities;
+using PVZEngine.Tools;
 using UnityEngine;
 
 namespace PVZEngine.Level
@@ -44,13 +45,20 @@ namespace PVZEngine.Level
         }
         private void UpdateDelayedEnergyEntities()
         {
+            if (delayedEnergyEntities.Count == 0)
+                return;
+
+            using var toRemoveItem = ListPool<Entity>.Rent();
+            List<Entity> toRemove = toRemoveItem.Value;
             foreach (var pair in delayedEnergyEntities)
             {
-                var entity = pair.Key;
-                if (entity.Exists())
-                    continue;
-                delayedEnergyEntities.Remove(entity);
+                if (!pair.Key.Exists())
+                {
+                    toRemove.Add(pair.Key);
+                }
             }
+            foreach (var e in toRemove)
+                delayedEnergyEntities.Remove(e);
         }
         public float Energy { get; private set; }
         private Dictionary<Entity, float> delayedEnergyEntities = new Dictionary<Entity, float>();
