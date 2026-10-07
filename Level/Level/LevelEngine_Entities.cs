@@ -207,6 +207,31 @@ namespace PVZEngine.Level
             }
             results.Sort(entityComparer);
         }
+        public Entity[] FindEntities(IPredicator<Entity> predicator)
+        {
+            var list = new List<Entity>();
+            foreach (var pair in entities)
+            {
+                var entity = pair.Value;
+                if (predicator.IsMatch(entity))
+                {
+                    list.Add(entity);
+                }
+            }
+            list.Sort(entityComparer);
+            return list.ToArray();
+        }
+        public void FindEntitiesNonAlloc(IPredicator<Entity> predicator, List<Entity> results)
+        {
+            foreach (var pair in entities)
+            {
+                if (predicator.IsMatch(pair.Value))
+                {
+                    results.Add(pair.Value);
+                }
+            }
+            results.Sort(entityComparer);
+        }
         public Entity[] GetEntities(params int[] filterTypes)
         {
             using var listItem = ListPool<Entity>.Rent();
