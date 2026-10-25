@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using PVZEngine.SeedPacks;
 using PVZEngine.Tools;
 using PVZEngine.Tools.Random;
+using PVZEngine.Tools.Unity;
 using UnityEngine;
 
 namespace PVZEngine.Level
@@ -135,11 +136,25 @@ namespace PVZEngine.Level
         #endregion
 
         #region 占用情况
-        public SeedPack? ConveyRandomSeedPack(IConveyorPoolEntry[] entries)
+        /// <summary>
+        /// 从传送带中抽一张种子包。
+        /// </summary>
+        /// <returns></returns>
+        public SeedPack? ConveyRandomSeedPack()
+        {
+            modifiableConveryorPool.UpdatePool(this);
+            return ConveyRandomSeedPack(modifiableConveryorPool);
+        }
+        /// <summary>
+        /// 从传送带中抽一张种子包。
+        /// </summary>
+        /// <param name="pool"></param>
+        /// <returns></returns>
+        public SeedPack? ConveyRandomSeedPack(IConveyorPool pool)
         {
             if (CanConveySeedPack())
             {
-                var id = DrawConveyorSeed(entries);
+                var id = DrawConveyorSeed(pool);
                 if (id == null)
                     return null;
                 var seedPack = AddConveyorSeedPack(id);
@@ -155,46 +170,112 @@ namespace PVZEngine.Level
             }
             return null;
         }
-        public NamespaceID? DrawConveyorSeed(IConveyorPoolEntry[] entries)
+        /// <summary>
+        /// 从传送带中抽一张种子包的ID。
+        /// </summary>
+        /// <param name="pool"></param>
+        /// <returns></returns>
+        public NamespaceID? DrawConveyorSeed(IConveyorPool pool)
         {
-            if (entries.Length <= 0)
+            if (pool.Count <= 0)
                 return null;
             var rng = GetConveyorRNG();
-            if (IsConveyorPoolEmpty(entries))
+
+            // 传送带如果是空的，尝试从弃牌堆把蓝图洗回抽牌堆。
+            if (IsConveyorPoolEmpty(pool))
             {
-                RefillConveyorPool(entries);
+                RefillConveyorPool(pool);
             }
-            if (IsConveyorPoolEmpty(entries))
+            // 如果还是空的，那就啥也没抽到。
+            if (IsConveyorPoolEmpty(pool))
             {
+                Log.LogWarning("Drew nothing from the conveyor pool due to the pool is empty!");
                 return null;
             }
-            var weights = new int[entries.Length];
+            // 计算抽牌堆中所有可抽取蓝图的权重。
+            float totalWeights = 0;
+            var weights = new float[pool.Count];
             for (int i = 0; i < weights.Length; i++)
             {
-                var e = entries[i];
-                weights[i] = Mathf.Max(0, GetSeedCountFromConveyorDrawPile(e.ID, e.Count));
+                var e = pool.Get(i);
+                var entryCount = GetConveyorSeedMaxCount(e);
+                var weight = GetSeedWeightFromConveyorDrawPile(e.ID, entryCount);
+                weights[i] = weight;
+                totalWeights += weight;
             }
-            var entry = entries.WeightedRandom(weights, rng);
+            if (totalWeights <= 0)
+            {
+                Log.LogWarning("Drew nothing from the conveyor pool due to the total weight of the pool is less or equal to 0!");
+                return null;
+            }
+            var index = rng.WeightedRandom(weights);
+            var entry = pool.Get(index);
             TakeSeedFromConveyorDrawPile(entry.ID);
             return entry.ID;
         }
-        public bool IsConveyorPoolEmpty(IConveyorPoolEntry[] entries)
+        /// <summary>
+        /// 获取抽牌堆中一张种子包的抽取权重。
+        /// </summary>
+        /// <param name="seedID">种子包ID。</param>
+        /// <param name="entryCount">关卡提供的最大种子包数量。</param>
+        /// <returns>权重。</returns>
+        public float GetSeedWeightFromConveyorDrawPile(NamespaceID seedID, int entryCount)
         {
-            foreach (var e in entries)
+            return Mathf.Max(0, GetSeedCountFromConveyorDrawPile(seedID, entryCount));
+        }
+        /// <summary>
+        /// 获取关卡传送带提供的一个种子包项的最大数量。
+        /// </summary>
+        /// <param name="entry">种子包项。</param>
+        /// <returns>最大数量。</returns>
+        public int GetConveyorSeedMaxCount(IConveyorPoolEntry entry)
+        {
+            var count = entry.Count;
+            return count;
+        }
+        /// <summary>
+        /// 获取关卡传送带提供的一个种子包项的最小回洗数量。
+        /// </summary>
+        /// <param name="entry">种子包项。</param>
+        /// <returns>最小回洗数量。</returns>
+        public int GetConveyorSeedMinRefillCount(IConveyorPoolEntry entry)
+        {
+            var count = entry.MinCount;
+            return count;
+        }
+        /// <summary>
+        /// 检查传送带池子是不是空的。
+        /// </summary>
+        /// <param name="pool"></param>
+        /// <returns></returns>
+        public bool IsConveyorPoolEmpty(IConveyorPool pool)
+        {
+            for (int i = 0; i < pool.Count; i++)
             {
-                if (GetSeedCountFromConveyorDrawPile(e.ID, e.Count) > 0)
+                var e = pool.Get(i);
+                // 这里检查权重。
+                // 如果检查数量，那么万一数量都有，但是权重都是0，也会导致出现错误。
+                var entryCount = GetConveyorSeedMaxCount(e);
+                if (GetSeedWeightFromConveyorDrawPile(e.ID, entryCount) > 0)
                     return false;
             }
             return true;
         }
-        public void RefillConveyorPool(IConveyorPoolEntry[] entries)
+        /// <summary>
+        /// 将弃牌堆中的蓝图洗回抽牌堆。
+        /// </summary>
+        /// <param name="pool"></param>
+        public void RefillConveyorPool(IConveyorPool pool)
         {
-            foreach (var entry in entries)
+            // 对于每个蓝图，从弃牌堆中把它们捞回来，放到抽牌堆里
+            // 如果弃牌堆中的数量小于MinCount，则会让弃牌堆内的蓝图数量“负债”，变成负数
+            for (int i = 0; i < pool.Count; i++)
             {
+                var entry = pool.Get(i);
                 var id = entry.ID;
-                var drawCount = GetSeedCountFromConveyorDrawPile(id, entry.Count);
                 var discardCount = GetSeedCountInConveyorDiscardPile(id);
-                int fillCount = Mathf.Max(entry.MinCount, discardCount);
+                var minRefillCount = GetConveyorSeedMinRefillCount(entry);
+                int fillCount = Mathf.Max(minRefillCount, discardCount);
                 if (fillCount > 0)
                 {
                     TakeSeedFromConveyorDiscardPile(id, fillCount);
@@ -202,26 +283,55 @@ namespace PVZEngine.Level
                 }
             }
         }
+        /// <summary>
+        /// 把种子包放回传送带弃牌堆。
+        /// </summary>
+        /// <param name="seedID"></param>
+        /// <param name="value"></param>
         public void PutSeedToConveyorDiscardPile(NamespaceID seedID, int value = 1)
         {
             conveyorSeedSpendRecord.AddToDiscardPile(seedID, value);
         }
+        /// <summary>
+        /// 把种子包从传送带弃牌堆拿出来。
+        /// </summary>
+        /// <param name="seedID"></param>
+        /// <param name="value"></param>
         public void TakeSeedFromConveyorDiscardPile(NamespaceID seedID, int value = 1)
         {
             conveyorSeedSpendRecord.AddToDiscardPile(seedID, -value);
         }
+        /// <summary>
+        /// 获取弃牌堆中种子包的数量。
+        /// </summary>
+        /// <param name="seedID"></param>
         public int GetSeedCountInConveyorDiscardPile(NamespaceID seedID)
         {
             return conveyorSeedSpendRecord.GetSeedCountInDiscardPile(seedID);
         }
+        /// <summary>
+        /// 把种子包放回传送带抽牌堆。
+        /// </summary>
+        /// <param name="seedID"></param>
+        /// <param name="value"></param>
         public void PutSeedToConveyorDrawPile(NamespaceID seedID, int value = 1)
         {
             conveyorSeedSpendRecord.AddSpendValue(seedID, -value);
         }
+        /// <summary>
+        /// 把种子包从传送带抽牌堆中拿出来。
+        /// </summary>
+        /// <param name="seedID"></param>
+        /// <param name="value"></param>
         public void TakeSeedFromConveyorDrawPile(NamespaceID seedID, int value = 1)
         {
             conveyorSeedSpendRecord.AddSpendValue(seedID, value);
         }
+        /// <summary>
+        /// 获取抽牌堆中种子包的数量。
+        /// </summary>
+        /// <param name="seedID">种子包ID。</param>
+        /// <param name="entryCount">关卡提供的最大种子包数量。</param>
         public int GetSeedCountFromConveyorDrawPile(NamespaceID seedID, int entryCount)
         {
             return entryCount - conveyorSeedSpendRecord.GetSpendValue(seedID);
@@ -291,6 +401,7 @@ namespace PVZEngine.Level
 
         private int conveyorSlotCount = 10;
         private List<ConveyorSeedPack> conveyorSeedPacks = new List<ConveyorSeedPack>();
+        private ModifiableConveyorPool modifiableConveryorPool = new ModifiableConveyorPool();
         private ConveyorSeedSpendRecords conveyorSeedSpendRecord = new ConveyorSeedSpendRecords();
     }
 }

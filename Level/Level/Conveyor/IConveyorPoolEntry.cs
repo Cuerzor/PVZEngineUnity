@@ -8,5 +8,4 @@ namespace PVZEngine.Level
         int Count { get; }
         int MinCount { get; }
     }
-
 }

@@ -20,5 +20,6 @@ namespace PVZEngine.Modifiers
         public static readonly ModifierCalculator floatArrayCalculator = new FloatArrayCalculator();
         public static readonly ModifierCalculator stringArrayCalculator = new StringArrayCalculator();
         public static readonly ModifierCalculator namespaceIDArrayCalculator = new NamespaceIDArrayCalculator();
+        public static readonly ModifierCalculator conveyorPoolPatchArrayCalculator = new ConveyorPoolPatchArrayCalculator(); 
     }
 }

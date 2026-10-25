@@ -7,22 +7,36 @@ namespace PVZEngine.Level
     [PropertyRegistryRegion(PropertyRegions.level)]
     public static class EngineLevelProps
     {
-        public static readonly PropertyMeta<float> START_ENERGY = new PropertyMeta<float>("startEnergy");
+        private static PropertyMeta<T> Get<T>(string name, T? defaultValue = default)
+        {
+            return new PropertyMeta<T>(name, defaultValue);
+        }
+        public static readonly PropertyMeta<float> START_ENERGY = Get<float>("startEnergy");
         public static float GetStartEnergy(this LevelEngine level) => level.GetProperty<float>(START_ENERGY);
         public static void SetStartEnergy(this LevelEngine level, float value) => level.SetProperty(START_ENERGY, value);
         public static void SetStartEnergy(this StageDefinition stage, float value) => stage.SetProperty(START_ENERGY, value);
-        public static readonly PropertyMeta<float> MAX_ENERGY = new PropertyMeta<float>("max_energy", 9990);
+        public static readonly PropertyMeta<float> MAX_ENERGY = Get<float>("max_energy", 9990);
         public static float GetMaxEnergy(this LevelEngine level) => level.GetProperty<float>(MAX_ENERGY);
         public static void SetMaxEnergy(this LevelEngine level, float value) => level.SetProperty(MAX_ENERGY, value);
 
-        public static readonly PropertyMeta<float> RECHARGE_SPEED = new PropertyMeta<float>("rechargeSpeed");
+        public static readonly PropertyMeta<float> RECHARGE_SPEED = Get<float>("rechargeSpeed");
         public static float GetRechargeSpeed(this LevelEngine level) => level.GetProperty<float>(RECHARGE_SPEED);
         public static void SetRechargeSpeed(this LevelEngine level, float value) => level.SetProperty(RECHARGE_SPEED, value);
         public static void SetRechargeSpeed(this StageDefinition stage, float value) => stage.SetProperty(RECHARGE_SPEED, value);
 
-        public static readonly PropertyMeta<bool> NO_RECHARGE = new PropertyMeta<bool>("no_recharge");
+        public static readonly PropertyMeta<bool> NO_RECHARGE = Get<bool>("no_recharge");
         public static bool NoRecharge(this LevelEngine level) => level.GetProperty<bool>(NO_RECHARGE);
         public static void SetNoRecharge(this LevelEngine level, bool value) => level.SetProperty(NO_RECHARGE, value);
         public static void SetNoRecharge(this StageDefinition stage, bool value) => stage.SetProperty(NO_RECHARGE, value);
+
+        #region ´«ËÍ´ø¿¨³Ø
+        public static readonly PropertyMeta<IConveyorPoolEntry[]> CONVEYOR_POOL = Get<IConveyorPoolEntry[]>("conveyorPool");
+        public static IConveyorPoolEntry[]? GetConveyorPool(this LevelEngine game) => game.GetProperty<IConveyorPoolEntry[]>(CONVEYOR_POOL);
+        #endregion
+
+        #region ´«ËÍ´ø¿¨³Ø²¹¶¡
+        public static readonly PropertyMeta<IConveyorPoolPatch[]> CONVEYOR_POOL_PATCHES = Get<IConveyorPoolPatch[]>("conveyor_pool_patches");
+        public static IConveyorPoolPatch[]? GetConveyorPoolPatches(this LevelEngine game) => game.GetProperty<IConveyorPoolPatch[]>(CONVEYOR_POOL_PATCHES);
+        #endregion
     }
 }
