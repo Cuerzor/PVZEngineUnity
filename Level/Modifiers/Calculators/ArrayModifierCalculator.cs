@@ -129,4 +129,16 @@ namespace PVZEngine.Modifiers
     public class NamespaceIDArrayCalculator : ArrayModifierCalculator<NamespaceID>
     {
     }
+    public class IntArrayCalculator : ArrayModifierCalculator<int>
+    {
+    }
+    public class LongArrayCalculator : ArrayModifierCalculator<long>
+    {
+    }
+    public class FloatArrayCalculator : ArrayModifierCalculator<float>
+    {
+    }
+    public class StringArrayCalculator : ArrayModifierCalculator<string>
+    {
+    }
 }
