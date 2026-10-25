@@ -200,6 +200,10 @@ namespace PVZEngine.Entities
 
         #region 阵营
         public static readonly PropertyMeta<int> FACTION = Get<int>("faction");
+        public static int GetFaction(this EntityDefinition definition)
+        {
+            return definition.GetProperty<int>(FACTION);
+        }
         public static void SetFaction(this Entity entity, int value)
         {
             entity.SetProperty(FACTION, value);
